@@ -43,8 +43,10 @@ The project focuses on generating SQL queries based on various specifications. I
    Configure settings as required within the `config_file.json` to align with your project requirements.
 
 2. **Generate Specifications**: Run the following command to generate specifications from the configuration file.
+   
    ```bash
    cd query_generation
+   pip install -r requirements.txt
    python3 specification_generator_using_ht.py
 3. **Generate Queries from Specifications**: Run the following command to generate queries using the created specifications:
     ```bash

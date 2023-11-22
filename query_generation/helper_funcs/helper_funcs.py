@@ -27,9 +27,9 @@ def get_corresponding_fk_table(table_of_pk, join_definitions):
 
 
 def write_queries_to_file(merged_queries):
-    csv_file = (
-        os.path.abspath("SQL_Query_generation/query_generation/output") + "/res.csv"
-    )
+    current_dir = os.path.dirname(__file__)
+    output_dir = os.path.abspath(os.path.join(current_dir, "../output"))
+    csv_file = os.path.join(output_dir, "res.csv")
     with open(csv_file, mode="w", newline="") as csv_file:
         fieldnames = ["Specification", "Partial Query"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)

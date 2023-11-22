@@ -95,6 +95,6 @@ def read_schema_pk_fk_types(db_name, file_name):
 
 
 # all = convert_json_to_schema(
-#     {os.path.abspath("SQL_Query_generation/spider/tables.json")}
+#     {os.path.abspath("query_generator/spider/tables.json")}
 # )
 # print(all["farm"]["schema_types"])

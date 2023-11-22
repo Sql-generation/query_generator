@@ -52,7 +52,7 @@ def query_generator(
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
                         "meaningful_joins": "mixed",
                         "table_exp_type": "INNER JOIN",
-                        "where_type": "IN",
+                        "where_type": "in_with_subquery",
                         "number_of_value_exp_in_group_by": 1,
                         "having_type": {"single": "MAX"},
                         "orderby_type": "ASC",
@@ -266,10 +266,10 @@ def query_generator(
 
 
 # File path for schema
-file_name = os.path.abspath("SQL_Query_generation/spider/tables.json")
+current_dir = os.path.dirname(__file__)
+file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-
 # Generate queries for 'farm' database
 query_generator(
     "farm",

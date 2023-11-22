@@ -19,7 +19,8 @@ def generate_subquery(
     fk,
     tables,
 ):
-    file_name = f"{os.path.abspath('SQL_Query_generation/query_generation/output')}/{db_name}.json"
+    current_dir = os.path.dirname(__file__)
+    file_name = os.path.join(current_dir, f"../output/{db_name}.json")
 
     if subquery_type == "in_with_subquery" or subquery_type == "not_in_with_subquery":
         # add ALL

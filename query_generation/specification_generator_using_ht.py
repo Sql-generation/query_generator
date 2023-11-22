@@ -5,16 +5,14 @@ from helper_funcs import calculate_hash, select_combinations, write_hash_table_t
 from join import get_max_joins_and_join_definitions
 from read_schema.read_schema import convert_json_to_schema
 
-print(os.path.abspath("SQL_Query_generation/spider/tables.json"))
-all_db = convert_json_to_schema(
-    os.path.abspath("SQL_Query_generation/spider/tables.json")
-)
+current_dir = os.path.dirname(__file__)
+file_name = os.path.join(current_dir, "../spider/tables.json")
+all_db = convert_json_to_schema(file_name)
 
 import random
 
 
 def complete_specs(db_file, config_file, db_name=None):
-    config_file = os.path.abspath(config_file)
     all_db = convert_json_to_schema(db_file)
     specs = {}
 
@@ -33,9 +31,12 @@ def complete_specs(db_file, config_file, db_name=None):
         )
         # shuffle specs
         # random.shuffle(specs[db_name])
+
+        current_dir = os.path.dirname(__file__)
+        file_name = os.path.join(current_dir, f"output/{db_name}.json")
         write_hash_table_to_json(
             specs,
-            f"{os.path.abspath('SQL_Query_generation/query_generation/output')}/{db_name}.json",
+            file_name,
         )
 
     else:
@@ -49,7 +50,9 @@ def complete_specs(db_file, config_file, db_name=None):
                 all_db[db]["schema_types"],
                 spec_config,
             )
-            file_name_for_write = f"{os.path.abspath('SQL_Query_generation/query_generation/output')}/{db}.json"
+
+            current_dir = os.path.dirname(__file__)
+            file_name_for_write = os.path.join(current_dir, f"output/{db}.json")
             print(file_name_for_write)
             write_hash_table_to_json(specs[db], file_name_for_write)
 
@@ -230,22 +233,26 @@ def generate_specifications_for_queries(
         if "alias" in agg_func_col_types:
             value_exp_types.append("agg_exp_alias")
         if "no_alias" not in agg_func_col_types:
-            value_exp_types.remove("agg_exp")
+            if "agg_exp" in value_exp_types:
+                value_exp_types.remove("agg_exp")
     if math_func_col_types:
         if "alias" in math_func_col_types:
             value_exp_types.append("math_func_exp_alias")
         if "no_alias" not in math_func_col_types:
-            value_exp_types.remove("math_func_exp")
+            if "math_func_exp" in value_exp_types:
+                value_exp_types.remove("math_func_exp")
     if string_func_col_types:
         if "alias" in string_func_col_types:
             value_exp_types.append("string_func_exp_alias")
         if "no_alias" not in string_func_col_types:
-            value_exp_types.remove("string_func_exp")
+            if "string_func_exp" in value_exp_types:
+                value_exp_types.remove("string_func_exp")
     if arithmatic_col_types:
         if "alias" in arithmatic_col_types:
             value_exp_types.append("arithmatic_exp_alias")
         if "no_alias" not in arithmatic_col_types:
-            value_exp_types.remove("arithmatic_exp")
+            if "arithmatic_exp" in value_exp_types:
+                value_exp_types.remove("arithmatic_exp")
     # print(select_statement_types)
     for i in number_of_value_exps_in_select:
         if i == "*":
@@ -307,11 +314,14 @@ if __name__ == "__main__":
     schema_types = all_db["farm"]["schema_types"]
     # change dynamic path to config_file.json
 
-    config_file = file_path = os.path.abspath(
-        "SQL_Query_generation/query_generation/config_file.json"
-    )
+    current_dir = os.path.dirname(__file__)
+    dataset_path = os.path.join(current_dir, "../spider/tables.json")
+    config_file = os.path.abspath(os.path.join(current_dir, "config_file.json"))
+    # config_file = file_path = os.path.abspath(
+    #     "query_generator/query_generation/config_file.json"
+    # )
     complete_specs(
-        "SQL_Query_generation/spider/tables.json",
+        dataset_path,
         config_file,
-        "farm",
+        db_name="farm",
     )

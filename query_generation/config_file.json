@@ -1,0 +1,65 @@
+
+{"join_types":["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN","Join"],
+
+    "table_exp_types" : [
+    "single_table",
+    "single_table_with_name_changing",
+    "join_1",
+    "join_2"
+    
+],
+"where_clause_types" : [
+    "none",
+    "between",
+    "in_set",
+    "pattern_matching",
+    "null_check",
+    "basic_comparison",
+    "subquery"
+    
+
+],
+"subquery_in_where":["in_with_subquery", "comparison_with_subquery","not_exists_subquery","exists_subquery"],
+"in_set":["IN", "NOT IN"],
+"exist":["EXISTS", "NOT EXISTS"],
+"in_with_subquery":["IN", "NOT IN"],
+"like_or_not_like" :["LIKE", "NOT LIKE"],
+"basic_comp_ops": ["=", "<>", "!=", ">", "<", ">=", "<="],
+"pattern_matching_types": [
+    "starts_with_a",
+    "ends_with_ing",
+    "exactly_5_characters",
+    "does_not_contain_xyz"
+],
+"null_operators" : ["IS NULL", "IS NOT NULL"],
+
+"meaningful_joins":["yes", "no","mixed"],
+"number_of_valu_exps_in_group_by":[0,1,2,3,4,5],
+"aggregate_functions_for_having":["MAX", "MIN", "AVG", "SUM", "COUNT", "COUNT DISTINCT"],
+"logical_operator_for_having":["AND", "OR"],
+"having_types" : [
+    "none",
+    "single",
+    "multiple"
+],
+
+"number_of_value_exps_in_select":[1,2,"*"],
+"string_func_col":["alias", "no_alias"],
+"agg_col":["alias"],
+"arithmatic_col":["alias", "no_alias"],
+"math_func_col":["alias", "no_alias"],
+"count_distinct_col":["alias", "no_alias"],
+"value_exp_types": [
+    "single_exp",
+    "alias_exp",
+    "arithmatic_exp", 
+    "string_func_exp",
+    "agg_exp",
+    "count_distinct_exp"
+
+],
+"distinct_types": ["none", "distinct"],
+"orderby_types": ["ASC", "DESC","number_ASC","number_DESC" ,"none","multiple"],
+"limit_types" : ["none", "without_offset", "with_offset"]
+
+}

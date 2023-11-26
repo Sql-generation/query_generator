@@ -49,7 +49,17 @@ def generate_like_pattern(criteria):
 
 
 def create_where_clause(
-    schema, schema_types, db_name, colms, details, pk, fk, tables, random_choice=False
+    schema,
+    schema_types,
+    db_name,
+    colms,
+    details,
+    pk,
+    fk,
+    tables,
+    random_choice=False,
+    min_max_depth_in_subquery=[0, 0],
+    query_generator_func=None,
 ):
     print(details)
     if "none" in details:
@@ -129,8 +139,7 @@ def create_where_clause(
                             )
                             where_clauses.append(where_cluase)
 
-                    print(where_clauses)
-                    return where_clauses
+                    return [where_clauses]
 
             if isinstance(details["pattern_matching"], list):
                 op = details["pattern_matching"][0]
@@ -138,7 +147,6 @@ def create_where_clause(
                 pattern = generate_like_pattern(pattern_type)
                 if pattern:
                     where_cluase = "{} {} {}".format(random_text_colm, op, pattern)
-                    print(where_cluase)
                     return [where_cluase]
 
         else:
@@ -158,11 +166,11 @@ def create_where_clause(
                     where_cluase = "{} {}".format(random_text_colm, op)
                     where_clauses.append(where_cluase)
                 return where_clauses
-        op = details["null_check"][0]
+        op = details["null_check"]
         where_cluase = "{} {}".format(random_text_colm, op)
         return [where_cluase]
-    if "IN" in details:
-        if len(colms["text"]) == 0 and len(colms["number"]) == 0:
+    if "IN" in details and "NOT IN" not in details:
+        if len(colms["text"]) != 0 and len(colms["number"]) != 0:
             if random.choice([True, False]):
                 random_text_colm = random.choice(colms["text"])
                 word_list = ["apple", "banana", "orange", "grape", "pineapple"]
@@ -179,8 +187,8 @@ def create_where_clause(
                 where_cluase = "{} IN ({})".format(
                     random_numeric_colm, ", ".join(list_of_numbers)
                 )
-                return where_cluase
-        elif colms["text"]:
+                return [where_cluase]
+        elif len(colms["text"]) > 0:
             random_text_colm = random.choice(colms["text"])
             word_list = ["apple", "banana", "orange", "grape", "pineapple"]
             random_words = generate_random_words(word_list, 5)
@@ -189,7 +197,7 @@ def create_where_clause(
                 random_text_colm, ", ".join(random_words)
             )
             return [where_cluase]
-        elif colms["number"]:
+        elif len(colms["number"]) > 0:
             random_numeric_colm = random.choice(colms["number"])
             list_of_numbers = ["1", "2", "3", "40", "5"]
 
@@ -221,7 +229,7 @@ def create_where_clause(
             word_list = ["apple", "banana", "orange", "grape", "pineapple"]
             random_words = generate_random_words(word_list, 5)
 
-            where_cluase = "{} IN ({})".format(
+            where_cluase = "{} NOT IN ({})".format(
                 random_text_colm, ", ".join(random_words)
             )
             return [where_cluase]
@@ -276,8 +284,18 @@ def create_where_clause(
                 where_clauses.append(where_cluase)
     if "subquery" in details:
         print("subquery")
+
         where_cluase = generate_subquery(
-            schema, schema_types, db_name, colms, details, pk, fk, tables
+            schema,
+            schema_types,
+            db_name,
+            colms,
+            details,
+            pk,
+            fk,
+            tables,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
         )
 
         return where_cluase
@@ -295,6 +313,8 @@ def complete_with_where_clause(
     tables,
     must_be_in_where=None,
     random_choice=False,
+    min_max_depth_in_subquery=[0, 0],
+    query_generator_func=None,
 ):
     try:
         where_cluase = create_where_clause(
@@ -307,7 +327,12 @@ def complete_with_where_clause(
             fk,
             tables,
             random_choice=random_choice,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
         )
+        # print("where_cluase")
+        # print(where_cluase)
+        # print(must_be_in_where)
 
         if where_cluase == "":
             if must_be_in_where:

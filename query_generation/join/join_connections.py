@@ -232,6 +232,7 @@ fk = {
     },
 }
 join_definitions = create_graph_from_schema(schema, fk)
+# print(join_definitions)
 # print(generate_join_query(schema, fk, ["INNER JOIN", "INNER JOIN", "INNER JOIN"]))
 
 # Generate and print SQL join queries

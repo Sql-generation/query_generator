@@ -8,6 +8,109 @@ import os
 import random
 
 
+def read_random_specs(
+    file_name,
+    db_name,
+    tables,
+    pk,
+    fk,
+    min_max_depth_in_subquery,
+    schema=None,
+    exists=False,
+):
+    must_be_in_where = None
+    with open(file_name, "r") as json_file:
+        specs = json.load(json_file)
+        specs2 = list(specs[db_name])
+    # randomally choose a specification from dictionary
+
+    spec_hash = random.choice(specs2)
+    spec = specs[db_name][spec_hash]
+    print(spec)
+    print("before")
+    # generate a query from the specification
+    if exists:
+        # generate a query from the specification
+        if isinstance(tables, dict):
+            table = list(tables.keys())[0]
+            pk_of_table = pk[tables[table]]
+        else:
+            table = random.choice(tables)
+            pk_of_table = pk[table]
+
+        join_definitions = create_graph_from_schema(schema, fk)
+
+        if isinstance(tables, dict):
+            possible_table_keys = get_corresponding_fk_table(
+                tables[table], join_definitions
+            )
+        else:
+            possible_table_keys = get_corresponding_fk_table(table, join_definitions)
+        if len(possible_table_keys) == 0:
+            return ""
+        else:
+            random_table_key = random.choice(possible_table_keys)
+            must_be_in_where = [table + "." + pk_of_table + " = ", random_table_key[1]]
+            if random.choice([True, False]):
+                spec["table_exp_type"] = {"single_table": random_table_key[0]}
+            else:
+                spec["table_exp_type"] = {
+                    "single_table_with_name_changing": random_table_key[0]
+                }
+    else:
+        if random.choice([True, False]):
+            spec["table_exp_type"] = {"single_table": random.choice(tables)}
+        else:
+            spec["table_exp_type"] = {
+                "single_table_with_name_changing": random.choice(tables)
+            }
+    spec["number_of_value_exp_in_group_by"] = 0
+    spec["having_type"] = "none"
+    spec["orderby_type"] = "none"
+
+    if min_max_depth_in_subquery[0] > 0:
+        spec["min_max_depth_in_subquery"] = [
+            min_max_depth_in_subquery[0] - 1,
+            min_max_depth_in_subquery[1] - 1,
+        ]
+        subquery_type = random.choice(
+            [
+                "in_with_subquery",
+                "not_in_with_subquery",
+                "exists_subquery",
+                "not_exists_subquery",
+                "comparison_with_subquery",
+            ]
+        )
+        spec["where_type"] = subquery_type
+    elif min_max_depth_in_subquery[1] > 0:
+        if spec["where_type"] in [
+            "in_with_subquery",
+            "not_in_with_subquery",
+            "exists_subquery",
+            "not_exists_subquery",
+            "comparison_with_subquery",
+        ]:
+            spec["min_max_depth_in_subquery"] = [
+                min_max_depth_in_subquery[0],
+                min_max_depth_in_subquery[1] - 1,
+            ]
+            min_max_depth_in_subquery[1] -= 1
+    elif min_max_depth_in_subquery[1] == 0:
+        if spec["where_type"] in [
+            "in_with_subquery",
+            "not_in_with_subquery",
+            "exists_subquery",
+            "not_exists_subquery",
+            "comparison_with_subquery",
+        ]:
+            min_max_depth_in_subquery = [0, 0]
+            read_random_specs(file_name, db_name, tables, pk, min_max_depth_in_subquery)
+            spec["min_max_depth_in_subquery"] = [0, 0]
+
+    return spec, spec_hash, must_be_in_where
+
+
 def get_attributes_ends_with(name, attributes):
     attrs = attributes["number"] + attributes["text"]
     for attribute in attrs:
@@ -315,74 +418,74 @@ def print_attributes(**kwargs):
 
 schema = {
     "city": [
-        "city_id",
-        "official_name",
-        "status",
-        "area_km_2",
-        "population",
-        "census_ranking",
+        "City_ID",
+        "Official_Name",
+        "Status",
+        "Area_km_2",
+        "Population",
+        "Census_Ranking",
     ],
     "farm": [
-        "farm_id",
-        "year",
-        "total_horses",
-        "working_horses",
-        "total_cattle",
-        "oxen",
-        "bulls",
-        "cows",
-        "pigs",
-        "sheep_and_goats",
+        "Farm_ID",
+        "Year",
+        "Total_Horses",
+        "Working_Horses",
+        "Total_Cattle",
+        "Oxen",
+        "Bulls",
+        "Cows",
+        "Pigs",
+        "Sheep_and_Goats",
     ],
-    "farm_competition": ["competition_id", "year", "theme", "host_city_id", "hosts"],
-    "competition_record": ["competition_id", "farm_id", "rank"],
+    "farm_competition": ["Competition_ID", "Year", "Theme", "Host_city_ID", "Hosts"],
+    "competition_record": ["Competition_ID", "Farm_ID", "Rank"],
 }
 schema_types = {
     "city": {
-        "city_id": "number",
-        "official_name": "text",
-        "status": "text",
-        "area_km_2": "number",
-        "population": "number",
-        "census_ranking": "text",
+        "City_ID": "number",
+        "Official_Name": "text",
+        "Status": "text",
+        "Area_km_2": "number",
+        "Population": "number",
+        "Census_Ranking": "text",
     },
     "farm": {
-        "farm_id": "number",
-        "year": "number",
-        "total_horses": "number",
-        "working_horses": "number",
-        "total_cattle": "number",
-        "oxen": "number",
-        "bulls": "number",
-        "cows": "number",
-        "pigs": "number",
-        "sheep_and_goats": "number",
+        "Farm_ID": "number",
+        "Year": "number",
+        "Total_Horses": "number",
+        "Working_Horses": "number",
+        "Total_Cattle": "number",
+        "Oxen": "number",
+        "Bulls": "number",
+        "Cows": "number",
+        "Pigs": "number",
+        "Sheep_and_Goats": "number",
     },
     "farm_competition": {
-        "competition_id": "number",
-        "year": "number",
+        "Competition_ID": "number",
+        "Year": "number",
         "theme": "text",
-        "host_city_id": "number",
+        "Host_City_ID": "number",
         "hosts": "text",
     },
     "competition_record": {
-        "competition_id": "number",
-        "farm_id": "number",
-        "rank": "number",
+        "Competition_Id": "number",
+        "Farm_ID": "number",
+        "Rank": "number",
     },
 }
 foreign_keys = {
-    "farm_competition": {"host_city_id": ("city", "city_id")},
+    "farm_competition": {"Host_City_ID": ("city", "City_ID")},
     "competition_record": {
-        "farm_id": ("farm", "farm_id"),
-        "competition_id": ("farm_competition", "competition_id"),
+        "Farm_ID": ("farm", "Farm_ID"),
+        "Competition_ID": ("farm_competition", "Competition_ID"),
     },
 }
 fk = {
-    "farm_competition": {"host_city_id": ("city", "city_id")},
+    "farm_competition": {"Host_City_ID": ("city", "City_ID")},
     "competition_record": {
-        "farm_id": ("farm", "farm_id"),
-        "competition_id": ("farm_competition", "competition_id"),
+        "Farm_ID": ("farm", "Farm_ID"),
+        "Competition_ID": ("farm_competition", "Competition_ID"),
     },
 }
 temp_queries = "FROM city JOIN competition_record JOIN farm JOIN farm_competition ON farm_competition.host_city_id = city.city_id AND competition_record.farm_id = farm.farm_id AND competition_record.competition_id = farm_competition.competition_id"

@@ -86,7 +86,10 @@ def generate_specifications_for_queries(
     arithmatic_col_types = []
     agg_func_col_types = []
     subquery_in_where = specs["subquery_in_where"]
+    min_max_depth_in_subquery = [0, 0]
     join_types = specs["join_types"]
+    if "min_max_depth_in_subquery" in specs:
+        min_max_depth_in_subquery = specs["min_max_depth_in_subquery"]
     if "math_func_col" in specs:
         math_func_col_types = specs["math_func_col"]
     if "string_func_col" in specs:
@@ -253,7 +256,7 @@ def generate_specifications_for_queries(
         if "no_alias" not in arithmatic_col_types:
             if "arithmatic_exp" in value_exp_types:
                 value_exp_types.remove("arithmatic_exp")
-    # print(select_statement_types)
+    print(completed_specifications["where_clause_types"])
     for i in number_of_value_exps_in_select:
         if i == "*":
             all_value_exp_types.append("*")
@@ -300,6 +303,7 @@ def generate_specifications_for_queries(
             "limit_type": limit_type,
             "value_exp_types": value_exp_type,
             "distinct_type": distinct_type,
+            "min_max_depth_in_subquery": min_max_depth_in_subquery,
         }
         hash_value = calculate_hash(detail)
         if hash_value not in hash_table:

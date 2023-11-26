@@ -34,6 +34,7 @@ def query_generator(
     """
     Generate queries based on the specifications provided in the specs dictionary.
     """
+    print("Start reading specifications")
 
     if not testing_with_one_spec:
         file_name = f"query_generation/output/{db_name}.json"
@@ -41,12 +42,13 @@ def query_generator(
             specs = json.load(json_file)
     else:
         print("Testing with one specification")
-
+        print(specs)
         # Load default specs if none provided
 
         # Load default specs if none provided
         if specs is None:
             # TODO change to read from file
+
             specs = {
                 "farm": {
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
@@ -59,6 +61,7 @@ def query_generator(
                         "limit_type": "with_offset",
                         "value_exp_types": ["count_distinct_exp", "arithmatic_exp"],
                         "distinct_type": "none",
+                        "min_max_depth_in_subquery": [3, 5],
                     },
                 }
             }
@@ -87,6 +90,7 @@ def query_generator(
         value_exp_types = spec["value_exp_types"]
         meaningful_joins = spec["meaningful_joins"]
         distinct = spec["distinct_type"]
+        min_max_depth_in_subquery = spec["min_max_depth_in_subquery"]
         if is_subquery:
             random_choice = True
         # Generate Table Expressions
@@ -122,6 +126,8 @@ def query_generator(
                     tables,
                     must_be_in_where,
                     random_choice=random_choice,
+                    min_max_depth_in_subquery=min_max_depth_in_subquery,
+                    query_generator_func=query_generator,
                 )
                 print("************ WHERE ************")
                 for partial_query, attributes in partial_query_with_attributes:
@@ -270,6 +276,10 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
+# print(schema)
+# print(pk)
+# print(fk)
+# print(schema_types)
 # Generate queries for 'farm' database
 query_generator(
     "farm",
@@ -278,5 +288,5 @@ query_generator(
     fk,
     schema_types,
     testing_with_one_spec=True,
-    random_choice=False,
+    random_choice=True,
 )

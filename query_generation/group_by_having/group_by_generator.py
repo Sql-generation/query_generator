@@ -13,7 +13,6 @@ def complete_with_group_by_clause(
         return [[temp_query, attributes, must_have_attrs]]
     try:
         sample_stes = random_not_pk_cols(attributes, unique_tables, pk, number_of_col)
-        print("sample_stes", sample_stes)
         queries = []
         if random_choice:
             sample_stes = [random.choice(sample_stes)]

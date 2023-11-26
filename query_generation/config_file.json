@@ -20,6 +20,7 @@
 
 ],
 "subquery_in_where":["in_with_subquery", "comparison_with_subquery","not_exists_subquery","exists_subquery"],
+"min_max_depth_in_subquery":[3,5],
 "in_set":["IN", "NOT IN"],
 "exist":["EXISTS", "NOT EXISTS"],
 "in_with_subquery":["IN", "NOT IN"],

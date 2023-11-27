@@ -8,49 +8,101 @@ def complete_with_having_clause(
     having_clauses_types,
     random_choice=False,
 ):
+    """
+    Complete the query with the HAVING clause based on the given parameters.
+
+    Args:
+        temp_query (str): The temporary query.
+        attributes (dict): A dictionary containing the attributes.
+        must_have_attributes (list): The list of attributes that must be included.
+        having_clauses_types (str or dict): The type(s) of HAVING clause to generate.
+        random_choice (bool, optional): Whether to use random choice for certain parameters. Defaults to False.
+
+    Returns:
+        list: A list of completed queries with the HAVING clause.
+
+    Examples:
+        >>> complete_with_having_clause("SELECT * FROM table GROUP BY col2", {"number": ["col1"], "text": ["col2"]}, ["col1"], "multiple")
+        [['SELECT * FROM table GROUP BY col2 HAVING ((MAX(col1) > 50) AND (MIN(col1) < 30))', {'number': ['col1'], 'text': ['col2']}, ['col1']]]
+    """
     if having_clauses_types == "none":
         return [[temp_query, attributes, must_have_attributes]]
     elif having_clauses_types == "subquery":
         pass
     elif having_clauses_types == "multiple":
-        logical_ops = ["AND", "OR"]
-        aggregate_functions = ["MAX", "MIN", "AVG", "SUM", "COUNT", "COUNT DISTINCT"]
-
-        random_logical_op = random.choice(logical_ops)
-        random_agg_func = random.sample(aggregate_functions, 2)
-
-        having_clause1 = create_having_clause(
-            attributes, random_agg_func[0], random_choice=True
+        return create_multiple_having_clause(
+            attributes, temp_query, must_have_attributes
         )
-
-        having_clause2 = create_having_clause(
-            attributes, random_agg_func[1], random_choice=True
-        )
-        return [
-            [
-                f"{temp_query} HAVING (({having_clause1}) {random_logical_op} ({having_clause2}))",
-                attributes,
-                must_have_attributes,
-            ]
-        ]
     if having_clauses_types["single"]:
         having_clauses = create_having_clause(
             attributes, having_clauses_types["single"], random_choice=random_choice
         )
-        queries = []
-        for having_clause in having_clauses:
-            queries.append(
-                [
-                    f"{temp_query} HAVING {having_clause}",
-                    attributes,
-                    must_have_attributes,
-                ]
-            )
+        return [
+            [
+                f"{temp_query} HAVING {having_clause}",
+                attributes,
+                must_have_attributes,
+            ]
+            for having_clause in having_clauses
+        ]
 
-        return queries
+
+def create_multiple_having_clause(attributes, temp_query, must_have_attributes):
+    """
+    Create multiple HAVING clauses based on the given attributes.
+
+    Args:
+        attributes (dict): A dictionary containing the attributes.
+        temp_query (str): The temporary query.
+        must_have_attributes (list): The list of attributes that must be included.
+
+    Returns:
+        list: A list of completed queries with the HAVING clause.
+
+    Examples:
+        >>> create_multiple_having_clause({"number": ["col1"], "text": ["col2"]}, "SELECT * FROM table", ["col1"])
+        [['SELECT * FROM table HAVING ((MAX(col1) > 50) AND (MIN(col1) < 30))', {'number': ['col1'], 'text': ['col2']}, ['col1']]]
+    """
+    logical_ops = ["AND", "OR"]
+    aggregate_functions = ["MAX", "MIN", "AVG", "SUM", "COUNT", "COUNT DISTINCT"]
+
+    random_logical_op = random.choice(logical_ops)
+    random_agg_func = random.sample(aggregate_functions, 2)
+
+    having_clause1 = create_having_clause(
+        attributes, random_agg_func[0], random_choice=True
+    )
+
+    having_clause2 = create_having_clause(
+        attributes, random_agg_func[1], random_choice=True
+    )
+    return [
+        [
+            f"{temp_query} HAVING (({having_clause1}) {random_logical_op} ({having_clause2}))",
+            attributes,
+            must_have_attributes,
+        ]
+    ]
 
 
 def create_having_clause(attributes, aggregate_function, random_choice=False):
+    """
+    Create the HAVING clause based on the given aggregate function and attributes.
+
+    Args:
+        attributes (dict): A dictionary containing the attributes.
+        aggregate_function (str): The aggregate function to use in the HAVING clause.
+        random_choice (bool, optional): Whether to use random choice for certain parameters. Defaults to False.
+
+    Returns:
+        list: A list of HAVING clauses.
+
+    Examples:
+        >>> create_having_clause({"number": ["col1"], "text": ["col2"]}, "COUNT DISTINCT", random_choice=True)
+        ['COUNT(DISTINCT(col1)) > 50']
+        >>> create_having_clause({"number": ["col1"], "text": ["col2"]}, "MAX")
+        ['MAX(col1) > 50', 'MAX(col1) < 30']
+    """
     ops = ["=", ">", "<", ">=", "<="]
     having_clauses = []
     if random_choice:
@@ -61,35 +113,10 @@ def create_having_clause(attributes, aggregate_function, random_choice=False):
             having_clause = (
                 f"COUNT(DISTINCT({random_column})) {op} {random.randint(1, 100)}"
             )
-            having_clauses.append(having_clause)
         else:
             random_column = random.choice(attributes["number"])
             having_clause = (
                 f"{aggregate_function}({random_column}) {op} {random.randint(1, 100)}"
             )
-            having_clauses.append(having_clause)
+        having_clauses.append(having_clause)
     return having_clauses
-
-    # elif having_state == "multiple":
-    #     ops = ["=", ">", "<", ">=", "<="]
-    #     and_or = ["AND", "OR"]
-    #     for op in ops:
-    #         for logical_op in and_or:
-    #             random_column_with_aggregate2 = random.choice(
-    #                 attributes["number"]
-    #             )
-    #             while (
-    #                 random_column_with_aggregate2
-    #                 == random_column_with_aggregate
-    #                 or random_column_with_aggregate2
-    #                 == random_column
-    #             ):
-    #                 random_column_with_aggregate2 = (
-    #                     random.choice(attributes["number"])
-    #                 )
-    #             aggregate_function2 = random.choice(
-    #                 aggregate_functions
-    #             )
-    #             having_clause = f"(({aggregate_function}({random_column_with_aggregate}) {op} {random.randint(1, 100)}) {logical_op} ({aggregate_function2}({random_column_with_aggregate2}) {op} {random.randint(1, 100)}))"
-    #             group_by_query = f"{temp_query} GROUP BY {', '.join(random_columns)} HAVING {having_clause}"
-    #             select_clause = f"{random_column}, {aggregate_function}({random_column_with_aggregate}), {aggregate_function2}({random_column_with_aggregate2})"

@@ -1,66 +1,54 @@
 import random
 
-from helper_funcs import random_not_pk_cols
-
 
 def complete_with_group_by_clause(
     temp_query, attributes, unique_tables, pk, number_of_col, random_choice=False
 ):
-    select_clause = ""
-    must_have_attrs = []
+    """
+    Complete the query with the GROUP BY clause based on the given parameters.
 
+    Args:
+        temp_query (str): The temporary query.
+        attributes (dict): A dictionary containing the attributes.
+        unique_tables (list): The list of unique tables.
+        pk (str): The primary key.
+        number_of_col (int): The number of columns to include in the GROUP BY clause.
+        random_choice (bool, optional): Whether to use random choice or return all possible queries. Defaults to False.
+
+    Returns:
+        list: A list of completed queries with the GROUP BY clause and attributes and value expressions that must be in select statement.
+
+    Raises:
+        Exception: If there is an error in the GROUP BY clause.
+
+    Examples:
+        >>> complete_with_group_by_clause("SELECT * FROM table", {"number": ["col1", "col2"], "text": ["col3"]}, ["table"], "col1", 2)
+        [['SELECT * FROM table GROUP BY col1, col2', {'number': ['col1', 'col2'], 'text': ['col3']}, ['col1', 'col2']]]
+    """
     if number_of_col == 0:
-        return [[temp_query, attributes, must_have_attrs]]
+        return [
+            [temp_query, attributes, []]
+        ]  # Return the original query with an empty list for must_be_in_select_statement
+
     try:
-        sample_stes = random_not_pk_cols(attributes, unique_tables, pk, number_of_col)
+        sample_stes = random_not_pk_cols(
+            attributes, unique_tables, pk, number_of_col
+        )  # Generate random column combinations
         queries = []
         if random_choice:
-            sample_stes = [random.choice(sample_stes)]
+            sample_stes = [
+                random.choice(sample_stes)
+            ]  # Select a random combination if random_choice is True
+
         for random_columns in sample_stes:
-            group_by_query = f"{temp_query} GROUP BY "
-            must_have_attrs = random_columns
-            group_by_query += ", ".join(random_columns)
-            queries.append([group_by_query, attributes, must_have_attrs])
+            group_by_query = f"{temp_query} GROUP BY {', '.join(random_columns)}"  # Construct the GROUP BY query
+            queries.append(
+                [group_by_query, attributes, random_columns]
+            )  # Append the query, attributes, and random columns to the list that must be in select statement
+
         return queries
-    except:
-        raise Exception("Error in group by clause")
 
-
-# Example usage:
-temp_queries_with_columns = [
-    "FROM farm JOIN competition_record ON competition_record.farm_id = farm.farm_id WHERE  farm.cows >= 76",
-    ["farm", "competition_record"],
-    {
-        "number": [
-            "farm.farm_id",
-            "farm.year",
-            "farm.total_horses",
-            "farm.working_horses",
-            "farm.total_cattle",
-            "farm.oxen",
-            "farm.bulls",
-            "farm.cows",
-            "farm.pigs",
-            "farm.sheep_and_goats",
-            "competition_record.competition_id",
-            "competition_record.farm_id",
-            "competition_record.rank",
-        ],
-        "text": [],
-    },
-    # Add more queries here
-]
-having_details = ["single", "multiple"]
-
-details = {"single": ["MAX"], "multiple": ["MIN", "AVG"]}
-
-# result = complete_query_with_group_by_and_having(
-#     temp_queries_with_columns, details, having_details
-# )
-
-# for query, unique_tables, all_columns, select_clause in result:
-#     print("Query:", query)
-#     print("Unique Tables:", unique_tables)
-#     print("All Columns:", all_columns)
-#     print("Select Clause:", select_clause)
-#     print()
+    except Exception as e:
+        raise Exception(
+            "Error in GROUP BY clause"
+        ) from e  # Raise an exception if there is an error in the GROUP BY clause

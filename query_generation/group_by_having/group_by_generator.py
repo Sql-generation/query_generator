@@ -1,5 +1,7 @@
 import random
 
+from helper_funcs import random_not_pk_cols
+
 
 def complete_with_group_by_clause(
     temp_query, attributes, unique_tables, pk, number_of_col, random_choice=False
@@ -22,9 +24,10 @@ def complete_with_group_by_clause(
         Exception: If there is an error in the GROUP BY clause.
 
     Examples:
-        >>> complete_with_group_by_clause("SELECT * FROM table", {"number": ["col1", "col2"], "text": ["col3"]}, ["table"], "col1", 2)
-        [['SELECT * FROM table GROUP BY col1, col2', {'number': ['col1', 'col2'], 'text': ['col3']}, ['col1', 'col2']]]
+        >>> complete_with_group_by_clause("FROM table", {"number": ["col1", "col2"], "text": ["col3"]}, ["table"], "col1", 2)
+        [['FROM table GROUP BY col1, col2', {'number': ['col1', 'col2'], 'text': ['col3']}, ['col1', 'col2']]]
     """
+
     if number_of_col == 0:
         return [
             [temp_query, attributes, []]
@@ -34,6 +37,7 @@ def complete_with_group_by_clause(
         sample_stes = random_not_pk_cols(
             attributes, unique_tables, pk, number_of_col
         )  # Generate random column combinations
+        print(sample_stes)
         queries = []
         if random_choice:
             sample_stes = [

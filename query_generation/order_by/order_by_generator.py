@@ -1,6 +1,31 @@
 import random
 
 
+def complete_query_with_order_by(
+    temp_query, attributes, select_clause, num_value_exps, order_by_type
+):
+    """
+    Completes the query with the ORDER BY clause based on the provided parameters.
+
+    Args:
+        temp_query (str): The temporary query.
+        attributes (dict): The attributes dictionary.
+        select_clause (str): The SELECT clause.
+        num_value_exps (int): The number of value expressions.
+        order_by_type (str): The type of the ORDER BY clause.
+
+    Returns:
+        str: The completed query with the ORDER BY clause.
+    """
+    print("order_by_type", order_by_type)
+    if order_by_type == "none":
+        return temp_query
+    order_by_clause = generate_order_by_clause(
+        attributes, select_clause, num_value_exps, order_by_type
+    )
+    return f"{temp_query} ORDER BY {order_by_clause}"
+
+
 def generate_order_by_clause(attributes, select_clause, num_value_exps, order_by_type):
     """
     Generate the ORDER BY clause based on the given attributes, select_clause, num_value_exps, and order_by_type.
@@ -37,16 +62,19 @@ def generate_order_by_clause(attributes, select_clause, num_value_exps, order_by
     }
 
     # Generate the ORDER BY clause based on the order_by_type
-    return order_by_type_mapping[order_by_type](select_clause, num_value_exps)
+    return order_by_type_mapping[order_by_type](
+        select_clause, num_value_exps, order_by_type
+    )
 
 
-def generate_order_by_clause_multiple(select_clause, num_value_exps):
+def generate_order_by_clause_multiple(select_clause, num_value_exps, order_by_type):
     """
     Generate the ORDER BY clause for the "multiple" order_by_type.
 
     Args:
         select_clause (list): The list of attributes in the select clause.
         num_value_exps (int): The number of value expressions.
+        order_by_type (str): The type of ORDER BY clause to generate.
 
     Returns:
         str: The generated ORDER BY clause.
@@ -62,13 +90,14 @@ def generate_order_by_clause_multiple(select_clause, num_value_exps):
     )
 
 
-def generate_order_by_clause_single(select_clause, num_value_exps):
+def generate_order_by_clause_single(select_clause, num_value_exps, order_by_type):
     """
     Generate the ORDER BY clause for the "ASC" or "DESC" order_by_type.
 
     Args:
         select_clause (list): The list of attributes in the select clause.
         num_value_exps (int): The number of value expressions.
+        order_by_type (str): The type of ORDER BY clause to generate.
 
     Returns:
         str: The generated ORDER BY clause.
@@ -81,13 +110,14 @@ def generate_order_by_clause_single(select_clause, num_value_exps):
     return f"{random_attribute} {order_by_type}"
 
 
-def generate_order_by_clause_number(select_clause, num_value_exps):
+def generate_order_by_clause_number(select_clause, num_value_exps, order_by_type):
     """
     Generate the ORDER BY clause for the "number_ASC" or "number_DESC" order_by_type.
 
     Args:
         select_clause (list): The list of attributes in the select clause.
         num_value_exps (int): The number of value expressions.
+        order_by_type (str): The type of ORDER BY clause to generate.
 
     Returns:
         str: The generated ORDER BY clause.

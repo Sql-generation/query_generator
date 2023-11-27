@@ -1,6 +1,23 @@
 import random
 
 
+def complete_query_with_limit(temp_query, limit_type):
+    """
+    Completes the query with the LIMIT clause based on the provided parameters.
+
+    Args:
+        temp_query (str): The temporary query.
+        limit_type (str): The type of the LIMIT clause.
+
+    Returns:
+        str: The completed query with the LIMIT clause.
+    """
+    if limit_type == "none":
+        return temp_query
+    limit_clause = generate_limit_clause(limit_type)
+    return f"{temp_query} LIMIT {limit_clause}"
+
+
 def generate_limit_clause(limit_type):
     """
     Generate the LIMIT clause based on the given limit_type.

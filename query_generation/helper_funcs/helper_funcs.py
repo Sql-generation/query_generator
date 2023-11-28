@@ -18,52 +18,69 @@ def read_random_specs(
     schema=None,
     exists=False,
 ):
+    """
+    Read a random specification from a file and generate a query based on the specification.
+
+    Args:
+        file_name (str): Name of the file containing the specifications.
+        db_name (str): Name of the database.
+        tables (list or dict): List or dictionary of table names.
+        pk (dict): Dictionary mapping table names to their primary key columns.
+        fk (list): List of join definitions, each containing "table1", "table2", "first_key", and "second_key".
+        min_max_depth_in_subquery (list): List containing the minimum and maximum depth of nested subqueries.
+        schema (dict, optional): Dictionary containing the schema information. Defaults to None.
+        exists (bool, optional): Flag indicating whether the query should use EXISTS subqueries. Defaults to False.
+
+    Returns:
+        tuple: Tuple containing the generated specification, specification hash, and must-be-in-where condition.
+
+    Examples:
+        >>> file_name = "specs.json"
+        >>> db_name = "mydb"
+        >>> tables = ["table1", "table2"]
+        >>> pk = {"table1": "pk1", "table2": "pk2"}
+        >>> fk = [
+        ...     {"table1": "table1", "table2": "table2", "first_key": "fk1", "second_key": "pk1"},
+        ...     {"table1": "table2", "table2": "table3", "first_key": "fk2", "second_key": "pk2"}
+        ... ]
+        >>> min_max_depth_in_subquery = [2, 4]
+        >>> schema = {
+        ...     "table1": ["col1", "col2"],
+        ...     "table2": ["col3", "col4"],
+        ...     "table3": ["col5", "col6"]
+        ... }
+        >>> exists = True
+        >>> read_random_specs(file_name, db_name, tables, pk, fk, min_max_depth_in_subquery, schema, exists)
+        ({...}, 'spec_hash', ['table1.pk1 = ', 'pk1'])
+    """
     must_be_in_where = None
     with open(file_name, "r") as json_file:
         specs = json.load(json_file)
         specs2 = list(specs[db_name])
-    # randomally choose a specification from dictionary
 
     spec_hash = random.choice(specs2)
     spec = specs[db_name][spec_hash]
-    print(spec)
-    print("before")
-    # generate a query from the specification
+
     if exists:
-        # generate a query from the specification
-        if isinstance(tables, dict):
-            table = list(tables.keys())[0]
-            pk_of_table = pk[tables[table]]
-        else:
-            table = random.choice(tables)
-            pk_of_table = pk[table]
-
+        table, pk_of_table = get_random_table_and_pk(tables, pk)
         join_definitions = create_graph_from_schema(schema, fk)
-
-        if isinstance(tables, dict):
-            possible_table_keys = get_corresponding_fk_table(
-                tables[table], join_definitions
-            )
-        else:
-            possible_table_keys = get_corresponding_fk_table(table, join_definitions)
+        possible_table_keys = get_corresponding_fk_table(table, join_definitions)
         if len(possible_table_keys) == 0:
-            return ""
-        else:
-            random_table_key = random.choice(possible_table_keys)
-            must_be_in_where = [table + "." + pk_of_table + " = ", random_table_key[1]]
-            if random.choice([True, False]):
-                spec["table_exp_type"] = {"single_table": random_table_key[0]}
-            else:
-                spec["table_exp_type"] = {
-                    "single_table_with_name_changing": random_table_key[0]
-                }
+            return "", "", None
+        random_table_key = random.choice(possible_table_keys)
+        must_be_in_where = [f"{table}.{pk_of_table} = ", random_table_key[1]]
+        spec["table_exp_type"] = (
+            {"single_table": random_table_key[0]}
+            if random.choice([True, False])
+            else {"single_table_with_name_changing": random_table_key[0]}
+        )
+    elif random.choice([True, False]):
+        spec["table_exp_type"] = {"single_table": random.choice(tables)}
     else:
-        if random.choice([True, False]):
-            spec["table_exp_type"] = {"single_table": random.choice(tables)}
-        else:
-            spec["table_exp_type"] = {
-                "single_table_with_name_changing": random.choice(tables)
-            }
+        spec["table_exp_type"] = {
+            "single_table_with_name_changing": random.choice(tables)
+        }
+
     spec["number_of_value_exp_in_group_by"] = 0
     spec["having_type"] = "none"
     spec["orderby_type"] = "none"
@@ -111,15 +128,77 @@ def read_random_specs(
     return spec, spec_hash, must_be_in_where
 
 
+def get_random_table_and_pk(tables, pk):
+    """
+    Get a random table name and its corresponding primary key column.
+
+    Args:
+        tables (list or dict): List or dictionary of table names.
+        pk (dict): Dictionary mapping table names to their primary key columns.
+
+    Returns:
+        tuple: Tuple containing the random table name and its corresponding primary key column.
+
+    Examples:
+        >>> tables = ["table1", "table2"]
+        >>> pk = {"table1": "pk1", "table2": "pk2"}
+        >>> get_random_table_and_pk(tables, pk)
+        ('table1', 'pk1')
+    """
+    if isinstance(tables, dict):
+        table = list(tables.keys())[0]
+        pk_of_table = pk[tables[table]]
+    else:
+        table = random.choice(tables)
+        pk_of_table = pk[table]
+    return table, pk_of_table
+
+
 def get_attributes_ends_with(name, attributes):
+    """
+    Get the attribute that ends with the given name from the provided attributes.
+
+    Args:
+        name (str): Ending of the attribute name to search for.
+        attributes (dict): Dictionary containing the attributes, with keys "number" and "text" representing different types.
+
+    Returns:
+        str or None: Attribute name that ends with the given name, or None if not found.
+
+    Examples:
+        >>> attributes = {"number": ["col1", "col2", "col3"], "text": ["col4", "col5"]}
+        >>> get_attributes_ends_with("3", attributes)
+        'col3'
+
+        >>> get_attributes_ends_with("6", attributes)
+        None
+    """
     attrs = attributes["number"] + attributes["text"]
-    for attribute in attrs:
-        if attribute.endswith(name):
-            return attribute
-    return None
+    return next((attribute for attribute in attrs if attribute.endswith(name)), None)
 
 
 def get_corresponding_fk_table(table_of_pk, join_definitions):
+    """
+    Get the possible tables and their corresponding foreign keys associated with a given primary key table.
+
+    Args:
+        table_of_pk (str): Table name of particular primary key .
+        join_definitions (list): List of join definitions, each containing "table1", "table2", "first_key", and "second_key".
+
+    Returns:
+        list: List of lists, where each inner list contains the possible table name and its corresponding foreign key.
+
+    Examples:
+        >>> join_definitions = [
+        ...     {"table1": "table1", "table2": "table2", "first_key": "fk1", "second_key": "pk1"},
+        ...     {"table1": "table2", "table2": "table3", "first_key": "fk2", "second_key": "pk2"}
+        ... ]
+        >>> get_corresponding_fk_table("table1", join_definitions)
+        [['table2', 'pk1']]
+
+        >>> get_corresponding_fk_table("table2", join_definitions)
+        [['table1', 'fk1'], ['table3', 'pk2']]
+    """
     possible_tables_and_pk = []
     for pairs in join_definitions:
         if pairs["table1"] == table_of_pk:
@@ -130,6 +209,15 @@ def get_corresponding_fk_table(table_of_pk, join_definitions):
 
 
 def write_queries_to_file(merged_queries):
+    """
+    Write the merged queries to a CSV file.
+
+    Args:
+        merged_queries (dict): Dictionary containing the merged queries, with specification as keys and partial queries as values.
+
+    Returns:
+        None
+    """
     current_dir = os.path.dirname(__file__)
     output_dir = os.path.abspath(os.path.join(current_dir, "../output"))
     csv_file = os.path.join(output_dir, "res.csv")
@@ -147,6 +235,27 @@ def write_queries_to_file(merged_queries):
 
 
 def get_table_name_from_column(column, schema):
+    """
+    Get the table name(s) associated with a given column in the schema.
+
+    Args:
+        column (str): Column name.
+        schema (dict): Dictionary containing the schema information.
+
+    Returns:
+        list: List of table names associated with the column.
+
+    Examples:
+        >>> schema = {
+        ...     "table1": ["col1", "col2"],
+        ...     "table2": ["col3", "col4"]
+        ... }
+        >>> get_table_name_from_column("col1", schema)
+        ['table1']
+
+        >>> get_table_name_from_column("table2.col3", schema)
+        ['table2']
+    """
     tables = []
     col = column
     if column.find(".") != -1:
@@ -154,104 +263,58 @@ def get_table_name_from_column(column, schema):
         col = column.split(".")[1]
 
     for table in schema:
-        if col in schema[table]:
-            if table not in tables:
-                tables.append(table)
+        if col in schema[table] and table not in tables:
+            tables.append(table)
     return tables
 
 
 def generate_arithmetic_expression(attributes, num_parts=None, max_depth=3):
+    """
+    Generate a random arithmetic expression using the given attributes.
+
+    Args:
+        attributes (dict): Dictionary containing the attributes, with keys "number" representing numeric columns.
+        num_parts (int, optional): Number of parts in the arithmetic expression. Defaults to None.
+        max_depth (int, optional): Maximum depth of nested arithmetic expressions. Defaults to 3.
+
+    Returns:
+        str: Generated arithmetic expression.
+
+    Examples:
+        >>> attributes = {"number": ["col1", "col2", "col3"]}
+        >>> generate_arithmetic_expression(attributes)
+        'col1 + col2 * col3'
+
+        >>> attributes = {"number": ["col1", "col2", "col3"]}
+        >>> generate_arithmetic_expression(attributes, num_parts=2, max_depth=2)
+        'col1 * (col2 - col3)'
+    """
     if num_parts is None:
         num_parts = random.randint(1, 2)
-        # num_parts = random.randint(1, len(attributes["number"]) // 2)
-
-    part_of_arithmetic_expression_types = [
-        "constant",
-        "column",
-        "arithmetic_expression_with_par",
-    ]
-    arithmetic_expression_types = ["+", "-", "*", "/"]
-    math_funcs = [
-        "ABS",
-        "CEILING",
-        "FLOOR",
-        "ROUND",
-        "EXP",
-        "POWER",
-        "SQRT",
-        "LOG",
-        "LOG10",
-        "RAND",
-        "SIGN",
-    ]
 
     arithmetic_expression = []
     numeric_attributes = attributes["number"]
     for i in range(num_parts):
         if max_depth <= 0:
-            break  #
+            break
+
         random_part_of_arithmetic_expression = random.choice(
-            part_of_arithmetic_expression_types
+            [
+                "constant",
+                "column",
+                "arithmetic_expression_with_par",
+            ]
         )
 
         if random_part_of_arithmetic_expression == "constant":
             random_constant = random.randint(1, 100)
             arithmetic_expression.append(str(random_constant))
-            if i != num_parts - 1:
-                random_arithmetic_expression = random.choice(
-                    arithmetic_expression_types
-                )
-                arithmetic_expression.append(random_arithmetic_expression)
 
         elif random_part_of_arithmetic_expression == "column":
-            random_column = random.choice(attributes["number"])
-            if random.choice([True, False]):
-                arithmetic_expression.append(random_column)
-
-                if i != num_parts - 1:
-                    random_arithmetic_expression = random.choice(
-                        arithmetic_expression_types
-                    )
-                    arithmetic_expression.append(random_arithmetic_expression)
-
-            else:
-                if random.choice([True, False]):
-                    random_math_func = random.choice(math_funcs)
-                    if random_math_func == "POWER" or random_math_func == "ROUND":
-                        arithmetic_expression.append(
-                            f"{random_math_func}({random_column},{random.randint(2,5)})"
-                        )
-                    else:
-                        arithmetic_expression.append(
-                            f"{random_math_func}({random_column})"
-                        )
-                    if i != num_parts - 1:
-                        random_arithmetic_expression = random.choice(
-                            arithmetic_expression_types
-                        )
-                        arithmetic_expression.append(random_arithmetic_expression)
-                else:
-                    random_number_of_parts = random.randint(1, 3)
-                    random_arithmetic_expression = generate_arithmetic_expression(
-                        attributes,
-                        num_parts=random_number_of_parts,
-                        max_depth=max_depth - 1,
-                    )
-                    random_math_func = random.choice(math_funcs)
-                    if random_math_func == "POWER" or random_math_func == "ROUND":
-                        arithmetic_expression.append(
-                            f"{random_math_func}({random_arithmetic_expression},{random.randint(2,5)})"
-                        )
-                    else:
-                        arithmetic_expression.append(
-                            f"{random_math_func}({random_arithmetic_expression})"
-                        )
-
-                    if i != num_parts - 1:
-                        random_arithmetic_expression = random.choice(
-                            arithmetic_expression_types
-                        )
-                        arithmetic_expression.append(random_arithmetic_expression)
+            random_column = random.choice(numeric_attributes)
+            arithmetic_expression.append(
+                generate_column_expression(random_column, attributes, max_depth)
+            )
 
         elif random_part_of_arithmetic_expression == "arithmetic_expression_with_par":
             random_number_of_parts = random.randint(2, 3)
@@ -259,158 +322,319 @@ def generate_arithmetic_expression(attributes, num_parts=None, max_depth=3):
                 attributes, num_parts=random_number_of_parts, max_depth=max_depth - 1
             )
             arithmetic_expression.append(f"({random_arithmetic_expression})")
-            if i != num_parts - 1:
-                random_arithmetic_expression = random.choice(
-                    arithmetic_expression_types
-                )
-                arithmetic_expression.append(random_arithmetic_expression)
+
+        if i != num_parts - 1:
+            random_arithmetic_expression = random.choice(["+", "-", "*", "/"])
+            arithmetic_expression.append(random_arithmetic_expression)
 
     return " ".join(arithmetic_expression)
 
 
+def generate_column_expression(column, attributes, max_depth):
+    """
+    Generate a column expression based on the given column and attributes.
+
+    Args:
+        column (str): Column name.
+        attributes (dict): Dictionary containing the attributes, with keys "number" representing numeric columns.
+        max_depth (int): Maximum depth of nested arithmetic expressions.
+
+    Returns:
+        str: Generated column expression.
+    """
+    if random.choice([True, False]):
+        return column
+
+    random_math_func = random.choice(
+        [
+            "ABS",
+            "CEILING",
+            "FLOOR",
+            "ROUND",
+            "EXP",
+            "POWER",
+            "SQRT",
+            "LOG",
+            "LOG10",
+            "RAND",
+            "SIGN",
+        ]
+    )
+
+    if random_math_func in ["POWER", "ROUND"]:
+        return f"{random_math_func}({column},{random.randint(2,5)})"
+    random_number_of_parts = random.randint(1, 3)
+    random_arithmetic_expression = generate_arithmetic_expression(
+        attributes, num_parts=random_number_of_parts, max_depth=max_depth - 1
+    )
+    return f"{random_math_func}({random_arithmetic_expression})"
+
+
 def write_hash_table_to_json(hash_table, file_name):
+    """
+    Write the hash table to a JSON file.
+
+    Args:
+        hash_table (dict): Dictionary containing the hash table to be written to the JSON file.
+        file_name (str): Name of the JSON file to write the hash table to.
+
+    Returns:
+        None
+    """
     json_object = json.dumps(hash_table, indent=4)
-    # Writing to sample.json
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
-        return
+
+
+import hashlib
+import json
 
 
 def calculate_hash(d):
+    """
+    Calculate the SHA-1 hash of a dictionary.
+
+    Args:
+        d (dict): Dictionary to calculate the hash for.
+
+    Returns:
+        str: SHA-1 hash value as a hexadecimal string.
+
+    Examples:
+        >>> data = {"key1": "value1", "key2": "value2"}
+        >>> calculate_hash(data)
+        '0a4d55a8d778e5022fab701977c5d840bbc486d0'
+    """
     json_str = json.dumps(d, sort_keys=True)
-
-    # Generate a hash of the JSON string
     hash_object = hashlib.sha1(json_str.encode())
-    hash_hex = hash_object.hexdigest()
-
-    return hash_hex
+    return hash_object.hexdigest()
 
 
 def write_detail_to_json(details, file_name):
+    """
+    Write the details to a JSON file.
+
+    Args:
+        details (dict): Dictionary containing the details to be written to the JSON file.
+        file_name (str): Name of the JSON file to write the details to.
+
+    Returns:
+        None
+    """
     json_object = json.dumps(details, indent=4)
-    # Writing to sample.json
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
-        return
 
 
 def create_graph_from_schema(schema, fk):
+    """
+    Create a graph representation of the foreign key relationships from the given schema.
+
+    Args:
+        schema (dict): Dictionary containing the schema information.
+        fk (dict): Dictionary mapping tables to their foreign key relationships.
+
+    Returns:
+        list: List of dictionaries representing the graph edges, where each dictionary contains the following keys:
+            - "table1": Name of the first table.
+            - "table2": Name of the second table.
+            - "first_key": Foreign key column in the first table.
+            - "second_key": Corresponding primary key column in the second table.
+
+    Examples:
+        >>> schema = {
+        ...     "table1": ["col1", "col2"],
+        ...     "table2": ["col3", "col4"]
+        ... }
+        >>> fk = {
+        ...     "table1": {
+        ...         "fk1": ("table2", "pk1"),
+        ...         "fk2": ("table2", "pk2")
+        ...     }
+        ... }
+        >>> create_graph_from_schema(schema, fk)
+        [
+            {'table1': 'table1', 'table2': 'table2', 'first_key': 'fk1', 'second_key': 'pk1'},
+            {'table1': 'table1', 'table2': 'table2', 'first_key': 'fk2', 'second_key': 'pk2'}
+        ]
+    """
     graph = []
     for table in fk:
         fk_for_tables = list(fk[table].keys())
-        i = 0
-        for table2_with_key in fk[table].values():
-            graph.append(
-                (
-                    {
-                        "table1": table,
-                        "table2": table2_with_key[0],
-                        "first_key": fk_for_tables[i],
-                        "second_key": table2_with_key[1],
-                    }
-                )
-            )
-
-            i += 1
+        graph.extend(
+            {
+                "table1": table,
+                "table2": table2_with_key[0],
+                "first_key": fk_for_tables[i],
+                "second_key": table2_with_key[1],
+            }
+            for i, table2_with_key in enumerate(fk[table].values())
+        )
     return graph
 
 
 def all_colms(schema, schema_type, unique_tables, alias=None):
+    """
+    Generate a dictionary of columns categorized as "number" or "text" based on the provided schema and schema_type.
+
+    Args:
+        schema (dict): Dictionary containing the schema information.
+        schema_type (dict): Dictionary mapping column names to their corresponding types.
+        unique_tables (list): List of unique table names.
+        alias (list, optional): List of table aliases. Defaults to None.
+
+    Returns:
+        dict: Dictionary containing the categorized columns.
+
+    Examples:
+        >>> schema = {
+        ...     "table1": ["col1", "col2"],
+        ...     "table2": ["col3", "col4"]
+        ... }
+        >>> schema_type = {
+        ...     "table1": {"col1": "number", "col2": "text"},
+        ...     "table2": {"col3": "number", "col4": "text"}
+        ... }
+        >>> unique_tables = ["table1", "table2"]
+        >>> alias = ["alias1", "alias2"]
+        >>> all_colms(schema, schema_type, unique_tables, alias)
+        {'number': ['alias1.col1', 'alias2.col3'], 'text': ['alias1.col2', 'alias2.col4']}
+    """
     columns = {"number": [], "text": []}
-    column_names = {}  # Dictionary to store column names and their corresponding tables
+
     if len(unique_tables) == 1:
         table = unique_tables[0]
         for col_name in schema[table]:
             if schema_type[table][col_name] == "number":
-                if alias:
-                    columns["number"].append(f"{alias[0]}.{col_name}")
-                else:
-                    columns["number"].append(col_name)
+                columns["number"].append(
+                    f"{alias[0]}.{col_name}" if alias else col_name
+                )
             elif schema_type[table][col_name] == "text":
-                if alias:
-                    columns["text"].append(f"{alias[0]}.{col_name}")
-                else:
-                    columns["text"].append(col_name)
-        return columns
+                columns["text"].append(f"{alias[0]}.{col_name}" if alias else col_name)
     else:
-        # Collect column names and corresponding tables
+        column_names = {}
         for table in unique_tables:
             for col_name in schema[table]:
                 full_col_name = f"{table}.{col_name}"
-                if col_name not in column_names:
-                    column_names[col_name] = [full_col_name]
-                else:
-                    column_names[col_name].append(full_col_name)
+                column_names.setdefault(col_name, []).append(full_col_name)
 
-        # Iterate through shared column names and create formatted pairs
         for col_name, tables in column_names.items():
-            if len(tables) > 1:
-                formatted_cols = tables
-                if schema_type[tables[0].split(".")[0]][col_name] == "number":
-                    columns["number"].extend(formatted_cols)
-                else:
-                    columns["text"].extend(formatted_cols)
-            else:
-                table, col_name = tables[0].split(".")
-                if schema_type[table][col_name] == "number":
-                    columns["number"].append(col_name)
-                elif schema_type[table][col_name] == "text":
-                    columns["text"].append(col_name)
-        return columns
+            formatted_cols = tables if len(tables) > 1 else [tables[0].split(".")[1]]
+            columns[schema_type[tables[0].split(".")[0]][col_name]].extend(
+                formatted_cols
+            )
+
+    return columns
 
 
 def random_not_pk_cols(attributes, unique_tables, pk, number_of_col):
+    """
+    Generate random combinations of non-primary key columns from the given attributes and tables.
+
+    This function is used for getting combinations of non-primary key columns to be used in the GROUP BY clause.
+
+    Args:
+        attributes (dict): Dictionary containing the attributes, with keys "number" and "text" representing different types of columns.
+        unique_tables (list or str or dict): Either a list of tables, a string representing a single table, or a dictionary of table aliases and their corresponding tables.
+        pk (dict): Dictionary mapping tables to their primary key columns.
+        number_of_col (int): The number of columns to include in each combination.
+
+    Returns:
+        list: List of generated random combinations of non-primary key columns.
+
+    Raises:
+        ValueError: If the number of available columns is less than the desired number of columns.
+
+    Examples:
+        >>> attributes = {"number": ["col1", "col2"], "text": ["col3", "col4"]}
+        >>> unique_tables = ["table1", "table2"]
+        >>> pk = {"table1": "pk1", "table2": "pk2"}
+        >>> number_of_col = 2
+        >>> random_not_pk_cols(attributes, unique_tables, pk, number_of_col)
+        [['col1', 'col3'], ['col1', 'col4'], ['col2', 'col3'], ['col2', 'col4']]
+
+        >>> attributes = {"number": ["col1", "col2"], "text": ["col3", "col4"]}
+        >>> unique_tables = "table1"
+        >>> pk = {"table1": "pk1"}
+        >>> number_of_col = 3
+        >>> random_not_pk_cols(attributes, unique_tables, pk, number_of_col)
+        [['col1', 'col2', 'col3'], ['col1', 'col2', 'col4']]
+    """
     all_cols = attributes["number"] + attributes["text"]
+
     if isinstance(unique_tables, list):
         for table in unique_tables:
             if pk[table] in all_cols:
                 all_cols.remove(pk[table])
-            if table + "." + pk[table] in all_cols:
-                all_cols.remove(table + "." + pk[table])
+            if f"{table}.{pk[table]}" in all_cols:
+                all_cols.remove(f"{table}.{pk[table]}")
     elif isinstance(unique_tables, str):
         if pk[unique_tables] in all_cols:
             all_cols.remove(pk[unique_tables])
-
     else:
         for alias_table in unique_tables:
-            if alias_table + "." + pk[unique_tables[alias_table]] in all_cols:
-                all_cols.remove(alias_table + "." + pk[unique_tables[alias_table]])
+            if f"{alias_table}.{pk[unique_tables[alias_table]]}" in all_cols:
+                all_cols.remove(f"{alias_table}.{pk[unique_tables[alias_table]]}")
+
     if len(all_cols) < number_of_col:
-        raise Exception("Sample larger than population")
+        raise ValueError(
+            "Number of available columns is less than the desired number of columns"
+        )
+
     sample_sets = []
     for _ in range(2):
         sample_set = random.sample(all_cols, number_of_col)
         while sample_set in sample_sets:
             sample_set = random.sample(all_cols, number_of_col)
-
         sample_sets.append(sample_set)
 
     return sample_sets
 
 
-# Generate combinations for the specified number of columns
-def select_combinations(select_statement_types, num_columns):
-    combinations = []
+def select_combinations(elements_list, num_combinations):
+    """
+    Generate unique combinations of elements from the provided list.
 
-    for combination in itertools.product(select_statement_types, repeat=num_columns):
-        combinations.append(combination)
+    Args:
+        elements_list (list): List of elements.
+        num_combinations (int): Number of elements in each combination.
 
-    unique_combinations = set()
+    Returns:
+        list: List of unique combinations of elements.
 
-    for combination in combinations:
-        # Sort the combination to make it consistent and eliminate duplicates
-        sorted_combination = tuple(sorted(combination))
-        unique_combinations.add(sorted_combination)
+    Examples:
+        >>> elements_list = ["A", "B", "C"]
+        >>> num_combinations = 2
+        >>> select_combinations(elements_list, num_combinations)
+        [['A', 'A'], ['A', 'B'], ['A', 'C'], ['B', 'B'], ['B', 'C'], ['C', 'C']]
 
-    # Convert the unique_combinations set back to a list of tuples
-    select_combinations_list = [
-        list(combination) for combination in unique_combinations
-    ]
-
-    return select_combinations_list
+        >>> elements_list = ["A", "B"]
+        >>> num_combinations = 3
+        >>> select_combinations(elements_list, num_combinations)
+        [['A', 'A', 'A'], ['A', 'A', 'B'], ['A', 'B', 'B'], ['B', 'B', 'B']]
+    """
+    combinations = list(itertools.product(elements_list, repeat=num_combinations))
+    unique_combinations = {tuple(sorted(combination)) for combination in combinations}
+    return [list(combination) for combination in unique_combinations]
 
 
 def print_attributes(**kwargs):
+    """
+    Print the key-value pairs of the provided attributes.
+
+    Args:
+        **kwargs: Key-value pairs of attributes.
+
+    Examples:
+        >>> print_attributes(name="John", age=30, city="New York")
+        name: John
+        age: 30
+        city: New York
+
+        >>> print_attributes(color="blue", size="large")
+        color: blue
+        size: large
+    """
     for key, value in kwargs.items():
         print(f"{key}: {value}")
     print()

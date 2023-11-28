@@ -7,7 +7,6 @@ from helper_funcs import create_graph_from_schema
 # TODO self join
 
 
-# docstring
 def get_max_joins_and_join_definitions(schema, fk):
     """
     Get the maximum number of joins possible and the join definitions.
@@ -20,7 +19,34 @@ def get_max_joins_and_join_definitions(schema, fk):
 
 def find_max_joins(join_definitions):
     """
-    Find the maximum number of joins possible."""
+    Find the maximum number of joins possible.
+
+    Args:
+        join_definitions (list): List of join definitions.
+
+    Returns:
+        int: The maximum number of joins possible.
+
+    Examples:
+        >>> join_definitions = [
+        ...     {"table1": "A", "table2": "B"},
+        ...     {"table1": "B", "table2": "C"},
+        ...     {"table1": "C", "table2": "D"},
+        ...     {"table1": "E", "table2": "F"},
+        ... ]
+        >>> find_max_joins(join_definitions)
+        3
+
+        >>> join_definitions = [
+        ...     {"table1": "A", "table2": "B"},
+        ...     {"table1": "C", "table2": "D"},
+        ...     {"table1": "E", "table2": "F"},
+        ...     {"table1": "G", "table2": "H"},
+        ...     {"table1": "I", "table2": "J"},
+        ... ]
+        >>> find_max_joins(join_definitions)
+        1
+    """
     G = nx.Graph()
     for join in join_definitions:
         table1 = join["table1"]
@@ -29,26 +55,47 @@ def find_max_joins(join_definitions):
     return max(len(component) - 1 for component in nx.connected_components(G))
 
 
-def generate_connections(join_definitions, num_joins):
+def generate_connections(join_definitions, num_tables):
     """
-    Generate connections between tables based on the number of joins."""
+    Generate connections between tables based on the number of joins.
+
+    Args:
+        join_definitions (list): List of join definitions.
+        num_tables (int): Number of tables for join to generate connections for.
+
+    Returns:
+        list: List of connections between tables.
+
+    Examples:
+        join_definitions = [
+        ...     {"table1": "farm_competition", "table2": "city", "first_key": "Host_city_ID", "second_key": "City_ID"},
+        ...     {"table1": "farm_competition", "table2": "competition_record", "first_key": "Competition_ID", "second_key": "Competition_ID"},
+        ...     {"table1": "competition_record", "table2": "farm", "first_key": "Farm_ID", "second_key": "Farm_ID"},
+        ... ]
+        >>> generate_connections(join_definitions, 3)
+        [['farm_competition', 'city', 'Host_city_ID', 'City_ID', 'farm_competition', 'competition_record', 'Competition_ID', 'Competition_ID'], ['farm_competition', 'competition_record', 'Competition_ID', 'Competition_ID', 'competition_record', 'farm', 'Farm_ID', 'Farm_ID']]
+        >>> join_definitions = [
+        ...     {"table1": "farm_competition", "table2": "city", "first_key": "Host_city_ID", "second_key": "City_ID"},
+        ...     {"table1": "farm_competition", "table2": "competition_record", "first_key": "Competition_ID", "second_key": "Competition_ID"},
+        ...     {"table1": "competition_record", "table2": "farm", "first_key": "Farm_ID", "second_key": "Farm_ID"},
+        ... ]
+        >>> generate_connections(join_definitions, 2)
+        [['farm_competition', 'city', 'Host_city_ID', 'City_ID'], ['farm_competition', 'competition_record', 'Competition_ID', 'Competition_ID'], ['competition_record', 'farm', 'Farm_ID', 'Farm_ID']]
+
+    """
     G = nx.Graph()
-    for join in join_definitions:
-        table1 = join["table1"]
-        table2 = join["table2"]
-        G.add_edge(table1, table2)
+    G.add_edges_from((join["table1"], join["table2"]) for join in join_definitions)
 
     connections = []
-    for combination in itertools.combinations(G.nodes, num_joins):
+    for combination in itertools.combinations(G.nodes, num_tables):
         subgraph = G.subgraph(combination)
         if nx.is_connected(subgraph):
-            connection = []
-            for join in join_definitions:
-                if join["table1"] in combination and join["table2"] in combination:
-                    connection.append(join["table1"])
-                    connection.append(join["table2"])
-                    connection.append(join["first_key"])
-                    connection.append(join["second_key"])
+            connection = [
+                join[key]
+                for join in join_definitions
+                if join["table1"] in combination and join["table2"] in combination
+                for key in ("table1", "table2", "first_key", "second_key")
+            ]
             connections.append(connection)
 
     return connections
@@ -57,17 +104,33 @@ def generate_connections(join_definitions, num_joins):
 def generate_join_query(schema, fk, join_types, random_choice=False):
     """
     Generate SQL join queries based on the specified number of joins and join types.
+
+    Args:
+        schema (str): The schema for the join queries.
+        fk (str): The foreign key for the join queries.
+        join_types (list): List of join types.
+        random_choice (bool, optional): Whether to select a random connection. Defaults to False.
+
+    Returns:
+        list: List of generated join queries.
+
+    Examples:
+        >>> schema = #
+        >>> fk = #
+        >>> join_types = ["INNER JOIN",]
+        >>> generate_join_query(schema, fk, join_types, random_choice=False)
+        [[' FROM table1 INNER JOIN table2 ON table1.key = table2.key', ['table1', 'table2']]]
+
     """
+    num_joins = len(join_types)
     join_definitions = create_graph_from_schema(schema, fk)
-    # max_num_joins = find_max_joins(join_definitions)
-    connections = generate_connections(join_definitions, int(num_joins) + 1)
+    connections = generate_connections(join_definitions, num_joins + 1)
 
     if random_choice:
         connections = [random.choice(connections)]
 
     queries = []
-    for i, connection in enumerate(connections):
-        print(i)
+    for connection in connections:
         tables = connection[::4]  # Extract table names
         join_conditions = []
         unique_tables = set()  # Use a set to ensure unique table names
@@ -100,6 +163,30 @@ def generate_meaningless_join(
 ):
     """
     Generate meaningless SQL join queries based on the specified number of joins and join types.
+
+    Args:
+        schema (dict): Dictionary representing the schema with table names as keys and column names as values.
+        num_joins (int): Number of joins to generate in each query.
+        join_types (list): List of join types.
+        num_queries (int, optional): Number of queries to generate. Defaults to 5.
+        random_choice (bool, optional): Whether to select a random connection. Defaults to False.
+
+    Returns:
+        list: List of generated join queries.
+
+    Raises:
+        ValueError: If the number of joins is less than 1 or there are not enough tables to perform the requested number of joins.
+
+    Examples:
+        >>> schema = {
+        ...     "table1": ["col1", "col2"],
+        ...     "table2": ["col3", "col4"],
+        ...     "table3": ["col5", "col6"],
+        ... }
+        >>> num_joins = 1
+        >>> join_types = ["INNER JOIN"]
+        >>> generate_meaningless_join(schema, num_joins, join_types, num_queries=2, random_choice=True)
+        [[' FROM table1 INNER JOIN table2 ON table1.col1 = table2.col3', ['table1', 'table2']], [' FROM table2 INNER JOIN table3 ON table2.col3 = table3.col5', ['table2', 'table3']]]
     """
     if num_joins < 1:
         raise ValueError("The number of joins must be at least 1")
@@ -108,21 +195,21 @@ def generate_meaningless_join(
 
     if len(table_list) < num_joins + 1:
         raise ValueError("Not enough tables to perform the requested number of joins")
+
     temp_queries = []
     if random_choice:
         num_queries = 1
-    # Randomly select tables to join
-    for i in range(num_queries):
+
+    for _ in range(num_queries):
         tables = random.sample(table_list, num_joins + 1)
 
         join_conditions = []
-        unique_tables = set()  # Use a set to ensure unique table names
+        unique_tables = set()
 
         for j in range(num_joins):
             table1 = tables[j]
             table2 = tables[j + 1]
 
-            # Randomly select columns from the tables for joining
             key1 = random.choice(schema[table1])
             key2 = random.choice(schema[table2])
 
@@ -139,8 +226,8 @@ def generate_meaningless_join(
             else:
                 join_clause += f"{table} {join_types[temp_index]} "
                 temp_index += 1
-        on_clause = " AND ".join(join_conditions)
 
+        on_clause = " AND ".join(join_conditions)
         query = f" FROM {join_clause} ON {on_clause}"
         temp_queries.append([query, list(unique_tables)])
 
@@ -231,7 +318,9 @@ fk = {
         "competition_id": ("farm_competition", "competition_id"),
     },
 }
-join_definitions = create_graph_from_schema(schema, fk)
+# join_definitions = create_graph_from_schema(schema, fk)
+# cons = generate_connections(join_definitions, 2)
+# print(cons)
 # print(join_definitions)
 # print(generate_join_query(schema, fk, ["INNER JOIN", "INNER JOIN", "INNER JOIN"]))
 

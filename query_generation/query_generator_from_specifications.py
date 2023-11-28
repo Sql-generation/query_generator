@@ -52,7 +52,7 @@ def query_generator(
             specs = {
                 "farm": {
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
-                        "meaningful_joins": "mixed",
+                        "meaningful_joins": "yes",
                         "table_exp_type": "INNER JOIN",
                         "where_type": "in_with_subquery",
                         "number_of_value_exp_in_group_by": 1,

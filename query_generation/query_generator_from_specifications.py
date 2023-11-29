@@ -63,18 +63,87 @@ def query_generator(
         if specs is None:
             specs = {
                 "farm": {
-                    "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
+                    # You can replace this dict to test with other specifications (uncomment just one of them at a time)
+                    # "82df9c03575efeed739b800cafe054795d6c32be": {
+                    #     "meaningful_joins": "yes",
+                    #     "table_exp_type": "LEFT JOIN_LEFT JOIN",
+                    #     "where_type": {
+                    #         "logical_operator": [
+                    #             "OR",
+                    #             "pattern_matching",
+                    #             "not_exists_subquery",
+                    #         ]
+                    #     },
+                    #     "number_of_value_exp_in_group_by": 5,
+                    #     "having_type": {"single": "COUNT DISTINCT"},
+                    #     "orderby_type": "none",
+                    #     "limit_type": "with_offset",
+                    #     "value_exp_types": ["math_func_exp_alias", "string_func_exp"],
+                    #     "distinct_type": "none",
+                    #     "min_max_depth_in_subquery": [3, 5],
+                    # },
+                    # "c7fe5b98614ce3c630dd7238ca6565a9e64ec1e8": {
+                    #     "meaningful_joins": "mixed",
+                    #     "table_exp_type": "Join_RIGHT JOIN_RIGHT JOIN",
+                    #     "where_type": {
+                    #         "logical_operator": ["AND", "IN", "pattern_matching"]
+                    #     },
+                    #     "number_of_value_exp_in_group_by": 4,
+                    #     "having_type": {"single": "SUM"},
+                    #     "orderby_type": "DESC",
+                    #     "limit_type": "none",
+                    #     "value_exp_types": ["alias_exp", "arithmatic_exp"],
+                    #     "distinct_type": "none",
+                    #     "min_max_depth_in_subquery": [3, 5],
+                    # }
+                    "992ce4c2b42434469200c2af70b2d69bf1bc9213": {
                         "meaningful_joins": "yes",
-                        "table_exp_type": "INNER JOIN",
-                        "where_type": "not_in_with_subquery",
-                        "number_of_value_exp_in_group_by": 1,
-                        "having_type": {"single": "MAX"},
-                        "orderby_type": "ASC",
+                        "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
+                        "where_type": {"null_check": "IS NOT NULL"},
+                        "number_of_value_exp_in_group_by": 3,
+                        "having_type": {"single": "AVG"},
+                        "orderby_type": "number_ASC",
                         "limit_type": "with_offset",
-                        "value_exp_types": ["arithmetic_exp", "string_func_exp"],
-                        "distinct_type": "none",
-                        "min_max_depth_in_subquery": [2, 3],
+                        "value_exp_types": ["agg_exp_alias", "agg_exp_alias"],
+                        "distinct_type": "distinct",
+                        "min_max_depth_in_subquery": [3, 5],
                     },
+                    # "8f3592aea93279425342f18f33ca845dafa2a62e": {
+                    #     "meaningful_joins": "no",
+                    #     "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
+                    #     "where_type": {
+                    #         "logical_operator": [
+                    #             "OR",
+                    #             "basic_comparison",
+                    #             "null_check",
+                    #         ]
+                    #     },
+                    #     "number_of_value_exp_in_group_by": 1,
+                    #     "having_type": {"single": "MIN"},
+                    #     "orderby_type": "number_ASC",
+                    #     "limit_type": "with_offset",
+                    #     "value_exp_types": ["count_distinct_exp", "single_exp"],
+                    #     "distinct_type": "none",
+                    #     "min_max_depth_in_subquery": [3, 5],
+                    # },
+                    # "347daacee4bf0d202ab585bbd588bbc2f86e2b3c": {
+                    #     "meaningful_joins": "yes",
+                    #     "table_exp_type": "INNER JOIN_RIGHT JOIN",
+                    #     "where_type": {
+                    #         "logical_operator": [
+                    #             "AND",
+                    #             "not_in_with_subquery",
+                    #             "comparison_with_subquery",
+                    #         ]
+                    #     },
+                    #     "number_of_value_exp_in_group_by": 0,
+                    #     "having_type": "none",
+                    #     "orderby_type": "DESC",
+                    #     "limit_type": "with_offset",
+                    #     "value_exp_types": "*",
+                    #     "distinct_type": "distinct",
+                    #     "min_max_depth_in_subquery": [3, 5],
+                    # },
                 }
             }
 
@@ -267,8 +336,8 @@ def query_generator(
                 else:
                     continue
 
-            if write_to_csv:
-                write_queries_to_file(merged_queries=merged_queries)
+        if write_to_csv:
+            write_queries_to_file(merged_queries=merged_queries)
 
     print("Done generating queries")
     return merged_queries

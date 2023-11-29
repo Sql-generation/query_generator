@@ -25,6 +25,7 @@ def complete_with_having_clause(
         >>> complete_with_having_clause("SELECT * FROM table GROUP BY col2", {"number": ["col1"], "text": ["col2"]}, ["col1"], "multiple")
         [['SELECT * FROM table GROUP BY col2 HAVING ((MAX(col1) > 50) AND (MIN(col1) < 30))', {'number': ['col1'], 'text': ['col2']}, ['col1']]]
     """
+    print("complete_with_having_clause")
     if having_clauses_types == "none":
         return [[temp_query, attributes, must_have_attributes]]
     elif having_clauses_types == "subquery":

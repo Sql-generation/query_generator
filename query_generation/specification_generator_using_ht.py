@@ -118,6 +118,9 @@ def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
     ] = generate_having_types(
         having_types_with_having_group_by, aggregate_functions_for_having
     )
+    having_types_with_having_group_by = completed_specifications[
+        "having_types_with_having_group_by"
+    ]
 
     having_types_without_having_group_by = ["none"]
     all_value_exp_types = generate_all_value_exp_types(
@@ -295,7 +298,6 @@ def generate_having_types(
 
     if "none" in having_types_with_having_group_by:
         generated_having_types.append("none")
-
     return generated_having_types
 
 

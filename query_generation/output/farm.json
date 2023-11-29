@@ -1,21 +1,49 @@
 {
     "farm": {
-        "b98091d788abdb8e62f9ca82f65786cd414db4a0": {
+        "2cb800877f74d194dc977b41654354fe9f078e8a": {
             "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_Join",
             "where_type": {
                 "logical_operator": [
                     "OR",
                     "pattern_matching",
-                    "exists_subquery"
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "multiple",
             "limit_type": "without_offset",
             "value_exp_types": [
-                "single_exp",
+                "count_distinct_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "cf909d2048610ef9ff8c6f116dc7905e5bf83981": {
+            "meaningful_joins": "no",
+            "table_exp_type": "Join_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "count_distinct_exp",
                 "string_func_exp_alias"
             ],
             "distinct_type": "none",
@@ -24,62 +52,24 @@
                 5
             ]
         },
-        "bd6b62343ad71e9e65b0d8b92aa739e94f5c9439": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN",
-            "where_type": "exists_subquery",
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "f1420b2d2fde379ea3a376e10818c057d346421a": {
+        "dcef298f54c163be2a4515672f96ba5c8bff2c8f": {
             "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN",
+            "table_exp_type": "Join_Join_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
-                    "between",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "156769587d0c603fe5c876e467e4de8bc683c154": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "in_with_subquery"
+                    "IN",
+                    "pattern_matching"
                 ]
             },
             "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "number_ASC",
-            "limit_type": "none",
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "with_offset",
             "value_exp_types": [
+                "math_func_exp_alias",
                 "string_func_exp"
             ],
             "distinct_type": "none",
@@ -88,69 +78,69 @@
                 5
             ]
         },
-        "39aba8e6ff0216563e944e35d3e4171fd83b6a04": {
+        "fa82196a2da052ff58c9cb5dd06f8eae075bc94c": {
             "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_Join",
+            "table_exp_type": "Join_Join_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "comparison_with_subquery"
+                    "OR",
+                    "NOT IN",
+                    "basic_comparison"
                 ]
             },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "none",
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "math_func_exp_alias",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "9e326fef8ad6ab59adb8153813f16be4f6c45b7a": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_RIGHT JOIN",
+            "where_type": {
+                "basic_comparison": "<>"
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "DESC",
             "limit_type": "with_offset",
             "value_exp_types": [
                 "agg_exp_alias",
-                "agg_exp_alias"
+                "string_func_exp"
             ],
-            "distinct_type": "none",
+            "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
                 3,
                 5
             ]
         },
-        "1a0bdc86ca98295de2f50c46766742bd89fff524": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "multiple",
-            "orderby_type": "number_DESC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "e0f074aeb387d42eaf198ce854b8c7568931bae8": {
+        "e17a811a55a623f4f2d39d4251d92e78508cfb84": {
             "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
+            "table_exp_type": "INNER JOIN_INNER JOIN",
             "where_type": {
                 "logical_operator": [
-                    "OR",
+                    "AND",
                     "between",
                     "pattern_matching"
                 ]
             },
-            "number_of_value_exp_in_group_by": 4,
+            "number_of_value_exp_in_group_by": 1,
             "having_type": "multiple",
             "orderby_type": "multiple",
             "limit_type": "none",
             "value_exp_types": [
-                "arithmatic_exp_alias"
+                "arithmatic_exp",
+                "math_func_exp_alias"
             ],
             "distinct_type": "none",
             "min_max_depth_in_subquery": [
@@ -158,22 +148,49 @@
                 5
             ]
         },
-        "b7e7ce8027a28a20262ab1304f630698dacf72c3": {
-            "meaningful_joins": "mixed",
+        "4ab743bb860aaee731f06e9343e4a59a008be056": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "single_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "8f3592aea93279425342f18f33ca845dafa2a62e": {
+            "meaningful_joins": "no",
             "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
+                    "OR",
                     "basic_comparison",
                     "not_exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "single",
-            "orderby_type": "DESC",
-            "limit_type": "none",
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
             "value_exp_types": [
-                "agg_exp_alias",
+                "count_distinct_exp",
                 "single_exp"
             ],
             "distinct_type": "none",
@@ -182,22 +199,320 @@
                 5
             ]
         },
-        "ad0fecab915339c9b498aea74985ba3fc5ab85b6": {
+        "2ff22b693b36f32e7aab1660aa0c4cb5ff850b05": {
             "meaningful_joins": "no",
-            "table_exp_type": "INNER JOIN_RIGHT JOIN",
+            "table_exp_type": "FULL OUTER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "03838811b690caa62713c19193a8f15e1bc1cc1e": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "multiple",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "d6eb47a6cb45192d57ce8f29d87d463a8d8f3a34": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join_LEFT JOIN",
+            "where_type": {
+                "pattern_matching": [
+                    "NOT LIKE",
+                    "does_not_contain_xyz"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "none",
+            "limit_type": "none",
+            "value_exp_types": [
+                "math_func_exp_alias",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "71c0d1233bd786812bc8f06d80f65926de8ee784": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "LEFT JOIN_LEFT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "basic_comparison",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "math_func_exp_alias",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "1a87594fc70d46958a3aedb845e0701fff1ed7b4": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "INNER JOIN_Join_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "none",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "6c8471a645c3372de8fb01291202f48e47924a72": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN_RIGHT JOIN",
+            "where_type": "comparison_with_subquery",
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "none",
+            "limit_type": "none",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "single_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "52edcb495c97cac7f9eeeeaf2b109d6f6ad2f552": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_INNER JOIN_INNER JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
                     "pattern_matching",
-                    "not_exists_subquery"
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "1aff0973b60f826588747bdd0e4eef4ce38f9a7d": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "NOT IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "fede3c944911142291d780843f74118f7fc9871a": {
+            "meaningful_joins": "no",
+            "table_exp_type": "Join_RIGHT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "pattern_matching",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
             "orderby_type": "DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "af9622cd7da036ef7d5c9ed41361b8c8c6e17a23": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_DESC",
             "limit_type": "none",
             "value_exp_types": [
                 "alias_exp",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "c9dd270e32371dd45d6f8c5e477d767b658668ee": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_Join_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "basic_comparison",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": "multiple",
+            "orderby_type": "DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "single_exp",
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "ed70ca59242e87fba606f8799919bc040efb2346": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "null_check",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
+                "string_func_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "d64fbacb9bc9c0743d357463c9d89cf5f3ca0021": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_Join_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
                 "arithmatic_exp_alias"
             ],
             "distinct_type": "none",
@@ -206,9 +521,58 @@
                 5
             ]
         },
-        "fe9d156eb42b25de013018e43bb4e123872d5052": {
+        "db2d5ab6980c320d3874ed862f933ccdf55776c1": {
             "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_Join",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
+            "where_type": {
+                "pattern_matching": [
+                    "LIKE",
+                    "does_not_contain_xyz"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "26fa35cfd486f9f118263b14d63400c89011fb70": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "INNER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "comparison_with_subquery",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "9f7b963c03e780636efc47b4f6dbb9e802259b9c": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
@@ -216,180 +580,13 @@
                     "NOT IN"
                 ]
             },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "none",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "11f4080048715fa8d46ffd42c97ebfef72b5d77c": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "IN",
-                    "basic_comparison"
-                ]
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
             },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
             "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "71cb2bca786ea7d45f737f77ba4f3fd7b1f28f00": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "between",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "multiple",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "4cb2d5b409c1dea0e0b2e9d1779aadb427d42304": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "multiple",
             "limit_type": "without_offset",
             "value_exp_types": [
-                "arithmatic_exp",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "8522266c3f64d7c0780af011cf0e6edb6b5a26e9": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "single_table_with_name_changing",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "math_func_exp_alias",
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "064c1501792239cc24a4a6bd1f19c8ebd5c0577c": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "Join_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "between",
-                    "null_check"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "math_func_exp_alias",
-                "single_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "0419ee2d37b7666938d095f49e2fdf02ba3c7323": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "Join",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "779abd3098dcac2916f99c57b4eb8e318c5d5d05": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "multiple",
-            "orderby_type": "number_DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
                 "math_func_exp_alias"
             ],
             "distinct_type": "distinct",
@@ -398,22 +595,22 @@
                 5
             ]
         },
-        "adfd329328300bfc1fef0a2c58caa52bd4bdee38": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "single_table_with_name_changing",
+        "c41433588ad9ca795cadef17c027ba3dd49ff1d7": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_Join",
             "where_type": {
                 "logical_operator": [
                     "AND",
-                    "comparison_with_subquery",
-                    "not_exists_subquery"
+                    "pattern_matching",
+                    "exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
             "limit_type": "none",
             "value_exp_types": [
-                "agg_exp_alias",
+                "alias_exp",
                 "alias_exp"
             ],
             "distinct_type": "distinct",
@@ -422,70 +619,48 @@
                 5
             ]
         },
-        "807f2ce27f577eb340954aece29d046e5ec6e984": {
-            "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "math_func_exp_alias",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "ac31d12a184efb11235f57ddc7c51f143681e762": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "RIGHT JOIN",
+        "4813c5c7d5c4c89f8ccc15d043ef47bc99794241": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
-                    "pattern_matching",
-                    "exists_subquery"
+                    "basic_comparison",
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 2,
+            "number_of_value_exp_in_group_by": 5,
             "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "24f2aa9034264f608bf7e84ed76d93ac13554449": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "none",
-            "orderby_type": "DESC",
+            "orderby_type": "none",
             "limit_type": "with_offset",
             "value_exp_types": [
                 "arithmatic_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4268a88003971f560f1550677d48ff3bbe4724fe": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "between",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
                 "string_func_exp"
             ],
             "distinct_type": "none",
@@ -494,20 +669,415 @@
                 5
             ]
         },
-        "07caebc5687f1fe461f6af7bc4ee374cb648178a": {
+        "199235dd8ff069664a81db47894b2633ec28e77c": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "none",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "6705b2de424ec9ced9e287cf1aeb9f07288b415d": {
             "meaningful_joins": "mixed",
             "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
+                    "OR",
+                    "NOT IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "none",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "a4b7ec5feabda7e757618a8256e19614240e3832": {
+            "meaningful_joins": "no",
+            "table_exp_type": "INNER JOIN_INNER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
                     "basic_comparison",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "078e83383369a4b3d2098f41bcaf96974dceae96": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "between",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "none",
+            "limit_type": "none",
+            "value_exp_types": [
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "f1192a0530fa2942abfb6e3e4e47249f989cb2f1": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_INNER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "basic_comparison",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "6a4dee6273327c8b0f89e8f11075d20f04c17230": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "NOT IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "966b4ff349d28bba53a47b790653c6af203e7850": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "Join_Join_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "NOT IN",
+                    "null_check"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4a0c99d25aa1a438fa2b9b6a88a3799b82558aa4": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "Join_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "none",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "51639ca43db50259522118b03814bc2296c0da1f": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "comparison_with_subquery",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": "none",
+            "orderby_type": "none",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "d3ec64a068eaa60238bf832949f71553d79a41f2": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_FULL OUTER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
                     "not_exists_subquery"
                 ]
             },
             "number_of_value_exp_in_group_by": 1,
-            "having_type": "single",
+            "having_type": "multiple",
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "1e5e17f0a196b53c1c44db69198478e83dde0e37": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_Join_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "basic_comparison",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4df2cfb457b4597d72c948f9eb299d6e2563d566": {
+            "meaningful_joins": "no",
+            "table_exp_type": "single_table",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
             "orderby_type": "none",
             "limit_type": "with_offset",
+            "value_exp_types": [
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "161743a090231ac0796e6d71b7782ec1658b4e32": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "basic_comparison",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "a1b58c784e32dbba2237e80f181042fe9766507b": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": "multiple",
+            "orderby_type": "none",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "700dbc3831a7abafa54c2bec310903075377ecf6": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "none",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "264abf7a808d798ab10fbd057604f5637bc71986": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": "none",
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "59d85dccc7d579ef0bd922042a6c4aff2a438578": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "none",
             "value_exp_types": [
                 "math_func_exp_alias",
                 "math_func_exp_alias"
@@ -518,22 +1088,50 @@
                 5
             ]
         },
-        "643bbf92223d6e67a4c441948e97078e6c13c547": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
+        "ebf08b219c8835de20e4071fbc645f8fed49ff57": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_Join_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "OR",
-                    "between",
-                    "null_check"
+                    "AND",
+                    "basic_comparison",
+                    "comparison_with_subquery"
                 ]
             },
             "number_of_value_exp_in_group_by": 4,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "none",
+            "limit_type": "none",
             "value_exp_types": [
                 "agg_exp_alias",
+                "alias_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4109453e57417297b163f6918d8f19296f1af68d": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "none",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
                 "string_func_exp"
             ],
             "distinct_type": "none",
@@ -542,9 +1140,9 @@
                 5
             ]
         },
-        "2e7ae27e2e59867d2d926b0462f6ee2b5e093349": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "Join_RIGHT JOIN",
+        "166d53685345a1fc53adee021bc52f354ca53fe9": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
@@ -552,9 +1150,11 @@
                     "not_exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "none",
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "DESC",
             "limit_type": "none",
             "value_exp_types": [
                 "count_distinct_exp",
@@ -566,71 +1166,25 @@
                 5
             ]
         },
-        "6f4af550c66c38cdf3e49b4d1ae56a3f0b9fcc4d": {
+        "2ce1d5b4d6b38f88f5240967f75366fec7897ede": {
             "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN_LEFT JOIN",
+            "table_exp_type": "INNER JOIN_LEFT JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "pattern_matching",
+                    "basic_comparison",
                     "in_with_subquery"
                 ]
             },
             "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "number_DESC",
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "multiple",
             "limit_type": "none",
             "value_exp_types": [
-                "string_func_exp",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "772fcc85bd704548daa9f5b82bf607a1b566450c": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "between",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "arithmatic_exp_alias",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "ecf80cf691acebb560f7a72455e396486164c0a3": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "count_distinct_exp"
+                "arithmatic_exp",
+                "arithmatic_exp_alias"
             ],
             "distinct_type": "none",
             "min_max_depth_in_subquery": [
@@ -638,22 +1192,22 @@
                 5
             ]
         },
-        "aff84656226f915c2c22dfd11e0c087161a99348": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "Join_LEFT JOIN",
+        "191a4b76c67d3a9f6afb49030bb287e7f9d96eef": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "not_exists_subquery"
+                    "AND",
+                    "NOT IN",
+                    "basic_comparison"
                 ]
             },
             "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
             "orderby_type": "none",
-            "limit_type": "without_offset",
+            "limit_type": "none",
             "value_exp_types": [
-                "alias_exp",
+                "arithmatic_exp_alias",
                 "string_func_exp"
             ],
             "distinct_type": "distinct",
@@ -662,307 +1216,114 @@
                 5
             ]
         },
-        "04e1a7843b7ed4579010930d445041437198e1c6": {
-            "meaningful_joins": "no",
-            "table_exp_type": "single_table_with_name_changing",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "arithmatic_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "4758e594a668abe5ef0a6344cdec3241329853b7": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_Join",
+        "d8b2286ff052d0d74a5638372395e29ef32be031": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "RIGHT JOIN_RIGHT JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
                     "basic_comparison",
-                    "not_exists_subquery"
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "single",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "8e4d4029e64f035ea63b77256b77bd2f6a19603f": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
+            "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "6f5b9869ce0f1f52b01e458d2b7e3173b2eb37a6": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "comparison_with_subquery",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "agg_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "6006ec0b0c6ca1431f61e824235331995ce1d814": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
             "orderby_type": "DESC",
             "limit_type": "without_offset",
             "value_exp_types": [
-                "count_distinct_exp",
+                "single_exp",
                 "string_func_exp"
             ],
-            "distinct_type": "none",
+            "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
                 3,
                 5
             ]
         },
-        "e8b7ce08d8efa0fec78eee7e9dd9f7b7ddf8b611": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "single",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "alias_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "1db042cb4836b13068edf3d36d2b556a8b6c418b": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "arithmatic_exp_alias",
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "400e1046b843496a9a5b5f4d55088e713d76a1d8": {
+        "3c4e549afa0dd31e2ee57ecd084d82ecc60f125f": {
             "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "single",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "81ca67b6b4b6c86a8fa10257f4b4530c29927c0d": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "number_ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "arithmatic_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "5ad444b0d985cbfb340a0eafaec940138ab4e419": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "string_func_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "f34d00e1e3458c35c3f1da4856cc5d63eaf4d8b5": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "single_table_with_name_changing",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "number_DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "arithmatic_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "f3c4a14e93bdbb4ec6da27084a6cc0d7a24ee59d": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "7124d4404a57dfc25dbb108d8f7f49708c63bde8": {
-            "meaningful_joins": "yes",
             "table_exp_type": "RIGHT JOIN_RIGHT JOIN",
             "where_type": {
+                "basic_comparison": "<"
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "7c3cf36b680ab774a5a974a221c09aedf6ad958c": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_INNER JOIN_LEFT JOIN",
+            "where_type": {
                 "logical_operator": [
                     "OR",
-                    "pattern_matching",
-                    "exists_subquery"
+                    "IN",
+                    "basic_comparison"
                 ]
             },
-            "number_of_value_exp_in_group_by": 4,
+            "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
-            "orderby_type": "multiple",
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": "*",
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "bbf5c5f96df83d1937c8b5b54a6d3f0234ba798f": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_Join_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "null_check",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "ASC",
             "limit_type": "none",
             "value_exp_types": [
-                "count_distinct_exp",
+                "math_func_exp_alias",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "dad2297547c7f51cc1decf70d10db199e931a4ea": {
+            "meaningful_joins": "no",
+            "table_exp_type": "INNER JOIN_LEFT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "single_exp",
                 "single_exp"
             ],
             "distinct_type": "none",
@@ -971,160 +1332,47 @@
                 5
             ]
         },
-        "0004217bc21f09c97dd5a0ced959ba10710985ea": {
-            "meaningful_joins": "no",
-            "table_exp_type": "INNER JOIN_LEFT JOIN",
-            "where_type": "in_with_subquery",
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "single_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "99a47d62de2bc2f739a272eaff1299bf7d857b86": {
+        "514476b6c0164c476378f73dbdf239909d00b639": {
             "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
-                    "IN",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "DESC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "e0e7cc2be1297a54ef20e08587d0601881e71b3f": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
+                    "OR",
                     "between",
                     "basic_comparison"
                 ]
             },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "none",
-            "limit_type": "none",
-            "value_exp_types": [
-                "string_func_exp",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "4b9fcc4b7bd5ef06e5ae1cfb103843a78105c46f": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "COUNT DISTINCT"
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "5e02851c9c6d29e8579fdedb983b9c43ace371ed": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "ca04ed5a528f0d196b95b514e8352894d75d7519": {
-            "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "none",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "arithmatic_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "5e61c5f9d39905c8e7322cf49b27584a54426132": {
-            "meaningful_joins": "no",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "IN",
-                    "NOT IN"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "multiple",
             "orderby_type": "number_DESC",
             "limit_type": "without_offset",
             "value_exp_types": [
-                "alias_exp",
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "064387ec66cdd611a4bda8ef6bc9326bd8892e76": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "LEFT JOIN_RIGHT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": "none",
+            "orderby_type": "multiple",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp_alias",
                 "count_distinct_exp"
             ],
             "distinct_type": "distinct",
@@ -1133,19 +1381,217 @@
                 5
             ]
         },
-        "347daacee4bf0d202ab585bbd588bbc2f86e2b3c": {
+        "8c68b92001f392bb4217cd21bd3acb0da0ef1400": {
             "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_RIGHT JOIN",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "math_func_exp_alias",
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4cac483bf4905e9d47e3acfb9b5f70b29726947e": {
+            "meaningful_joins": "no",
+            "table_exp_type": "LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "NOT IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "single_exp",
+                "single_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "a478f16217f07bc3642d5aa0a73c390f1246211e": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
-                    "pattern_matching",
-                    "comparison_with_subquery"
+                    "between",
+                    "basic_comparison"
                 ]
             },
             "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
             "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "f499537c6b9bca60c2e94a9c0ebd714825a73059": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_Join_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "none",
+            "value_exp_types": [
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "8048bf95a506e6c8b6094f8e8b47828cb8e383cd": {
+            "meaningful_joins": "no",
+            "table_exp_type": "RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "none",
+            "value_exp_types": [
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "13ed77405c05a75ffcf8efb187560ff7d0c978b1": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "agg_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4b43ba8e38600927942fba7c081463ccb78028bb": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_INNER JOIN_RIGHT JOIN",
+            "where_type": {
+                "pattern_matching": [
+                    "LIKE",
+                    "ends_with_ing"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": "multiple",
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "4309aadba5bb8ca1be0c73c36f2ea84d0dd88c16": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "single_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "188923e156368cb7b37b000d268f97916b886a56": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "Join_Join_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "pattern_matching",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": "multiple",
+            "orderby_type": "number_DESC",
             "limit_type": "with_offset",
             "value_exp_types": "*",
             "distinct_type": "distinct",
@@ -1154,21 +1600,22 @@
                 5
             ]
         },
-        "7d2b78fd8e573164e51e99d65df2cdd2c2f8e8db": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN",
+        "ea5b8e143f9849f3f9abb6d6ccadaa276ea2bdf5": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_INNER JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
-                    "between",
-                    "pattern_matching"
+                    "OR",
+                    "pattern_matching",
+                    "exists_subquery"
                 ]
             },
             "number_of_value_exp_in_group_by": 2,
             "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
+            "orderby_type": "ASC",
+            "limit_type": "with_offset",
             "value_exp_types": [
+                "agg_exp_alias",
                 "alias_exp"
             ],
             "distinct_type": "distinct",
@@ -1177,45 +1624,48 @@
                 5
             ]
         },
-        "004cbaf126fe8f4c6dc5fd4028f35f2fc6a7492c": {
-            "meaningful_joins": "no",
-            "table_exp_type": "RIGHT JOIN_RIGHT JOIN",
+        "e769ce1cc3a9ae3db328435e233f96fcb48d59ba": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
                     "NOT IN",
-                    "comparison_with_subquery"
+                    "pattern_matching"
                 ]
             },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
             "value_exp_types": [
-                "string_func_exp_alias",
-                "string_func_exp_alias"
+                "agg_exp_alias",
+                "single_exp"
             ],
-            "distinct_type": "distinct",
+            "distinct_type": "none",
             "min_max_depth_in_subquery": [
                 3,
                 5
             ]
         },
-        "df67ed5b641db2a82e8247ab02a7d2b469324782": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_LEFT JOIN",
+        "910cb039e9569611d985239492a2334049622a8a": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_FULL OUTER JOIN",
             "where_type": {
-                "pattern_matching": [
-                    "NOT LIKE",
-                    "exactly_5_characters"
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "multiple",
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "DESC",
             "limit_type": "none",
             "value_exp_types": [
-                "alias_exp",
+                "arithmatic_exp",
                 "string_func_exp_alias"
             ],
             "distinct_type": "none",
@@ -1224,21 +1674,48 @@
                 5
             ]
         },
-        "beb714bc82f6a49b84938476daa1164dabcc3f44": {
+        "c6e4fd5836160bdec822c405c830535b3acfb715": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "string_func_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "04a15e5ea8e1bdd5905aee34a66798da02b34a8c": {
             "meaningful_joins": "yes",
-            "table_exp_type": "Join",
+            "table_exp_type": "INNER JOIN_Join_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "null_check",
-                    "comparison_with_subquery"
+                    "basic_comparison",
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "multiple",
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
+            },
             "orderby_type": "number_DESC",
-            "limit_type": "none",
+            "limit_type": "without_offset",
             "value_exp_types": [
+                "count_distinct_exp",
                 "count_distinct_exp"
             ],
             "distinct_type": "distinct",
@@ -1247,19 +1724,350 @@
                 5
             ]
         },
-        "d10652c6476afb5389fa895aa352321def67a241": {
+        "ff58539a7510c459c0a37aa38289e2b12c99f0ed": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "Join_Join_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "basic_comparison",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "369679f0a845029c3850e38680d6737150fea15b": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "NOT IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "fdbd6cf83d31a5cb101cd30d2b0101e6434f4e92": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "basic_comparison",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "MAX"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "31f633325ae0ac78ac8d5c0a48eae79e4e26df28": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "null_check",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "0a114de7b3c068246ffa95b910c97ddda1b9cd8e": {
+            "meaningful_joins": "no",
+            "table_exp_type": "Join_LEFT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "basic_comparison",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "b77d06c5fa11dd275f8e83c4935de0ec0399dfb7": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_RIGHT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "between",
+                    "not_exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 0,
+            "having_type": "none",
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "8c772ba6a7afee1a43e0bc530f21e87bf2c336af": {
+            "meaningful_joins": "no",
+            "table_exp_type": "INNER JOIN_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "pattern_matching": [
+                    "NOT LIKE",
+                    "ends_with_ing"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": "none",
+            "orderby_type": "number_ASC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "count_distinct_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "75445cb6866da67ed9d0299e9a9e83643b8f4790": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_INNER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "NOT IN",
+                    "null_check"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "arithmatic_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "72efded9a4ef7449d23e05c61640b53d75c6b248": {
+            "meaningful_joins": "no",
+            "table_exp_type": "Join_Join_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "null_check",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "string_func_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "acb5b28a697c9bed41331d17d90876d47e77fd71": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "Join_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": "none",
+            "orderby_type": "DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "single_exp",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "9c197f4327d3b21f319c49f1eddc4e305b0ac142": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "basic_comparison",
+                    "comparison_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "alias_exp",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "ccb7a02d75e901d539ddf697c6cccfcc2b5b4620": {
+            "meaningful_joins": "no",
+            "table_exp_type": "FULL OUTER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "OR",
+                    "between",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "single_exp",
+                "string_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "74f2d4fc5c036501594ce36ba5c80405d994e181": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_LEFT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "pattern_matching",
+                    "in_with_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "alias_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "8198610da3156a7ccd4ad5a353ba30056ba855b1": {
             "meaningful_joins": "mixed",
             "table_exp_type": "LEFT JOIN_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "basic_comparison",
-                    "exists_subquery"
+                    "between",
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "single",
-            "orderby_type": "DESC",
+            "number_of_value_exp_in_group_by": 2,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "number_DESC",
             "limit_type": "without_offset",
             "value_exp_types": [
                 "agg_exp_alias"
@@ -1270,23 +2078,48 @@
                 5
             ]
         },
-        "ec89470747b7384ec29da9e558b31d3f1ec0184a": {
+        "1f245461cc69eaad7f2946c8a44685d43c412c0c": {
             "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
             "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "IN",
-                    "comparison_with_subquery"
+                "pattern_matching": [
+                    "LIKE",
+                    "ends_with_ing"
                 ]
             },
             "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "ASC",
+            "having_type": "multiple",
+            "orderby_type": "number_DESC",
             "limit_type": "without_offset",
             "value_exp_types": [
-                "arithmatic_exp_alias",
-                "string_func_exp"
+                "arithmatic_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "aa33c457a3386bbf91cc7db8ab65949ca8163260": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "basic_comparison"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "MIN"
+            },
+            "orderby_type": "none",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "arithmatic_exp",
+                "math_func_exp_alias"
             ],
             "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
@@ -1294,19 +2127,19 @@
                 5
             ]
         },
-        "ea956023fbaa123697c0d3bdaf93284e04e9e308": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_Join",
+        "0ffa8cb10afff61d74f4767b6cf094375dfbed53": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "INNER JOIN_LEFT JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "not_exists_subquery"
+                    "OR",
+                    "between",
+                    "pattern_matching"
                 ]
             },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
-            "orderby_type": "ASC",
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": "multiple",
+            "orderby_type": "multiple",
             "limit_type": "with_offset",
             "value_exp_types": [
                 "arithmatic_exp_alias",
@@ -1318,223 +2151,9 @@
                 5
             ]
         },
-        "904599e3eea3c76a42de672b4703c316c4facbae": {
-            "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "null_check",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "none",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "34b5c8dc8f180cc14e030ff2cbc42d536d9a1f59": {
+        "1fd7e37d027514f7173269a6d3e86bf48c0eec6c": {
             "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "between",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "081fee10595761380246ecb781e1b3b48fd27bc6": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "null_check",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "DESC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "single_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "347df5bc95c072301029bcad7abf98e91c4f52af": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "null_check",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "5a5554ca9414da9560afbb1866c1c5d42081eb2f": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "null_check",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "none",
-            "orderby_type": "multiple",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "c9e9fd1617a9332b32c2e9754c34d4bb074e9a04": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "single",
-            "orderby_type": "multiple",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "b2b6e7c59d41fd0e7c56c59c22203b7ca2f1dfb8": {
-            "meaningful_joins": "no",
-            "table_exp_type": "Join_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "number_ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "278894568f2f398eabc6f353210e7fb6f1f01192": {
-            "meaningful_joins": "no",
-            "table_exp_type": "RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "multiple",
-            "orderby_type": "multiple",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "single_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "7282b5bf5edbfc770cf7e043524c8bd601feca11": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "b1c12e9417f26176a1b6578496e59ea600b929c7": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "RIGHT JOIN",
+            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_Join",
             "where_type": {
                 "logical_operator": [
                     "OR",
@@ -1542,13 +2161,12 @@
                     "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
+            "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
+            "orderby_type": "number_DESC",
+            "limit_type": "none",
             "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp_alias"
+                "arithmatic_exp"
             ],
             "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
@@ -1556,20 +2174,46 @@
                 5
             ]
         },
-        "3104f23e06881de431a737e42620f2ad75c2ce5b": {
+        "3bd486e180253ff9165a61f0f119b611d5f714ab": {
+            "meaningful_joins": "no",
+            "table_exp_type": "INNER JOIN_INNER JOIN_INNER JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "null_check",
+                    "exists_subquery"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
+            "value_exp_types": [
+                "count_distinct_exp",
+                "math_func_exp_alias"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "147ced0046194810e464b14cce7011354ce3c455": {
             "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
+            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "IN",
-                    "basic_comparison"
+                    "basic_comparison",
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": "none",
+            "orderby_type": "number_DESC",
+            "limit_type": "none",
             "value_exp_types": [
                 "string_func_exp",
                 "string_func_exp"
@@ -1580,254 +2224,22 @@
                 5
             ]
         },
-        "11078c912f0ee19c3b48473b30b1911c783ef9e0": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "LEFT JOIN",
+        "ddc986dbe93fce5ad61fa613aa6f50d8a877c5d3": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "INNER JOIN_INNER JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
+                    "OR",
                     "pattern_matching",
                     "comparison_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "multiple",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "arithmatic_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "9cf5182e28589fe0f2f6ff2bf7cf5c44a42052cc": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "IN",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "8f1f16b24614a2a41724b4d0b1d977673a4a5618": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "null_check",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
+            "number_of_value_exp_in_group_by": 4,
             "having_type": "none",
             "orderby_type": "number_ASC",
-            "limit_type": "without_offset",
+            "limit_type": "with_offset",
             "value_exp_types": [
                 "arithmatic_exp_alias",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "899cc11560d4fe9cdf6be31a30bd2c371986bb71": {
-            "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "none",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "b153ca5518b548c7a2b6cf3c7168e4f6266d85a1": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "single_table_with_name_changing",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "multiple",
-            "orderby_type": "number_DESC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "37cee656cdb08dc488886b40601d50e755f72c07": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "Join_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "2e62daaa10cb09f6b212c52d097b69b35d4e11f3": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "between",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "none",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "ba04c2ff3f86aef9e69fc405a0c9d3ff38580799": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "string_func_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "67cdff5ab25079eed0a63e957918e5d0600fbedd": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "NOT IN",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "8543b854228cf1dc92bd164ed6f78968fcc8e2bd": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN",
-            "where_type": {
-                "basic_comparison": "<="
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "single",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
-                "arithmatic_exp_alias",
-                "math_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "4c9626762d318cd9822804f0dbd42c80f7bcd601": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
                 "count_distinct_exp"
             ],
             "distinct_type": "distinct",
@@ -1836,353 +2248,47 @@
                 5
             ]
         },
-        "9121bf6ae80f1af6732a4c060e5d290c7aa73e73": {
+        "82df9c03575efeed739b800cafe054795d6c32be": {
             "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "pattern_matching",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "none",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "97fb777d3e2ed0e6af640d00224a23ed748a3c10": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "none",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
-                "alias_exp",
-                "arithmatic_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "affde296ed42ce69899386e6617c81c6bccc8dcc": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "basic_comparison",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "1f5ba234a86d29691db1ac5e0faf5687a499fbc9": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "Join_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "null_check",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 0,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "3b66b28f5b715eef5300ad5b11f4e4106d7224e9": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "null_check",
-                    "comparison_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "d95fc8c99adf35c7bc7c093916660b0810d7e0d6": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "ASC",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "count_distinct_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "a389757a05a611a1d72a3a28495c52deb2393c2f": {
-            "meaningful_joins": "no",
-            "table_exp_type": "INNER JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "pattern_matching",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "agg_exp_alias",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "7ad92f046a098ce5b71158bbc3b761c16d600af4": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "string_func_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "7938ca130cbc935fe40028a16cacbe47b227b439": {
-            "meaningful_joins": "no",
             "table_exp_type": "LEFT JOIN_LEFT JOIN",
             "where_type": {
-                "basic_comparison": ">"
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "single",
-            "orderby_type": "multiple",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "count_distinct_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "c971b34d28b9742512b0b722cbc8f00b6c47f19d": {
-            "meaningful_joins": "no",
-            "table_exp_type": "INNER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "not_exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "multiple",
-            "orderby_type": "none",
-            "limit_type": "without_offset",
-            "value_exp_types": [
-                "count_distinct_exp",
-                "single_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "032e1883527d9d3e350beae10e88dd41c404d498": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "RIGHT JOIN_RIGHT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "single",
-            "orderby_type": "none",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "alias_exp",
-                "arithmatic_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "639b0dffbf75523c79c289f43f514bafd097c40e": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "single",
-            "orderby_type": "DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "arithmatic_exp",
-                "string_func_exp_alias"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "fba82aa9fb4d7fce9682ebf102a5130547520cea": {
-            "meaningful_joins": "no",
-            "table_exp_type": "FULL OUTER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "null_check",
-                    "in_with_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "multiple",
-            "limit_type": "with_offset",
-            "value_exp_types": [
-                "alias_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "70329a72bb4368df3349507bea87bb24e6f09d66": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "INNER JOIN_Join",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "NOT IN",
-                    "pattern_matching"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 5,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "none",
-            "value_exp_types": [
-                "single_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "distinct",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "bfe46b1cd6647e6cb9890084613257abbebca395": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "FULL OUTER JOIN_FULL OUTER JOIN",
-            "where_type": {
                 "logical_operator": [
                     "OR",
                     "pattern_matching",
-                    "in_with_subquery"
+                    "not_exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "without_offset",
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "none",
+            "limit_type": "with_offset",
             "value_exp_types": [
                 "math_func_exp_alias",
-                "single_exp"
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "992ce4c2b42434469200c2af70b2d69bf1bc9213": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
+            "where_type": {
+                "null_check": "IS NOT NULL"
+            },
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "AVG"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
+            "value_exp_types": [
+                "agg_exp_alias",
+                "agg_exp_alias"
             ],
             "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
@@ -2190,22 +2296,25 @@
                 5
             ]
         },
-        "672dc034feb3b04543592c803268dc9da6a86156": {
-            "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
+        "75167f9760372b3653a87e7e04f0bed3429dca3e": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "Join_Join_LEFT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "OR",
-                    "basic_comparison",
-                    "exists_subquery"
+                    "AND",
+                    "pattern_matching",
+                    "in_with_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 1,
-            "having_type": "none",
-            "orderby_type": "number_DESC",
-            "limit_type": "none",
+            "number_of_value_exp_in_group_by": 3,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "ASC",
+            "limit_type": "without_offset",
             "value_exp_types": [
-                "string_func_exp"
+                "alias_exp",
+                "math_func_exp_alias"
             ],
             "distinct_type": "none",
             "min_max_depth_in_subquery": [
@@ -2213,45 +2322,22 @@
                 5
             ]
         },
-        "5912ef8ec21456c2018a5abe86dfa2c62e76a7f3": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "single_table_with_name_changing",
+        "7ab5f0130258966d30de84a682bcdb535d25e531": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "INNER JOIN_Join_Join",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "pattern_matching",
-                    "not_exists_subquery"
+                    "between",
+                    "pattern_matching"
                 ]
             },
             "number_of_value_exp_in_group_by": 0,
             "having_type": "none",
-            "orderby_type": "number_ASC",
-            "limit_type": "with_offset",
+            "orderby_type": "none",
+            "limit_type": "without_offset",
             "value_exp_types": [
-                "string_func_exp",
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "3dcfd6d96760725e0193bb1605327cb4b5e59556": {
-            "meaningful_joins": "mixed",
-            "table_exp_type": "INNER JOIN_INNER JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "AND",
-                    "not_exists_subquery",
-                    "exists_subquery"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 3,
-            "having_type": "single",
-            "orderby_type": "ASC",
-            "limit_type": "none",
-            "value_exp_types": [
+                "alias_exp",
                 "alias_exp"
             ],
             "distinct_type": "none",
@@ -2260,23 +2346,46 @@
                 5
             ]
         },
-        "eaf8a8b9ff838945fcc96c8cc7325395a11c9e21": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "Join_Join",
+        "26bd32238666caba7fdd25730c052a06fd041ba1": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "FULL OUTER JOIN_RIGHT JOIN",
+            "where_type": {
+                "basic_comparison": "="
+            },
+            "number_of_value_exp_in_group_by": 1,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "number_DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "alias_exp",
+                "string_func_exp"
+            ],
+            "distinct_type": "none",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "2859489a7e18b27ea7aa63fd49568d81c12f0128": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "Join_LEFT JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
-                    "AND",
-                    "basic_comparison",
+                    "OR",
+                    "NOT IN",
                     "not_exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "COUNT DISTINCT"
+            },
+            "orderby_type": "number_ASC",
+            "limit_type": "with_offset",
             "value_exp_types": [
-                "arithmatic_exp",
-                "arithmatic_exp"
+                "count_distinct_exp"
             ],
             "distinct_type": "distinct",
             "min_max_depth_in_subquery": [
@@ -2284,46 +2393,25 @@
                 5
             ]
         },
-        "097182ed9b45b3afc0786397563a5e001b937b85": {
+        "ca8e902fecefbc6b5917bb2ea99fd024074c78d9": {
             "meaningful_joins": "no",
-            "table_exp_type": "LEFT JOIN_LEFT JOIN",
-            "where_type": {
-                "logical_operator": [
-                    "OR",
-                    "NOT IN",
-                    "basic_comparison"
-                ]
-            },
-            "number_of_value_exp_in_group_by": 4,
-            "having_type": "single",
-            "orderby_type": "multiple",
-            "limit_type": "none",
-            "value_exp_types": [
-                "string_func_exp"
-            ],
-            "distinct_type": "none",
-            "min_max_depth_in_subquery": [
-                3,
-                5
-            ]
-        },
-        "acdb66e36d2512cd249f590ba3942527f6e76472": {
-            "meaningful_joins": "yes",
-            "table_exp_type": "RIGHT JOIN",
+            "table_exp_type": "RIGHT JOIN_RIGHT JOIN_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "AND",
-                    "NOT IN",
-                    "basic_comparison"
+                    "pattern_matching",
+                    "not_exists_subquery"
                 ]
             },
             "number_of_value_exp_in_group_by": 5,
-            "having_type": "multiple",
-            "orderby_type": "ASC",
-            "limit_type": "none",
+            "having_type": {
+                "single": "COUNT"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "without_offset",
             "value_exp_types": [
-                "arithmatic_exp",
-                "arithmatic_exp_alias"
+                "count_distinct_exp",
+                "count_distinct_exp"
             ],
             "distinct_type": "none",
             "min_max_depth_in_subquery": [
@@ -2331,25 +2419,52 @@
                 5
             ]
         },
-        "5ce9e2ee13de69acecc64a114371c241c046a326": {
-            "meaningful_joins": "no",
-            "table_exp_type": "single_table",
+        "116cd11573dcd3a574f4fb486a0175391266d87b": {
+            "meaningful_joins": "yes",
+            "table_exp_type": "Join_Join_RIGHT JOIN",
             "where_type": {
                 "logical_operator": [
                     "OR",
-                    "between",
-                    "basic_comparison"
+                    "IN",
+                    "not_exists_subquery"
                 ]
             },
-            "number_of_value_exp_in_group_by": 2,
-            "having_type": "multiple",
-            "orderby_type": "DESC",
-            "limit_type": "without_offset",
+            "number_of_value_exp_in_group_by": 5,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "multiple",
+            "limit_type": "with_offset",
             "value_exp_types": [
-                "single_exp",
-                "string_func_exp"
+                "agg_exp_alias"
             ],
             "distinct_type": "distinct",
+            "min_max_depth_in_subquery": [
+                3,
+                5
+            ]
+        },
+        "c7fe5b98614ce3c630dd7238ca6565a9e64ec1e8": {
+            "meaningful_joins": "mixed",
+            "table_exp_type": "Join_RIGHT JOIN_RIGHT JOIN",
+            "where_type": {
+                "logical_operator": [
+                    "AND",
+                    "IN",
+                    "pattern_matching"
+                ]
+            },
+            "number_of_value_exp_in_group_by": 4,
+            "having_type": {
+                "single": "SUM"
+            },
+            "orderby_type": "DESC",
+            "limit_type": "none",
+            "value_exp_types": [
+                "alias_exp",
+                "arithmatic_exp"
+            ],
+            "distinct_type": "none",
             "min_max_depth_in_subquery": [
                 3,
                 5

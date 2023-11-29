@@ -5,7 +5,8 @@
     "single_table",
     "single_table_with_name_changing",
     "join_1",
-    "join_2"
+    "join_2",
+    "join_3"
     
 ],
 "where_clause_types" : [

@@ -46,6 +46,7 @@ def complete_query_with_select(
         is_subquery=is_subquery,
         random_choice=random_choice,
     )
+    print(select_clauses)
     return [
         [
             select_statement + temp_query,
@@ -87,7 +88,14 @@ def generate_select_clause(
         list: The list of select clauses.
     """
     if select_statement_type == "*":
-        return ["SELECT * "]
+        print("select_statement_type == *")
+        return [
+            [
+                "SELECT * ",
+                attributes["number"] + attributes["text"],
+                len(attributes["number"] + attributes["text"]),
+            ]
+        ]
 
     if has_group_by := has_group_by is not False and "GROUP BY" in temp_query:
         return generate_select_clause_with_group_by(

@@ -71,7 +71,7 @@ def query_generator(
                         "having_type": {"single": "MAX"},
                         "orderby_type": "ASC",
                         "limit_type": "with_offset",
-                        "value_exp_types": ["arithmatic_exp", "arithmatic_exp"],
+                        "value_exp_types": ["arithmetic_exp", "string_func_exp"],
                         "distinct_type": "none",
                         "min_max_depth_in_subquery": [2, 3],
                     },

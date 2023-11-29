@@ -15,7 +15,6 @@ from table_expression import create_table_expression
 from where import complete_with_where_clause
 
 
-# Define a function for generating queries
 def query_generator(
     db_name,
     schema,
@@ -33,6 +32,24 @@ def query_generator(
 ):
     """
     Generate queries based on the specifications provided in the specs dictionary.
+
+    Args:
+        db_name (str): The name of the database.
+        schema (dict): The schema of the database.
+        pk (list): The primary key columns.
+        fk (list): The foreign key columns.
+        schema_types (dict): The data types of the schema.
+        specs (dict, optional): The specifications for generating queries. Defaults to None.
+        max_num (int, optional): The maximum number of queries to generate. Defaults to 1000.
+        must_be_in_select (list, optional): The attributes that must be included in the SELECT clause. Defaults to None.
+        must_be_in_where (list, optional): The attributes that must be included in the WHERE clause. Defaults to None.
+        write_to_csv (bool, optional): Whether to write the generated queries to a CSV file. Defaults to True.
+        is_subquery (bool, optional): Whether the generated queries are subqueries. Defaults to False.
+        testing_with_one_spec (bool, optional): Whether to test with one specification. Defaults to False.
+        random_choice (bool, optional): Whether to use random choice for certain query components. Defaults to False.
+
+    Returns:
+        dict: A dictionary containing the generated queries.
     """
     print("Start reading specifications")
 
@@ -43,12 +60,7 @@ def query_generator(
     else:
         print("Testing with one specification")
         print(specs)
-        # Load default specs if none provided
-
-        # Load default specs if none provided
         if specs is None:
-            # TODO change to read from file
-
             specs = {
                 "farm": {
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
@@ -71,22 +83,13 @@ def query_generator(
                     },
                 }
             }
-        # Other specifications...
 
     print("Start generating queries")
-    i = 0
     merged_queries = {}
 
-    # Iterate through the specifications for the given db_name
-    for hash in specs[db_name]:
+    for i, hash in enumerate(specs[db_name]):
         spec = specs[db_name][hash]
 
-        print(spec)
-        print(i)
-        i += 1
-        # spec = list(spec.values())[0]  # Extract values of the dictionary
-
-        # Extract specifications for query components
         table_exp_type = spec["table_exp_type"]
         where_clause_type = spec["where_type"]
         group_by_clause_type = spec["number_of_value_exp_in_group_by"]
@@ -99,7 +102,7 @@ def query_generator(
         min_max_depth_in_subquery = spec["min_max_depth_in_subquery"]
         if is_subquery:
             random_choice = True
-        # Generate Table Expressions
+
         queries_with_attributes = create_table_expression(
             schema,
             pk,
@@ -109,7 +112,7 @@ def query_generator(
             meaningful_joins,
             random_choice=random_choice,
         )
-        random.shuffle(queries_with_attributes)  # Shuffle the queries
+        random.shuffle(queries_with_attributes)
 
         for query_info in queries_with_attributes:
             partial_query, tables, attributes = query_info
@@ -118,7 +121,6 @@ def query_generator(
                 partial_query=partial_query, tables=tables, attributes=attributes
             )
 
-            # Complete Where Clause
             try:
                 partial_query_with_attributes = complete_with_where_clause(
                     schema,
@@ -144,7 +146,6 @@ def query_generator(
                         attributes=attributes,
                     )
 
-                    # Complete Group By Clause
                     try:
                         partial_query_with_attributes = complete_with_group_by_clause(
                             partial_query,
@@ -171,7 +172,7 @@ def query_generator(
                                 attributes=attributes,
                                 must_be_in_select=temp,
                             )
-                            # Complete Having Clause
+
                             must_be_in_select1 = temp.copy()
 
                             partial_query_with_attributes = complete_with_having_clause(
@@ -194,7 +195,6 @@ def query_generator(
                                     must_be_in_select=must_be_in_select1,
                                 )
 
-                                # Complete SELECT Clause
                                 try:
                                     partial_query_with_attributes = (
                                         complete_query_with_select(
@@ -222,7 +222,6 @@ def query_generator(
                                             select_clause=select_clause,
                                         )
 
-                                        # Complete ORDER BY Clause
                                         partial_query = complete_query_with_order_by(
                                             partial_query,
                                             attributes,
@@ -233,7 +232,6 @@ def query_generator(
                                         print("************ ORDER BY ************")
                                         print_attributes(partial_query=partial_query)
 
-                                        # Complete LIMIT & OFFSET
                                         partial_query = complete_query_with_limit(
                                             partial_query, limit_type
                                         )
@@ -242,13 +240,11 @@ def query_generator(
                                         )
                                         print_attributes(partial_query=partial_query)
 
-                                        # Prepare query data for output
                                         query_data = {
                                             "Specification": str(spec),
                                             "Partial Query": partial_query,
                                         }
 
-                                        # Check if the specification already exists in merged_queries
                                         if str(spec) in merged_queries:
                                             merged_queries[str(spec)] += (
                                                 "\n" + partial_query
@@ -268,12 +264,10 @@ def query_generator(
                 print(e)
                 continue
 
-            # Write merged queries to CSV if write_to_csv is True
             if write_to_csv:
                 write_queries_to_file(merged_queries=merged_queries)
 
     print("Done generating queries")
-    # print(merged_queries)
     return merged_queries
 
 
@@ -282,11 +276,7 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-# print(schema)
-# print(pk)
-# print(fk)
-# print(schema_types)
-# Generate queries for 'farm' database
+
 query_generator(
     "farm",
     schema,

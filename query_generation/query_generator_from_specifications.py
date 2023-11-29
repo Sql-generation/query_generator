@@ -66,20 +66,14 @@ def query_generator(
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
                         "meaningful_joins": "yes",
                         "table_exp_type": "INNER JOIN",
-                        "where_type": {
-                            "logical_operator": [
-                                "AND",
-                                "basic_comparison",
-                                "not_in_with_subquery",
-                            ]
-                        },
+                        "where_type": "not_in_with_subquery",
                         "number_of_value_exp_in_group_by": 1,
                         "having_type": {"single": "MAX"},
                         "orderby_type": "ASC",
                         "limit_type": "with_offset",
-                        "value_exp_types": ["count_distinct_exp", "arithmatic_exp"],
+                        "value_exp_types": ["arithmatic_exp", "arithmatic_exp"],
                         "distinct_type": "none",
-                        "min_max_depth_in_subquery": [1, 1],
+                        "min_max_depth_in_subquery": [2, 3],
                     },
                 }
             }
@@ -254,15 +248,24 @@ def query_generator(
 
                                 except Exception as e:
                                     print(e)
-                                    continue
+                                    if random_choice:
+                                        break
+                                    else:
+                                        continue
 
                     except Exception as e:
                         print(e)
-                        continue
+                        if random_choice:
+                            break
+                        else:
+                            continue
 
             except Exception as e:
                 print(e)
-                continue
+                if random_choice:
+                    break
+                else:
+                    continue
 
             if write_to_csv:
                 write_queries_to_file(merged_queries=merged_queries)
@@ -276,7 +279,7 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-
+print(fk)
 query_generator(
     "farm",
     schema,

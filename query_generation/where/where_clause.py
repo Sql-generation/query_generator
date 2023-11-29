@@ -70,7 +70,6 @@ def pattern_matching(colms, details, random_choice):
                     where_cluase = f"{random_text_colm} LIKE {pattern}"
                 else:
                     where_cluase = f"{random_text_colm} NOT LIKE {pattern}"
-                print(where_cluase)
                 return [where_cluase]
         else:
             where_clauses = []
@@ -81,7 +80,6 @@ def pattern_matching(colms, details, random_choice):
                     where_clauses.append(where_cluase)
                     where_cluase = f"{random_text_colm} NOT LIKE {pattern}"
                     where_clauses.append(where_cluase)
-            print(where_clauses)
             return [where_clauses]
 
     if isinstance(details["pattern_matching"], list):
@@ -179,11 +177,8 @@ def logical_operator(
     min_max_depth_in_subquery=None,
     query_generator_func=None,
 ):
-    print(details["logical_operator"])
     if "subquery" in details["logical_operator"][1]:
         print("subquery")
-        print(query_generator_func)
-        print(create_where_clause_func)
         return subquery(
             schema,
             schema_types,
@@ -283,7 +278,6 @@ def create_where_clause(
 ):
     if min_max_depth_in_subquery is None:
         min_max_depth_in_subquery = [0, 0]
-    print(details)
     if "none" in details:
         return ""
     if "basic_comparison" in details:
@@ -380,8 +374,7 @@ def complete_with_where_clause(
         >>> complete_with_where_clause(schema, schema_types, db_name, temp_query, attributes, where_clauses_types, pk, fk, tables)
         [['SELECT * FROM table WHERE ...', {...}]]
     """
-    print("complete_with_where_clause")
-    print(query_generator_func)
+
     if min_max_depth_in_subquery is None:
         min_max_depth_in_subquery = [0, 0]
     try:

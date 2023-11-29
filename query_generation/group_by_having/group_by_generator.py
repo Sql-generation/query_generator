@@ -37,7 +37,6 @@ def complete_with_group_by_clause(
         sample_stes = random_not_pk_cols(
             attributes, unique_tables, pk, number_of_col
         )  # Generate random column combinations
-        print(sample_stes)
         queries = []
         if random_choice:
             sample_stes = [

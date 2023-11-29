@@ -98,10 +98,20 @@ def construct_foreign_keys(db):
     if db["foreign_keys"]:
         counting_tables = []
         pairs = []
+
         for foreign_key in db["foreign_keys"]:
-            local_column_index, local_column_index2 = foreign_key
-            table1, column1 = db["column_names_original"][local_column_index][:2]
-            table2, column2 = db["column_names_original"][local_column_index2][:2]
+            local_column_index = foreign_key[0]
+            local_column_index2 = foreign_key[1]
+
+            table1 = db["table_names_original"][
+                db["column_names_original"][local_column_index][0]
+            ]
+            column1 = db["column_names_original"][local_column_index][1]
+            table2 = db["table_names_original"][
+                db["column_names_original"][local_column_index2][0]
+            ]
+            column2 = db["column_names_original"][local_column_index2][1]
+
             update_list_of_lists(counting_tables, table1)
             update_list_of_lists(counting_tables, table2)
             pairs.append((table1, column1, table2, column2))
@@ -111,16 +121,22 @@ def construct_foreign_keys(db):
         )
 
         for table in sorted_counting_tables:
+            flag = False
             foreign_keys[table[0]] = {}
-            new_pairs = []
+
             for pair in pairs:
                 if pair[0] == table[0]:
+                    flag = True
                     foreign_keys[table[0]][pair[1]] = (pair[2], pair[3])
+                    pairs.remove(pair)
                 elif pair[2] == table[0]:
+                    flag = True
                     foreign_keys[table[0]][pair[3]] = (pair[0], pair[1])
-                else:
-                    new_pairs.append(pair)
-            pairs = new_pairs
+                    pairs.remove(pair)
+
+            if not flag:
+                foreign_keys.pop(table[0])
+
     return foreign_keys
 
 

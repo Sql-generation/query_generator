@@ -96,8 +96,8 @@ def generate_connections(join_definitions, num_tables):
                 if join["table1"] in combination and join["table2"] in combination
                 for key in ("table1", "table2", "first_key", "second_key")
             ]
-            connections.append(connection)
 
+            connections.append(connection)
     return connections
 
 

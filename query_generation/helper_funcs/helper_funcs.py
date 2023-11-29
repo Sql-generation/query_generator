@@ -359,39 +359,49 @@ def generate_arithmetic_expression(attributes, num_parts=None, max_depth=3):
         num_parts = random.randint(1, 2)
 
     arithmetic_expression = []
-    numeric_attributes = attributes["number"]
+
     for i in range(num_parts):
         if max_depth <= 0:
             break
 
         random_part_of_arithmetic_expression = random.choice(
-            [
-                "constant",
-                "column",
-                "arithmetic_expression_with_par",
-            ]
+            ["constant", "column", "arithmetic_expression_with_par"]
         )
+
+        if (
+            max_depth == 1
+            and random_part_of_arithmetic_expression == "arithmetic_expression_with_par"
+        ):
+            random_part_of_arithmetic_expression = random.choice(["constant", "column"])
 
         if random_part_of_arithmetic_expression == "constant":
             random_constant = random.randint(1, 100)
             arithmetic_expression.append(str(random_constant))
 
         elif random_part_of_arithmetic_expression == "column":
-            random_column = random.choice(numeric_attributes)
+            random_column = random.choice(attributes["number"])
+
+            if max_depth == 0:
+                continue
+
             arithmetic_expression.append(
                 generate_column_expression(random_column, attributes, max_depth)
             )
 
         elif random_part_of_arithmetic_expression == "arithmetic_expression_with_par":
             random_number_of_parts = random.randint(2, 3)
+
+            if max_depth == 1:
+                continue
+
             random_arithmetic_expression = generate_arithmetic_expression(
                 attributes, num_parts=random_number_of_parts, max_depth=max_depth - 1
             )
             arithmetic_expression.append(f"({random_arithmetic_expression})")
 
-        if i != num_parts - 1:
-            random_arithmetic_expression = random.choice(["+", "-", "*", "/"])
-            arithmetic_expression.append(random_arithmetic_expression)
+        if i != num_parts - 1 and max_depth > 0:
+            random_arithmetic_operator = random.choice(["+", "-", "*", "/"])
+            arithmetic_expression.append(random_arithmetic_operator)
 
     return " ".join(arithmetic_expression)
 
@@ -430,9 +440,12 @@ def generate_column_expression(column, attributes, max_depth):
     if random_math_func in ["POWER", "ROUND"]:
         return f"{random_math_func}({column},{random.randint(2,5)})"
     random_number_of_parts = random.randint(1, 3)
+    if max_depth == 1:
+        return column
     random_arithmetic_expression = generate_arithmetic_expression(
         attributes, num_parts=random_number_of_parts, max_depth=max_depth - 1
     )
+
     return f"{random_math_func}({random_arithmetic_expression})"
 
 
@@ -527,6 +540,7 @@ def create_graph_from_schema(schema, fk):
     graph = []
     for table in fk:
         fk_for_tables = list(fk[table].keys())
+
         graph.extend(
             {
                 "table1": table,
@@ -536,6 +550,7 @@ def create_graph_from_schema(schema, fk):
             }
             for i, table2_with_key in enumerate(fk[table].values())
         )
+
     return graph
 
 
@@ -567,7 +582,6 @@ def all_colms(schema, schema_type, unique_tables, alias=None):
         {'number': ['alias1.col1', 'alias2.col3'], 'text': ['alias1.col2', 'alias2.col4']}
     """
     columns = {"number": [], "text": []}
-
     if len(unique_tables) == 1:
         table = unique_tables[0]
         for col_name in schema[table]:
@@ -784,5 +798,6 @@ temp_queries = "FROM city JOIN competition_record JOIN farm JOIN farm_competitio
 # print(create_graph_from_schema(schema, fk))
 
 # # Example usage:
-# attributes = {"number": ["col1", "col2", "col3"]}
-# expression = generate_arithmetic_expression(attributes, 1)
+attributes = {"number": ["col1", "col2", "col3"]}
+expression = generate_arithmetic_expression(attributes, 2)
+print(expression)

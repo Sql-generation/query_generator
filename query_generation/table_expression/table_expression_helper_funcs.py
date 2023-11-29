@@ -240,7 +240,6 @@ def handle_join_case(case, schema, fk, schema_types, meaningful_joins, random_ch
             all_columns = all_colms(schema, schema_types, temp[1])
             temp.append(all_columns)
             queries_with_attributes.append(temp)
-    print(queries_with_attributes)
     return queries_with_attributes
 
 

@@ -54,14 +54,20 @@ def query_generator(
                     "202bcaa39cf53a2e4d1aaa0d09b4ad7e74b3dbd6": {
                         "meaningful_joins": "yes",
                         "table_exp_type": "INNER JOIN",
-                        "where_type": "in_with_subquery",
+                        "where_type": {
+                            "logical_operator": [
+                                "AND",
+                                "basic_comparison",
+                                "not_in_with_subquery",
+                            ]
+                        },
                         "number_of_value_exp_in_group_by": 1,
                         "having_type": {"single": "MAX"},
                         "orderby_type": "ASC",
                         "limit_type": "with_offset",
                         "value_exp_types": ["count_distinct_exp", "arithmatic_exp"],
                         "distinct_type": "none",
-                        "min_max_depth_in_subquery": [3, 5],
+                        "min_max_depth_in_subquery": [1, 1],
                     },
                 }
             }

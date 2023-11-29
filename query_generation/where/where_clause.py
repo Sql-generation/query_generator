@@ -2,50 +2,270 @@ import json
 import random
 import string
 
-from helper_funcs import generate_arithmetic_expression, get_attributes_ends_with
+from helper_funcs import (
+    generate_arithmetic_expression,
+    generate_like_pattern,
+    generate_random_words,
+    get_attributes_ends_with,
+)
 
 from .subquery import generate_subquery
 
 
-def all_colms(schema, schema_type, unique_tables):
-    colms = {"number": [], "text": []}
-    for table in unique_tables:
-        for colm in schema[table]:
-            if schema_type[table][colm] == "number":
-                colms["number"].append(table + "." + colm)
-            elif schema_type[table][colm] == "text":
-                colms["text"].append(table + "." + colm)
-    return colms
+def basic_comparison(colms, details, random_choice):
+    if not colms["number"]:
+        raise Exception("There is no number column in the schema")
+    random_numeric_colm = random.choice(colms["number"])
+    if details == "basic_comparison":
+        comparison_operators = ["=", "<>", "!=", ">", "<", ">=", "<="]
+        if random_choice:
+            comparison_operator = random.choice(comparison_operators)
+            return generate_arithmetic_value_exp_for_basic_comparison(
+                colms, random_numeric_colm, comparison_operator
+            )
+        else:
+            where_clauses = []
+            for comparison_operator in comparison_operators:
+                #
+                random_exp = generate_arithmetic_expression(colms)
+
+                where_cluase = (
+                    f" {random_numeric_colm} {comparison_operator} {random_exp}"
+                )
+                where_clauses.append(where_cluase)
+
+            return where_clauses
+
+    comparison_operator = details["basic_comparison"]
+    return generate_arithmetic_value_exp_for_basic_comparison(
+        colms, random_numeric_colm, comparison_operator
+    )
 
 
-def generate_random_words(word_list, num_words):
-    return random.sample(word_list, num_words)
+# TODO Rename this here and in `basic_comparison`
+def generate_arithmetic_value_exp_for_basic_comparison(
+    colms, random_numeric_colm, comparison_operator
+):
+    random_exp = generate_arithmetic_expression(colms)
+
+    where_cluase = f" {random_numeric_colm} {comparison_operator} {random_exp}"
+    return [where_cluase]
 
 
-def generate_like_pattern(criteria):
-    # TODO change it
-    if criteria == "starts_with_a":
-        return "a%"
-    elif criteria == "ends_with_ing":
-        return "%ing"
-    elif criteria == "contains_apple":
-        return "%apple%"
-    elif criteria == "exactly_5_characters":
-        return "_____"
-    elif criteria == "ends_with_at":
-        return "%at%"
-    elif criteria == "does_not_contain_xyz":
-        return "%[^xyz]%"
-    elif criteria == "starts_with_A_or_B":
-        return "[AB]%"
-    elif criteria == "ends_with_ing_or_ed":
-        return "%(ing|ed)"
-    elif criteria == "alphanumeric":
-        return "%[A-Za-z0-9]%"
-    elif criteria == "starts_with_vowel":
-        return "[AEIOU]%"
+def pattern_matching(colms, details, random_choice):
+    if not colms["text"]:
+        raise Exception("There is no text column in the schema")
+    random_text_colm = random.choice(colms["text"])
+    if details == "pattern_matching":
+        pattern_matching_types = [
+            "starts_with_a",
+            "ends_with_ing",
+            "exactly_5_characters",
+            "does_not_contain_xyz",
+        ]
+        if random_choice:
+            pattern_type = random.choice(pattern_matching_types)
+            if pattern := generate_like_pattern(pattern_type):
+                if random.choice([True, False]):
+                    where_cluase = f"{random_text_colm} LIKE {pattern}"
+                else:
+                    where_cluase = f"{random_text_colm} NOT LIKE {pattern}"
+                print(where_cluase)
+                return [where_cluase]
+        else:
+            where_clauses = []
+            for pattern_type in pattern_matching_types:
+                if pattern := generate_like_pattern(pattern_type):
+                    where_cluase = f"{random_text_colm} LIKE {pattern}"
 
-    return None
+                    where_clauses.append(where_cluase)
+                    where_cluase = f"{random_text_colm} NOT LIKE {pattern}"
+                    where_clauses.append(where_cluase)
+            print(where_clauses)
+            return [where_clauses]
+
+    if isinstance(details["pattern_matching"], list):
+        op = details["pattern_matching"][0]
+        pattern_type = details["pattern_matching"][1]
+        if pattern := generate_like_pattern(pattern_type):
+            where_cluase = f"{random_text_colm} {op} {pattern}"
+            return [where_cluase]
+
+
+def null_check(colms, details, random_choice):
+    random_text_colm = random.choice(colms["text"] + colms["number"])
+    if details == "null_check":
+        null_check_operators = ["IS NULL", "IS NOT NULL"]
+        if random_choice:
+            op = random.choice(null_check_operators)
+            where_cluase = f"{random_text_colm} {op}"
+            return [where_cluase]
+        else:
+            where_clauses = []
+            for op in null_check_operators:
+                where_cluase = f"{random_text_colm} {op}"
+                where_clauses.append(where_cluase)
+            return where_clauses
+    op = details["null_check"]
+    where_cluase = f"{random_text_colm} {op}"
+    return [where_cluase]
+
+
+def create_statement_for_number_set(colms, in_or_not_in):
+    random_numeric_colm = random.choice(colms["number"])
+    list_of_numbers = ["1", "2", "3", "40", "5"]
+
+    return f'{random_numeric_colm} {in_or_not_in} ({", ".join(list_of_numbers)})'
+
+
+def create_statement_for_text_set(colms, in_or_not_in):
+    random_text_colm = random.choice(colms["text"])
+    word_list = ["apple", "banana", "orange", "grape", "pineapple"]
+    random_words = generate_random_words(word_list, 5)
+
+    return f'{random_text_colm} {in_or_not_in} ({", ".join(random_words)})'
+
+
+def in_clause(colms, details):
+    if len(colms["text"]) != 0 and len(colms["number"]) != 0:
+        if random.choice([True, False]):
+            where_cluase = create_statement_for_number_set(colms, "IN")
+        else:
+            where_cluase = create_statement_for_text_set(colms, "IN")
+        return [where_cluase]
+    elif len(colms["text"]) > 0:
+        where_cluase = create_statement_for_text_set(colms, "IN")
+        return [where_cluase]
+    elif len(colms["number"]) > 0:
+        where_cluase = create_statement_for_number_set(colms, "IN")
+        return [where_cluase]
+
+
+def not_in_clause(colms, details):
+    if len(colms["text"]) == 0 and len(colms["number"]) == 0:
+        if random.choice([True, False]):
+            where_cluase = create_statement_for_number_set(colms, "NOT IN")
+        else:
+            where_cluase = create_statement_for_text_set(colms, "NOT IN")
+        return [where_cluase]
+    elif colms["text"]:
+        where_cluase = create_statement_for_text_set(colms, "NOT IN")
+        return [where_cluase]
+    elif colms["number"]:
+        where_cluase = create_statement_for_number_set(colms, "NOT IN")
+        return [where_cluase]
+
+
+def between_clause(colms):
+    if colms["number"]:
+        random_numeric_colm = random.choice(colms["number"])
+        where_cluase = f"{random_numeric_colm} BETWEEN 1 AND 10"
+        return [where_cluase]
+    else:
+        raise Exception("There is no number column in the schema")
+
+
+def logical_operator(
+    schema,
+    schema_types,
+    db_name,
+    colms,
+    details,
+    pk,
+    fk,
+    tables,
+    random_choice,
+    create_where_clause_func=None,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
+):
+    print(details["logical_operator"])
+    if "subquery" in details["logical_operator"][1]:
+        print("subquery")
+        print(query_generator_func)
+        print(create_where_clause_func)
+        return subquery(
+            schema,
+            schema_types,
+            db_name,
+            colms,
+            details["logical_operator"][1],
+            pk,
+            fk,
+            tables,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
+        )
+    else:
+        predicator1 = create_where_clause_func(
+            schema,
+            schema_types,
+            db_name,
+            colms,
+            details["logical_operator"][1],
+            pk,
+            fk,
+            tables,
+            random_choice=random_choice,
+        )
+    op = details["logical_operator"][0]
+    if "subquery" in details["logical_operator"][2]:
+        predicator2 = subquery(
+            schema,
+            schema_types,
+            db_name,
+            colms,
+            details["logical_operator"][2],
+            pk,
+            fk,
+            tables,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
+        )
+    else:
+        predicator2 = create_where_clause(
+            schema,
+            schema_types,
+            db_name,
+            colms,
+            details["logical_operator"][2],
+            pk,
+            fk,
+            tables,
+            random_choice=random_choice,
+        )
+    where_clauses = []
+    for first_predicator in predicator1:
+        for second_predicator in predicator2:
+            where_cluase = f"({first_predicator}) {op} ({second_predicator})"
+            where_clauses.append(where_cluase)
+    return where_clauses
+
+
+def subquery(
+    schema,
+    schema_types,
+    db_name,
+    colms,
+    details,
+    pk,
+    fk,
+    tables,
+    min_max_depth_in_subquery,
+    query_generator_func,
+):
+    return generate_subquery(
+        schema,
+        schema_types,
+        db_name,
+        colms,
+        details,
+        pk,
+        fk,
+        tables,
+        min_max_depth_in_subquery=min_max_depth_in_subquery,
+        query_generator_func=query_generator_func,
+    )
 
 
 def create_where_clause(
@@ -58,234 +278,43 @@ def create_where_clause(
     fk,
     tables,
     random_choice=False,
-    min_max_depth_in_subquery=[0, 0],
+    min_max_depth_in_subquery=None,
     query_generator_func=None,
 ):
+    if min_max_depth_in_subquery is None:
+        min_max_depth_in_subquery = [0, 0]
     print(details)
     if "none" in details:
         return ""
     if "basic_comparison" in details:
-        if colms["number"]:
-            random_numeric_colm = random.choice(colms["number"])
-            if "basic_comparison" == details:
-                where_clauses = []
-                comparison_operators = ["=", "<>", "!=", ">", "<", ">=", "<="]
-                if random_choice:
-                    comparison_operator = random.choice(comparison_operators)
-                    random_exp = generate_arithmetic_expression(colms)
-
-                    where_cluase = " {} {} {}".format(
-                        random_numeric_colm, comparison_operator, random_exp
-                    )
-                    return [where_cluase]
-                else:
-                    for comparison_operator in comparison_operators:
-                        #
-                        random_exp = generate_arithmetic_expression(colms)
-
-                        where_cluase = " {} {} {}".format(
-                            random_numeric_colm, comparison_operator, random_exp
-                        )
-                        where_clauses.append(where_cluase)
-
-                    return where_clauses
-
-            comparison_operator = details["basic_comparison"]
-            # TODO change random_number
-            random_exp = generate_arithmetic_expression(colms)
-
-            where_cluase = " {} {} {}".format(
-                random_numeric_colm, comparison_operator, random_exp
-            )
-
-            return [where_cluase]
-        else:
-            raise Exception("There is no number column in the schema")
+        return basic_comparison(colms, details, random_choice)
     if "pattern_matching" in details:
-        if colms["text"]:
-            random_text_colm = random.choice(colms["text"])
-            if details == "pattern_matching":
-                where_clauses = []
-                pattern_matching_types = [
-                    "starts_with_a",
-                    "ends_with_ing",
-                    "exactly_5_characters",
-                    "does_not_contain_xyz",
-                ]
-                if random_choice:
-                    pattern_type = random.choice(pattern_matching_types)
-                    pattern = generate_like_pattern(pattern_type)
-                    if pattern:
-                        if random.choice([True, False]):
-                            where_cluase = "{} LIKE {}".format(
-                                random_text_colm, pattern
-                            )
-                        else:
-                            where_cluase = "{} NOT LIKE {}".format(
-                                random_text_colm, pattern
-                            )
-                        return [where_cluase]
-                else:
-                    for pattern_type in pattern_matching_types:
-                        pattern = generate_like_pattern(pattern_type)
-                        if pattern:
-                            where_cluase = "{} LIKE {}".format(
-                                random_text_colm, pattern
-                            )
-
-                            where_clauses.append(where_cluase)
-                            where_cluase = "{} NOT LIKE {}".format(
-                                random_text_colm, pattern
-                            )
-                            where_clauses.append(where_cluase)
-
-                    return [where_clauses]
-
-            if isinstance(details["pattern_matching"], list):
-                op = details["pattern_matching"][0]
-                pattern_type = details["pattern_matching"][1]
-                pattern = generate_like_pattern(pattern_type)
-                if pattern:
-                    where_cluase = "{} {} {}".format(random_text_colm, op, pattern)
-                    return [where_cluase]
-
-        else:
-            raise Exception("There is no text column in the schema")
-
+        return pattern_matching(colms, details, random_choice)
     if "null_check" in details:
-        random_text_colm = random.choice(colms["text"] + colms["number"])
-        if "null_check" == details:
-            where_clauses = []
-            null_check_operators = ["IS NULL", "IS NOT NULL"]
-            if random_choice:
-                op = random.choice(null_check_operators)
-                where_cluase = "{} {}".format(random_text_colm, op)
-                return [where_cluase]
-            else:
-                for op in null_check_operators:
-                    where_cluase = "{} {}".format(random_text_colm, op)
-                    where_clauses.append(where_cluase)
-                return where_clauses
-        op = details["null_check"]
-        where_cluase = "{} {}".format(random_text_colm, op)
-        return [where_cluase]
+        return null_check(colms, details, random_choice)
     if "IN" in details and "NOT IN" not in details:
-        if len(colms["text"]) != 0 and len(colms["number"]) != 0:
-            if random.choice([True, False]):
-                random_text_colm = random.choice(colms["text"])
-                word_list = ["apple", "banana", "orange", "grape", "pineapple"]
-                random_words = generate_random_words(word_list, 5)
-
-                where_cluase = "{} IN ({})".format(
-                    random_text_colm, ", ".join(random_words)
-                )
-                return [where_cluase]
-            else:
-                random_numeric_colm = random.choice(colms["number"])
-                list_of_numbers = ["1", "2", "3", "40", "5"]
-
-                where_cluase = "{} IN ({})".format(
-                    random_numeric_colm, ", ".join(list_of_numbers)
-                )
-                return [where_cluase]
-        elif len(colms["text"]) > 0:
-            random_text_colm = random.choice(colms["text"])
-            word_list = ["apple", "banana", "orange", "grape", "pineapple"]
-            random_words = generate_random_words(word_list, 5)
-
-            where_cluase = "{} IN ({})".format(
-                random_text_colm, ", ".join(random_words)
-            )
-            return [where_cluase]
-        elif len(colms["number"]) > 0:
-            random_numeric_colm = random.choice(colms["number"])
-            list_of_numbers = ["1", "2", "3", "40", "5"]
-
-            where_cluase = "{} IN ({})".format(
-                random_numeric_colm, ", ".join(list_of_numbers)
-            )
-            return [where_cluase]
+        return in_clause(colms, details)
     if "NOT IN" in details:
-        if len(colms["text"]) == 0 and len(colms["number"]) == 0:
-            if random.choice([True, False]):
-                random_text_colm = random.choice(colms["text"])
-                word_list = ["apple", "banana", "orange", "grape", "pineapple"]
-                random_words = generate_random_words(word_list, 5)
-
-                where_cluase = "{} NOT IN ({})".format(
-                    random_text_colm, ", ".join(random_words)
-                )
-                return [where_cluase]
-            else:
-                random_numeric_colm = random.choice(colms["number"])
-                list_of_numbers = ["1", "2", "3", "40", "5"]
-
-                where_cluase = "{}NOT IN ({})".format(
-                    random_numeric_colm, ", ".join(list_of_numbers)
-                )
-                return [where_cluase]
-        elif colms["text"]:
-            random_text_colm = random.choice(colms["text"])
-            word_list = ["apple", "banana", "orange", "grape", "pineapple"]
-            random_words = generate_random_words(word_list, 5)
-
-            where_cluase = "{} NOT IN ({})".format(
-                random_text_colm, ", ".join(random_words)
-            )
-            return [where_cluase]
-        elif colms["number"]:
-            random_numeric_colm = random.choice(colms["number"])
-            list_of_numbers = ["1", "2", "3", "40", "5"]
-
-            where_cluase = "{} IN ({})".format(
-                random_numeric_colm, ", ".join(list_of_numbers)
-            )
-            return [where_cluase]
-
+        return not_in_clause(colms, details)
     if "between" in details:
-        if colms["number"]:
-            random_numeric_colm = random.choice(colms["number"])
-            where_cluase = "{} BETWEEN {} AND {}".format(random_numeric_colm, 1, 10)
-            return [where_cluase]
-        else:
-            raise Exception("There is no number column in the schema")
+        return between_clause(colms)
     if "logical_operator" in details:
-        # TODO
-        predicator1 = create_where_clause(
+        return logical_operator(
             schema,
             schema_types,
             db_name,
             colms,
             details,
-            ["logical_operator"][1],
             pk,
             fk,
             tables,
-            random_choice=random_choice,
+            random_choice,
+            create_where_clause_func=create_where_clause,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
         )
-        op = details["logical_operator"][0]
-        predicator2 = create_where_clause(
-            schema,
-            schema_types,
-            db_name,
-            colms,
-            details["logical_operator"][2],
-            pk,
-            fk,
-            tables,
-            random_choice=random_choice,
-        )
-        where_clauses = []
-        for first_predicator in predicator1:
-            for second_predicator in predicator2:
-                where_cluase = "({}) {} ({})".format(
-                    first_predicator, op, second_predicator
-                )
-                where_clauses.append(where_cluase)
     if "subquery" in details:
-        print("subquery")
-
-        where_cluase = generate_subquery(
+        return subquery(
             schema,
             schema_types,
             db_name,
@@ -297,8 +326,6 @@ def create_where_clause(
             min_max_depth_in_subquery=min_max_depth_in_subquery,
             query_generator_func=query_generator_func,
         )
-
-        return where_cluase
 
 
 def complete_with_where_clause(
@@ -313,11 +340,52 @@ def complete_with_where_clause(
     tables,
     must_be_in_where=None,
     random_choice=False,
-    min_max_depth_in_subquery=[0, 0],
+    min_max_depth_in_subquery=None,
     query_generator_func=None,
 ):
+    """
+    Complete the given query with a WHERE clause based on the provided parameters.
+
+    Args:
+        schema (dict): Dictionary containing the schema information.
+        schema_types (dict): Dictionary containing the schema types information.
+        db_name (str): Name of the database.
+        temp_query (str): Temporary query to be completed with the WHERE clause.
+        attributes (dict): Dictionary containing the attributes, with keys "number" and "text" representing different types.
+        where_clauses_types (list): List of where clause types to choose from.
+        pk (dict): Dictionary mapping table names to their primary key columns.
+        fk (list): List of join definitions, each containing "table1", "table2", "first_key", and "second_key".
+        tables (list): List of table names.
+        must_be_in_where (list, optional): List containing the must-be-in-where condition. Defaults to None.
+        random_choice (bool, optional): Flag indicating whether to use random choice for where clause generation. Defaults to False.
+        min_max_depth_in_subquery (list, optional): List containing the minimum and maximum depth of nested subqueries. Defaults to [0, 0].
+        query_generator_func (function, optional): Function to generate queries. Defaults to None.
+
+    Returns:
+        list: List of completed queries with their attributes.
+
+    Raises:
+        Exception: If an error occurs during query completion.
+
+    Examples:
+        >>> schema = {...}
+        >>> schema_types = {...}
+        >>> db_name = "mydb"
+        >>> temp_query = "SELECT * FROM table"
+        >>> attributes = {"number": ["col1", "col2"], "text": ["col3", "col4"]}
+        >>> where_clauses_types = ["type1", "type2"]
+        >>> pk = {"table": "pk"}
+        >>> fk = [{"table1": "table1", "table2": "table2", "first_key": "fk1", "second_key": "pk1"}]
+        >>> tables = ["table1", "table2"]
+        >>> complete_with_where_clause(schema, schema_types, db_name, temp_query, attributes, where_clauses_types, pk, fk, tables)
+        [['SELECT * FROM table WHERE ...', {...}]]
+    """
+    print("complete_with_where_clause")
+    print(query_generator_func)
+    if min_max_depth_in_subquery is None:
+        min_max_depth_in_subquery = [0, 0]
     try:
-        where_cluase = create_where_clause(
+        where_clause = create_where_clause(
             schema,
             schema_types,
             db_name,
@@ -330,42 +398,30 @@ def complete_with_where_clause(
             min_max_depth_in_subquery=min_max_depth_in_subquery,
             query_generator_func=query_generator_func,
         )
-        # print("where_cluase")
-        # print(where_cluase)
-        # print(must_be_in_where)
 
-        if where_cluase == "":
-            if must_be_in_where:
-                return [
+        if where_clause == "":
+            return (
+                [
                     [
-                        temp_query
-                        + " WHERE "
-                        + must_be_in_where[0]
-                        + get_attributes_ends_with(must_be_in_where[1], attributes),
+                        f"{temp_query} WHERE {must_be_in_where[0]}{get_attributes_ends_with(must_be_in_where[1], attributes)}",
                         attributes,
                     ]
                 ]
-            return [[temp_query, attributes]]
-        if isinstance(where_cluase, list):
-            if not must_be_in_where:
-                queries = []
-                for where in where_cluase:
-                    queries.append([temp_query + " WHERE " + where, attributes])
-            else:
-                queries = []
-                for where in where_cluase:
-                    queries.append(
-                        [
-                            temp_query
-                            + " WHERE "
-                            + where
-                            + " AND "
-                            + must_be_in_where[0]
-                            + get_attributes_ends_with(must_be_in_where[1], attributes),
-                            attributes,
-                        ]
-                    )
-        return queries
+                if must_be_in_where
+                else [[temp_query, attributes]]
+            )
+        if isinstance(where_clause, list):
+            queries = []
+            for where in where_clause:
+                query = (
+                    f"{temp_query} WHERE {where} AND {must_be_in_where[0]}{get_attributes_ends_with(must_be_in_where[1], attributes)}"
+                    if must_be_in_where
+                    else f"{temp_query} WHERE {where}"
+                )
+                queries.append([query, attributes])
+
+            return queries
+
     except Exception as e:
         raise e
 

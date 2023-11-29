@@ -8,6 +8,66 @@ import os
 import random
 
 
+def generate_like_pattern(criteria):
+    """
+    Generate a LIKE pattern based on the given criteria.
+
+    Args:
+        criteria (str): Criteria for generating the LIKE pattern.
+
+    Returns:
+        str or None: Generated LIKE pattern, or None if the criteria is not recognized.
+
+    Examples:
+        >>> generate_like_pattern("starts_with_a")
+        'a%'
+
+        >>> generate_like_pattern("ends_with_ing")
+        '%ing'
+    """
+    if criteria == "starts_with_a":
+        return "a%"
+    elif criteria == "ends_with_ing":
+        return "%ing"
+    elif criteria == "contains_apple":
+        return "%apple%"
+    elif criteria == "exactly_5_characters":
+        return "_____"
+    elif criteria == "ends_with_at":
+        return "%at%"
+    elif criteria == "does_not_contain_xyz":
+        return "%[^xyz]%"
+    elif criteria == "starts_with_A_or_B":
+        return "[AB]%"
+    elif criteria == "ends_with_ing_or_ed":
+        return "%(ing|ed)"
+    elif criteria == "alphanumeric":
+        return "%[A-Za-z0-9]%"
+    elif criteria == "starts_with_vowel":
+        return "[AEIOU]%"
+
+    return None
+
+
+def generate_random_words(word_list, num_words):
+    """
+    Generate a list of random words from the given word list.
+
+    Args:
+        word_list (list): List of words to choose from.
+        num_words (int): Number of random words to generate.
+
+    Returns:
+        list: List of randomly selected words.
+
+    Examples:
+        >>> word_list = ["apple", "banana", "cherry", "date", "elderberry"]
+        >>> generate_random_words(word_list, 3)
+        ['banana', 'date', 'cherry']
+    """
+    return random.sample(word_list, num_words)
+
+
 def read_random_specs(
     file_name,
     db_name,
@@ -60,9 +120,14 @@ def read_random_specs(
 
     spec_hash = random.choice(specs2)
     spec = specs[db_name][spec_hash]
-
+    print(spec)
     if exists:
         table, pk_of_table = get_random_table_and_pk(tables, pk)
+        if table not in schema:
+            for table_ in pk:
+                if pk[table_] == pk_of_table:
+                    table = table_
+                    break
         join_definitions = create_graph_from_schema(schema, fk)
         possible_table_keys = get_corresponding_fk_table(table, join_definitions)
         if len(possible_table_keys) == 0:
@@ -124,7 +189,8 @@ def read_random_specs(
             min_max_depth_in_subquery = [0, 0]
             read_random_specs(file_name, db_name, tables, pk, min_max_depth_in_subquery)
             spec["min_max_depth_in_subquery"] = [0, 0]
-
+    print("After: ")
+    print(spec)
     return spec, spec_hash, must_be_in_where
 
 

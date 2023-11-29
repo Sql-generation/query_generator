@@ -23,8 +23,12 @@ def generate_subquery(
     min_max_depth_in_subquery=[0, 0],
     query_generator_func=None,
 ):
+    print("generate_subquery")
     current_dir = os.path.dirname(__file__)
     file_name = os.path.join(current_dir, f"../output/{db_name}.json")
+    print(file_name)
+    print(min_max_depth_in_subquery)
+    print(subquery_type)
 
     if subquery_type == "in_with_subquery" or subquery_type == "not_in_with_subquery":
         # add ALL
@@ -63,7 +67,7 @@ def generate_subquery(
         # from query_generator_from_specifications import query_generator
 
         # dict_spec = copy.deepcopy(dict_spec)
-
+        print(query_generator_func)
         merged_queries = query_generator_func(
             schema=schema,
             schema_types=schema_types,
@@ -77,6 +81,7 @@ def generate_subquery(
             testing_with_one_spec=True,
             random_choice=True,
         )
+        print(merged_queries)
 
         sub_query = list(merged_queries.values())[0].split("\n")[0]
 

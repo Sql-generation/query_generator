@@ -15,7 +15,8 @@
     "pattern_matching",
     "null_check",
     "basic_comparison",
-    "subquery"
+    "subquery",
+    "logical_operators"
     
 
 ],

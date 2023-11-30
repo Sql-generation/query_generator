@@ -61,8 +61,7 @@ def handle_arithmatic_exp(
         alias_name = _generate_random_alias_name(select_fields)
         select_statement += f"{arithmatic_exp} AS {alias_name}, "
         select_fields.append(alias_name)
-    select_fields.append(arithmatic_exp)
-    return select_statement, select_fields
+    return select_statement, select_fields, 1
 
 
 def handle_string_func_exp(
@@ -104,8 +103,7 @@ def handle_string_func_exp(
         select_statement += f" AS {alias_name}, "
         select_fields.append(alias_name)
 
-    select_fields.append(random_column)
-    return select_statement, select_fields
+    return select_statement, select_fields, 1
 
 
 def handle_agg_exp(
@@ -126,7 +124,7 @@ def handle_agg_exp(
     """
     random_agg_func = random.choice(_AGGREGATE_FUNCTIONS)
     random_column = random.choice(attributes["number"])
-    select_fields.append(f"{random_agg_func}({random_column})")
+    # select_fields.append(f"{random_agg_func}({random_column})")
 
     if col_type != "agg_exp":
         alias_name = _generate_random_alias_name(select_fields)
@@ -134,8 +132,7 @@ def handle_agg_exp(
         select_fields.append(alias_name)
         random_column = f"{random_agg_func}({random_column}) AS {alias_name}"
 
-    select_fields.append(random_column)
-    return select_statement, select_fields
+    return select_statement, select_fields, 1
 
 
 def handle_count_distinct_exp(
@@ -155,7 +152,7 @@ def handle_count_distinct_exp(
         tuple: The updated select statement and select fields.
     """
     random_column = random.choice(attributes["number"] + attributes["text"])
-    select_fields.append(f"COUNT(DISTINCT({random_column}))")
+    # select_fields.append(f"COUNT(DISTINCT({random_column}))")
 
     if col_type != "count_distinct_exp":
         alias_name = _generate_random_alias_name(select_fields)
@@ -164,7 +161,7 @@ def handle_count_distinct_exp(
         random_column = f"COUNT(DISTINCT({random_column})) AS {alias_name}"
 
     select_fields.append(random_column)
-    return select_statement, select_fields
+    return select_statement, select_fields, 1
 
 
 def _generate_random_alias_name(select_fields):

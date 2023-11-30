@@ -17,6 +17,8 @@ def complete_query_with_order_by(
     Returns:
         str: The completed query with the ORDER BY clause.
     """
+    print("complete_query_with_order_by")
+    print(num_value_exps)
     if order_by_type == "none":
         return temp_query
     order_by_clause = generate_order_by_clause(
@@ -82,6 +84,10 @@ def generate_order_by_clause_multiple(select_clause, num_value_exps, order_by_ty
         >>> generate_order_by_clause_multiple(["col1", "col2"], 5)
         'col1 ASC, col2 DESC'
     """
+    if len(select_clause) < 2:
+        raise Exception("Not enough attributes in select clause")
+    if len(select_clause) == 2:
+        return f"{select_clause[0]} ASC, {select_clause[1]} DESC"
     random_num = random.randint(1, len(select_clause) // 2)
     random_attributes = random.sample(select_clause, random_num)
     return ", ".join(

@@ -223,6 +223,8 @@ def generate_value_expressions(
     )  # Number of times to repeat the generation process
 
     for _ in range(repeat_num):
+        num_value_exps = 0  # Number of value expressions
+
         select_statement = "SELECT "
         if distinct_type == "distinct":
             select_statement += (
@@ -231,6 +233,7 @@ def generate_value_expressions(
         select_fields = []  # List to store the select fields
 
         for col_type in select_statement_type:
+            num_value_exp = 0  # Number of value expressions
             random_column = random.choice(
                 attributes["number"] + attributes["text"]
             )  # Select a random column
@@ -240,6 +243,7 @@ def generate_value_expressions(
                 select_fields.append(
                     random_column
                 )  # Add the random column to the select_fields list
+                num_value_exp = 1  # Increment the number of value expressions
 
             elif col_type == "alias_exp":
                 alias_name = _generate_random_alias_name(
@@ -249,26 +253,32 @@ def generate_value_expressions(
                 select_fields.append(
                     alias_name
                 )  # Add the alias to the select_fields list
+                num_value_exp = 1  # Increment the number of value expressions
 
             elif col_type.startswith("arithmatic_exp"):
-                select_statement, select_fields = handle_arithmatic_exp(
+                select_statement, select_fields, num_value_exp = handle_arithmatic_exp(
                     select_statement, select_fields, col_type, random_column, attributes
                 )  # Handle arithmetic expression and update select_statement and select_fields
 
             elif col_type.startswith("string_func_exp"):
-                select_statement, select_fields = handle_string_func_exp(
+                select_statement, select_fields, num_value_exp = handle_string_func_exp(
                     select_statement, select_fields, col_type, random_column, attributes
                 )  # Handle string function expression and update select_statement and select_fields
 
             elif col_type.startswith("agg_exp"):
-                select_statement, select_fields = handle_agg_exp(
+                select_statement, select_fields, num_value_exp = handle_agg_exp(
                     select_statement, select_fields, col_type, random_column, attributes
                 )  # Handle aggregate expression and update select_statement and select_fields
 
             elif col_type.startswith("count_distinct_exp"):
-                select_statement, select_fields = handle_count_distinct_exp(
+                (
+                    select_statement,
+                    select_fields,
+                    num_value_exp,
+                ) = handle_count_distinct_exp(
                     select_statement, select_fields, col_type, random_column, attributes
                 )  # Handle count distinct expression and update select_statement and select_fields
+            num_value_exps += num_value_exp  # Increment the number of value expressions
 
         if select_statement[-2:] == ", ":
             select_statement = select_statement[
@@ -276,7 +286,7 @@ def generate_value_expressions(
             ]  # Remove the trailing comma and space
 
         select_statements.append(
-            [select_statement, select_fields]
+            [select_statement, select_fields, num_value_exps]
         )  # Add the generated select_statement and select_fields to select_statements
 
     return select_statements

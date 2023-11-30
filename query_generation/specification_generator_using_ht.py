@@ -37,22 +37,73 @@ def complete_specs(db_file, config_file, db_name=None):
             all_db[db_name]["foreign_keys"],
             spec_config,
         )
+
         current_dir = os.path.dirname(__file__)
         file_name = os.path.join(current_dir, f"output/{db_name}.json")
         write_hash_table_to_json(specs, file_name)
     else:
         for db in all_db:
-            specs[db] = generate_specifications_for_queries(
-                all_db[db]["schema"],
-                all_db[db]["foreign_keys"],
+            specs[db_name] = generate_specifications_for_queries(
+                all_db[db_name]["schema"],
+                all_db[db_name]["foreign_keys"],
                 spec_config,
             )
+
             current_dir = os.path.dirname(__file__)
             file_name_for_write = os.path.join(current_dir, f"output/{db}.json")
             write_hash_table_to_json(specs[db], file_name_for_write)
 
 
 def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
+    set_ops_types = specs["set_op_types"]
+    first_spec = generate_specifications_for_queries_without_set_ops(
+        schema, foreign_keys, specs["first_query"], num
+    )
+    # generate_hash_table(
+    #     num,
+    #     table_exp_types_with_types_of_joins,
+    #     completed_specifications["where_clause_types"],
+    #     number_of_valu_exps_in_group_by,
+    #     having_types_without_having_group_by,
+    #     having_types_with_having_group_by,
+    #     orderby_types,
+    #     limit_types,
+    #     meaningful_joins,
+    #     distinct_types,
+    #     all_value_exp_types,
+    #     min_max_depth_in_subquery,
+    # )
+    if "second_query" in specs:
+        second_spec = generate_specifications_for_queries_without_set_ops(
+            schema, foreign_keys, specs["second_query"], num
+        )
+    hash_table = {}
+
+    for _ in range(num):
+        set_op_type = random.choice(set_ops_types)
+        if set_op_type == "none":
+            detail = {
+                "set_op_type": set_op_type,
+                "first_query": first_spec[random.choice(list(first_spec))],
+            }
+        else:
+            spec1 = first_spec[random.choice(list(first_spec))]
+            spec2 = second_spec[random.choice(list(second_spec))]
+            detail = {
+                "set_op_type": set_op_type,
+                "first_query": spec1,
+                "second_query": spec2,
+            }
+        hash_value = calculate_hash(detail)
+
+        if hash_value not in hash_table:
+            hash_table[hash_value] = detail
+    return hash_table
+
+
+def generate_specifications_for_queries_without_set_ops(
+    schema, foreign_keys, specs, num=100
+):
     """
     Generate specifications for queries based on the given schema, primary keys, foreign keys, schema types, and specifications.
 
@@ -93,6 +144,7 @@ def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
     table_exp_types_with_types_of_joins = generate_table_expression_types(
         meaningful_joins, join_types, table_exp_types, schema, foreign_keys
     )
+
     completed_specifications = {
         "table_exp_types": table_exp_types_with_types_of_joins,
         "where_clause_types": generate_where_clause_types(
@@ -415,6 +467,10 @@ def generate_hash_table(
         type_of_join = random.choice(meaningful_joins)
         distinct_type = random.choice(distinct_types)
         value_exp_type = random.choice(all_value_exp_types)
+        if len(value_exp_type) == 1 and group_by_type == 0:
+            orderby_type = random.choice(
+                ["ASC", "DESC", "number_ASC", "number_DESC", "none"]
+            )  # It cannot be multiple
 
         detail = {
             "meaningful_joins": type_of_join,
@@ -446,7 +502,7 @@ if __name__ == "__main__":
 
     current_dir = os.path.dirname(__file__)
     dataset_path = os.path.join(current_dir, "../spider/tables.json")
-    config_file = os.path.abspath(os.path.join(current_dir, "config_file.json"))
+    config_file = os.path.abspath(os.path.join(current_dir, "config_file2.json"))
     # config_file = file_path = os.path.abspath(
     #     "query_generator/query_generation/config_file.json"
     # )

@@ -63,6 +63,26 @@ def query_generator(
         if specs is None:
             specs = {
                 "farm": {
+                    "b5fd9b278cba4a91160033aba103557f2686eb93": {
+                        "set_op_type": "none",
+                        "first_query": {
+                            "meaningful_joins": "no",
+                            "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                            "where_type": {
+                                "logical_operator": ["OR", "NOT IN", "basic_comparison"]
+                            },
+                            "number_of_value_exp_in_group_by": 1,
+                            "having_type": "none",
+                            "orderby_type": "ASC",
+                            "limit_type": "without_offset",
+                            "value_exp_types": [
+                                "arithmatic_exp",
+                                "math_func_exp_alias",
+                            ],
+                            "distinct_type": "none",
+                            "min_max_depth_in_subquery": [3, 5],
+                        },
+                    }
                     # You can replace this dict to test with other specifications (uncomment just one of them at a time)
                     # "82df9c03575efeed739b800cafe054795d6c32be": {
                     #     "meaningful_joins": "yes",
@@ -96,18 +116,18 @@ def query_generator(
                     #     "distinct_type": "none",
                     #     "min_max_depth_in_subquery": [3, 5],
                     # }
-                    "992ce4c2b42434469200c2af70b2d69bf1bc9213": {
-                        "meaningful_joins": "yes",
-                        "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
-                        "where_type": {"null_check": "IS NOT NULL"},
-                        "number_of_value_exp_in_group_by": 3,
-                        "having_type": {"single": "AVG"},
-                        "orderby_type": "number_ASC",
-                        "limit_type": "with_offset",
-                        "value_exp_types": ["agg_exp_alias", "agg_exp_alias"],
-                        "distinct_type": "distinct",
-                        "min_max_depth_in_subquery": [3, 5],
-                    },
+                    # "992ce4c2b42434469200c2af70b2d69bf1bc9213": {
+                    #     "meaningful_joins": "yes",
+                    #     "table_exp_type": "FULL OUTER JOIN_LEFT JOIN_LEFT JOIN",
+                    #     "where_type": {"null_check": "IS NOT NULL"},
+                    #     "number_of_value_exp_in_group_by": 3,
+                    #     "having_type": {"single": "AVG"},
+                    #     "orderby_type": "number_ASC",
+                    #     "limit_type": "with_offset",
+                    #     "value_exp_types": ["agg_exp_alias", "agg_exp_alias"],
+                    #     "distinct_type": "distinct",
+                    #     "min_max_depth_in_subquery": [3, 5],
+                    # },
                     # "8f3592aea93279425342f18f33ca845dafa2a62e": {
                     #     "meaningful_joins": "no",
                     #     "table_exp_type": "FULL OUTER JOIN_LEFT JOIN",
@@ -152,7 +172,10 @@ def query_generator(
 
     for i, hash in enumerate(specs[db_name]):
         spec = specs[db_name][hash]
-
+        if specs[db_name][hash]["set_op_type"] == "none":
+            spec = specs[db_name][hash]["first_query"]
+        else:
+            continue
         table_exp_type = spec["table_exp_type"]
         where_clause_type = spec["where_type"]
         group_by_clause_type = spec["number_of_value_exp_in_group_by"]

@@ -64,5 +64,4 @@
 "distinct_types": ["none", "distinct"],
 "orderby_types": ["ASC", "DESC","number_ASC","number_DESC" ,"none","multiple"],
 "limit_types" : ["none", "without_offset", "with_offset"]
-
 }

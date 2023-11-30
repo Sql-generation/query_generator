@@ -17,8 +17,6 @@ def complete_query_with_order_by(
     Returns:
         str: The completed query with the ORDER BY clause.
     """
-    print("complete_query_with_order_by")
-    print(num_value_exps)
     if order_by_type == "none":
         return temp_query
     order_by_clause = generate_order_by_clause(

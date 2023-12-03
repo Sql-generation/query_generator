@@ -88,7 +88,6 @@ def generate_select_clause(
         list: The list of select clauses.
     """
     if select_statement_type == "*":
-        print("select_statement_type == *")
         return [
             [
                 "SELECT * ",
@@ -219,9 +218,8 @@ def generate_value_expressions(
     """
     select_statements = []  # List to store the generated SELECT statements
     repeat_num = (
-        3 if random_choice else 1
+        1 if random_choice else 3
     )  # Number of times to repeat the generation process
-
     for _ in range(repeat_num):
         num_value_exps = 0  # Number of value expressions
 
@@ -238,7 +236,7 @@ def generate_value_expressions(
                 attributes["number"] + attributes["text"]
             )  # Select a random column
 
-            if col_type == "single_expl":
+            if col_type == "single_exp":
                 select_statement += f"{random_column}, "  # Add the random column to the SELECT statement
                 select_fields.append(
                     random_column
@@ -279,14 +277,11 @@ def generate_value_expressions(
                     select_statement, select_fields, col_type, random_column, attributes
                 )  # Handle count distinct expression and update select_statement and select_fields
             num_value_exps += num_value_exp  # Increment the number of value expressions
-
         if select_statement[-2:] == ", ":
             select_statement = select_statement[
                 :-2
             ]  # Remove the trailing comma and space
-
         select_statements.append(
             [select_statement, select_fields, num_value_exps]
         )  # Add the generated select_statement and select_fields to select_statements
-
     return select_statements

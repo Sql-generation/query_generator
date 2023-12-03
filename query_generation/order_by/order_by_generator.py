@@ -83,7 +83,10 @@ def generate_order_by_clause_multiple(select_clause, num_value_exps, order_by_ty
         'col1 ASC, col2 DESC'
     """
     if len(select_clause) < 2:
-        raise Exception("Not enough attributes in select clause")
+        return generate_order_by_clause_single(
+            select_clause, num_value_exps, order_by_type
+        )
+        # raise Exception("Not enough attributes in select clause")
     if len(select_clause) == 2:
         return f"{select_clause[0]} ASC, {select_clause[1]} DESC"
     random_num = random.randint(1, len(select_clause) // 2)

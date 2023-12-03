@@ -86,21 +86,21 @@ def handle_string_func_exp(
     random_column = random.choice(attributes["text"])
 
     if random_string_func == "SUBSTRING":
-        random_column = f"{random_string_func}({random_column}, 1, 3)"
+        select_statement += f"{random_string_func}({random_column}, 1, 3), "
     elif random_string_func == "REPLACE":
-        random_column = f"{random_string_func}({random_column}, 'a', 'b')"
+        select_statement += f"{random_string_func}({random_column}, 'a', 'b'), "
     elif random_string_func == "CHARINDEX":
-        random_column = f"{random_string_func}('a', {random_column})"
+        select_statement += f"{random_string_func}('a', {random_column}), "
     elif random_string_func == "CONCAT":
-        random_column = f"{random_string_func}({random_column}, 'a')"
+        select_statement += f"{random_string_func}({random_column}, 'a'), "
     elif random_string_func in ["RIGHT", "LEFT"]:
-        random_column = f"{random_string_func}({random_column}, 3)"
+        select_statement += f"{random_string_func}({random_column}, 3), "
     else:
-        random_column = f"{random_string_func}({random_column})"
+        select_statement += f"{random_string_func}({random_column}), "
 
     if col_type == "string_func_col_alias":
         alias_name = _generate_random_alias_name(select_fields)
-        select_statement += f" AS {alias_name}, "
+        select_statement += f"{random_column} AS {alias_name}, "
         select_fields.append(alias_name)
 
     return select_statement, select_fields, 1
@@ -128,9 +128,8 @@ def handle_agg_exp(
 
     if col_type != "agg_exp":
         alias_name = _generate_random_alias_name(select_fields)
-        select_statement += f" AS {alias_name}, "
+        select_statement += f"{random_agg_func}({random_column}) AS {alias_name}, "
         select_fields.append(alias_name)
-        random_column = f"{random_agg_func}({random_column}) AS {alias_name}"
 
     return select_statement, select_fields, 1
 
@@ -156,11 +155,9 @@ def handle_count_distinct_exp(
 
     if col_type != "count_distinct_exp":
         alias_name = _generate_random_alias_name(select_fields)
-        select_statement += f" AS {alias_name}, "
+        select_statement += f"COUNT(DISTINCT({random_column})) AS {alias_name}, "
         select_fields.append(alias_name)
-        random_column = f"COUNT(DISTINCT({random_column})) AS {alias_name}"
 
-    select_fields.append(random_column)
     return select_statement, select_fields, 1
 
 

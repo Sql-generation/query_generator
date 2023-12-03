@@ -89,6 +89,19 @@ def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
         else:
             spec1 = first_spec[random.choice(list(first_spec))]
             spec2 = second_spec[random.choice(list(second_spec))]
+            if (
+                spec1["number_of_value_exp_in_group_by"] != 0
+                or spec2["number_of_value_exp_in_group_by"] != 0
+            ):
+                spec2["number_of_value_exp_in_group_by"] = 0
+                spec1["number_of_value_exp_in_group_by"] = 0
+                spec1["having_type"] = "none"
+                spec2["having_type"] = "none"
+            # not *
+            spec1["min_max_depth_in_subquery"] = [0, 0]
+            spec2["min_max_depth_in_subquery"] = [0, 0]
+            spec1["value_exp_types"] = spec2["value_exp_types"]
+
             detail = {
                 "set_op_type": set_op_type,
                 "first_query": spec1,
@@ -381,12 +394,6 @@ def generate_all_value_exp_types(
             value_exp_types.append("agg_exp_alias")
         if "no_alias" not in agg_func_col_types and "agg_exp" in value_exp_types:
             value_exp_types.remove("agg_exp")
-
-    if math_func_col_types:
-        if "alias" in math_func_col_types:
-            value_exp_types.append("math_func_exp_alias")
-        if "no_alias" not in math_func_col_types and "math_func_exp" in value_exp_types:
-            value_exp_types.remove("math_func_exp")
 
     if string_func_col_types:
         if "alias" in string_func_col_types:

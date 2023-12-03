@@ -29,6 +29,7 @@ def query_generator(
     is_subquery=False,
     testing_with_one_spec=False,
     random_choice=False,
+    set_op_type="none",
 ):
     """
     Generate queries based on the specifications provided in the specs dictionary.
@@ -63,27 +64,61 @@ def query_generator(
         if specs is None:
             specs = {
                 "farm": {
-                    # You can replace this dict to test with other specifications in config2.json
-                    "b5fd9b278cba4a91160033aba103557f2686eb93": {
-                        "set_op_type": "none",
+                    #     # You can replace this dict to test with other specifications in config2.json
+                    #     "b5fd9b278cba4a91160033aba103557f2686eb93": {
+                    #         "set_op_type": "none",
+                    #         "first_query": {
+                    #             "meaningful_joins": "no",
+                    #             "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                    #             "where_type": {
+                    #                 "logical_operator": ["OR", "NOT IN", "basic_comparison"]
+                    #             },
+                    #             "number_of_value_exp_in_group_by": 1,
+                    #             "having_type": "none",
+                    #             "orderby_type": "ASC",
+                    #             "limit_type": "without_offset",
+                    #             "value_exp_types": [
+                    #                 "arithmatic_exp",
+                    #                 "math_func_exp_alias",
+                    #             ],
+                    #             "distinct_type": "none",
+                    #             "min_max_depth_in_subquery": [3, 5],
+                    #         },
+                    #     }
+                    # },
+                    "608ffb8d1b9c3fb57be0761cfaa65b01277a1150": {
+                        "set_op_type": "UNION ALL",
                         "first_query": {
-                            "meaningful_joins": "no",
-                            "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                            "meaningful_joins": "yes",
+                            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
                             "where_type": {
-                                "logical_operator": ["OR", "NOT IN", "basic_comparison"]
+                                "logical_operator": [
+                                    "AND",
+                                    "basic_comparison",
+                                    "basic_comparison",
+                                ]
                             },
-                            "number_of_value_exp_in_group_by": 1,
+                            "number_of_value_exp_in_group_by": 0,
                             "having_type": "none",
-                            "orderby_type": "ASC",
+                            "orderby_type": "multiple",
                             "limit_type": "without_offset",
-                            "value_exp_types": [
-                                "arithmatic_exp",
-                                "math_func_exp_alias",
-                            ],
+                            "value_exp_types": ["agg_exp_alias", "string_func_exp"],
                             "distinct_type": "none",
-                            "min_max_depth_in_subquery": [3, 5],
+                            "min_max_depth_in_subquery": [0, 0],
                         },
-                    }
+                        "second_query": {
+                            "meaningful_joins": "no",
+                            "table_exp_type": "INNER JOIN_INNER JOIN_LEFT JOIN",
+                            "where_type": "not_exists_subquery",
+                            "number_of_value_exp_in_group_by": 0,
+                            "having_type": "none",
+                            "orderby_type": "number_DESC",
+                            "limit_type": "with_offset",
+                            "value_exp_types": ["agg_exp_alias", "string_func_exp"],
+                            "distinct_type": "none",
+                            "min_max_depth_in_subquery": [2, 2],
+                        },
+                    },
                 }
             }
 
@@ -91,11 +126,64 @@ def query_generator(
     merged_queries = {}
 
     for i, hash in enumerate(specs[db_name]):
-        spec = specs[db_name][hash]
-        if specs[db_name][hash]["set_op_type"] == "none":
+        print(specs[db_name][hash])
+        print("************ SET OP ************")
+        if "set_op_type" not in specs[db_name][hash]:
+            spec = specs[db_name][hash]
+        elif specs[db_name][hash]["set_op_type"] == "none":
             spec = specs[db_name][hash]["first_query"]
         else:
-            continue
+            spec = specs[db_name][hash]
+            print("************ SET OP ************")
+
+            spec1 = specs[db_name][hash]["first_query"]
+            spec2 = specs[db_name][hash]["second_query"]
+            first_query = query_generator(
+                db_name,
+                schema,
+                pk,
+                fk,
+                schema_types,
+                specs={db_name: {hash: spec1}},
+                write_to_csv=False,
+                is_subquery=False,
+                testing_with_one_spec=True,
+                random_choice=True,
+            )
+
+            second_query = query_generator(
+                db_name,
+                schema,
+                pk,
+                fk,
+                schema_types,
+                specs={db_name: {hash: spec2}},
+                write_to_csv=False,
+                is_subquery=False,
+                testing_with_one_spec=True,
+                random_choice=True,
+            )
+            print("_________")
+            print(first_query)
+            first_query = list(first_query.values())[0].split("\n")[0]
+            print("*******")
+            print(first_query)
+            print("_________")
+            print(second_query)
+            second_query = list(second_query.values())[0].split("\n")[0]
+            completed_query = f"({first_query}) {spec['set_op_type']} ({second_query})"
+
+            if str(spec) in merged_queries:
+                merged_queries[str(spec)] += "\n" + completed_query
+            else:
+                merged_queries[str(spec)] = completed_query
+            if write_to_csv:
+                write_queries_to_file(merged_queries=merged_queries)
+
+            print("Done generating queries")
+
+            return merged_queries
+
         table_exp_type = spec["table_exp_type"]
         where_clause_type = spec["where_type"]
         group_by_clause_type = spec["number_of_value_exp_in_group_by"]
@@ -246,11 +334,6 @@ def query_generator(
                                         )
                                         print_attributes(partial_query=partial_query)
 
-                                        query_data = {
-                                            "Specification": str(spec),
-                                            "Partial Query": partial_query,
-                                        }
-
                                         if str(spec) in merged_queries:
                                             merged_queries[str(spec)] += (
                                                 "\n" + partial_query
@@ -291,7 +374,10 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-print(fk)
+# print(schema)
+# print(pk)
+# print(fk)
+# print(schema_types)
 query_generator(
     "farm",
     schema,

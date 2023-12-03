@@ -3,7 +3,7 @@ import random
 from helper_funcs import generate_arithmetic_expression
 
 
-def handle_single_expl(select_statement, select_fields, random_column):
+def handle_single_exp(select_statement, select_fields, number_or_text, attributes):
     """
     Handles the 'single_expl' column type.
 
@@ -15,6 +15,7 @@ def handle_single_expl(select_statement, select_fields, random_column):
     Returns:
         tuple: The updated select statement and select fields.
     """
+    random_column = random.choice(attributes[number_or_text])
     select_statement += f"{random_column}, "
     select_fields.append(random_column)
     return select_statement, select_fields

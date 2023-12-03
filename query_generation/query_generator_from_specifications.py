@@ -29,7 +29,7 @@ def query_generator(
     is_subquery=False,
     testing_with_one_spec=False,
     random_choice=False,
-    set_op_type="none",
+    types_of_value_exps_for_set_op=None,
 ):
     """
     Generate queries based on the specifications provided in the specs dictionary.
@@ -64,59 +64,66 @@ def query_generator(
         if specs is None:
             specs = {
                 "farm": {
-                    #     # You can replace this dict to test with other specifications in config2.json
-                    #     "b5fd9b278cba4a91160033aba103557f2686eb93": {
+                    # You can replace this dict to test with other specifications in config2.json
+                    #     "dc349a552bd306c584540abb235ee999ac74a8eb": {
                     #         "set_op_type": "none",
                     #         "first_query": {
-                    #             "meaningful_joins": "no",
-                    #             "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                    #             "meaningful_joins": "yes",
+                    #             "table_exp_type": "Join_Join_RIGHT JOIN",
                     #             "where_type": {
-                    #                 "logical_operator": ["OR", "NOT IN", "basic_comparison"]
+                    #                 "logical_operator": [
+                    #                     "OR",
+                    #                     "basic_comparison",
+                    #                     "comparison_with_subquery",
+                    #                 ]
                     #             },
-                    #             "number_of_value_exp_in_group_by": 1,
+                    #             "number_of_value_exp_in_group_by": 0,
                     #             "having_type": "none",
                     #             "orderby_type": "ASC",
                     #             "limit_type": "without_offset",
-                    #             "value_exp_types": [
-                    #                 "arithmatic_exp",
-                    #                 "math_func_exp_alias",
-                    #             ],
-                    #             "distinct_type": "none",
+                    #             "value_exp_types": ["single_exp_text", "string_func_exp"],
+                    #             "distinct_type": "distinct",
                     #             "min_max_depth_in_subquery": [3, 5],
                     #         },
-                    #     }
-                    # },
-                    "608ffb8d1b9c3fb57be0761cfaa65b01277a1150": {
-                        "set_op_type": "UNION ALL",
+                    #     },
+                    # }
+                    "cc20ddc2983eaa4408b28d9917b7191b4672501f": {
+                        "set_op_type": "EXCEPT",
                         "first_query": {
-                            "meaningful_joins": "yes",
-                            "table_exp_type": "LEFT JOIN_RIGHT JOIN",
+                            "meaningful_joins": "no",
+                            "table_exp_type": "INNER JOIN_Join",
                             "where_type": {
                                 "logical_operator": [
                                     "AND",
-                                    "basic_comparison",
-                                    "basic_comparison",
+                                    "NOT IN",
+                                    "pattern_matching",
                                 ]
                             },
                             "number_of_value_exp_in_group_by": 0,
                             "having_type": "none",
                             "orderby_type": "multiple",
-                            "limit_type": "without_offset",
-                            "value_exp_types": ["agg_exp_alias", "string_func_exp"],
-                            "distinct_type": "none",
+                            "limit_type": "with_offset",
+                            "value_exp_types": ["agg_exp_alias", "single_exp_number"],
+                            "distinct_type": "distinct",
                             "min_max_depth_in_subquery": [0, 0],
                         },
                         "second_query": {
-                            "meaningful_joins": "no",
-                            "table_exp_type": "INNER JOIN_INNER JOIN_LEFT JOIN",
-                            "where_type": "not_exists_subquery",
+                            "meaningful_joins": "yes",
+                            "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                            "where_type": {
+                                "logical_operator": [
+                                    "OR",
+                                    "null_check",
+                                    "exists_subquery",
+                                ]
+                            },
                             "number_of_value_exp_in_group_by": 0,
                             "having_type": "none",
-                            "orderby_type": "number_DESC",
-                            "limit_type": "with_offset",
-                            "value_exp_types": ["agg_exp_alias", "string_func_exp"],
-                            "distinct_type": "none",
-                            "min_max_depth_in_subquery": [2, 2],
+                            "orderby_type": "number_ASC",
+                            "limit_type": "none",
+                            "value_exp_types": ["agg_exp_alias", "single_exp_number"],
+                            "distinct_type": "distinct",
+                            "min_max_depth_in_subquery": [0, 0],
                         },
                     },
                 }
@@ -374,10 +381,10 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-# print(schema)
-# print(pk)
-# print(fk)
-# print(schema_types)
+print(schema)
+print(pk)
+print(fk)
+print(schema_types)
 query_generator(
     "farm",
     schema,

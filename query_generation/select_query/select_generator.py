@@ -8,7 +8,7 @@ from .select_helper_funcs import (
     handle_alias_exp,
     handle_arithmatic_exp,
     handle_count_distinct_exp,
-    handle_single_expl,
+    handle_single_exp,
     handle_string_func_exp,
 )
 
@@ -236,11 +236,15 @@ def generate_value_expressions(
                 attributes["number"] + attributes["text"]
             )  # Select a random column
 
-            if col_type == "single_exp":
-                select_statement += f"{random_column}, "  # Add the random column to the SELECT statement
-                select_fields.append(
-                    random_column
-                )  # Add the random column to the select_fields list
+            if col_type.startswith("single_exp"):
+                number_or_text = col_type.split("_")[2]
+                select_statement, select_fields = handle_single_exp(
+                    select_statement,
+                    select_fields,
+                    number_or_text,
+                    attributes,
+                )
+
                 num_value_exp = 1  # Increment the number of value expressions
 
             elif col_type == "alias_exp":

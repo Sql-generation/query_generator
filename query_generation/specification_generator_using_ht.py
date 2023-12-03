@@ -59,24 +59,12 @@ def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
     first_spec = generate_specifications_for_queries_without_set_ops(
         schema, foreign_keys, specs["first_query"], num
     )
-    # generate_hash_table(
-    #     num,
-    #     table_exp_types_with_types_of_joins,
-    #     completed_specifications["where_clause_types"],
-    #     number_of_valu_exps_in_group_by,
-    #     having_types_without_having_group_by,
-    #     having_types_with_having_group_by,
-    #     orderby_types,
-    #     limit_types,
-    #     meaningful_joins,
-    #     distinct_types,
-    #     all_value_exp_types,
-    #     min_max_depth_in_subquery,
-    # )
+
     if "second_query" in specs:
         second_spec = generate_specifications_for_queries_without_set_ops(
             schema, foreign_keys, specs["second_query"], num
         )
+
     hash_table = {}
 
     for _ in range(num):
@@ -89,6 +77,7 @@ def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
         else:
             spec1 = first_spec[random.choice(list(first_spec))]
             spec2 = second_spec[random.choice(list(second_spec))]
+
             if (
                 spec1["number_of_value_exp_in_group_by"] != 0
                 or spec2["number_of_value_exp_in_group_by"] != 0
@@ -147,7 +136,6 @@ def generate_specifications_for_queries_without_set_ops(
     meaningful_joins = specs["meaningful_joins"]
     number_of_value_exps_in_select = specs["number_of_value_exps_in_select"]
     distinct_types = specs["distinct_types"]
-    math_func_col_types = specs.get("math_func_col", [])
     string_func_col_types = specs.get("string_func_col", [])
     arithmatic_col_types = specs.get("arithmatic_col", [])
     agg_func_col_types = specs.get("agg_col", [])
@@ -191,7 +179,6 @@ def generate_specifications_for_queries_without_set_ops(
     all_value_exp_types = generate_all_value_exp_types(
         value_exp_types,
         agg_func_col_types,
-        math_func_col_types,
         string_func_col_types,
         arithmatic_col_types,
         number_of_value_exps_in_select,
@@ -369,7 +356,6 @@ def generate_having_types(
 def generate_all_value_exp_types(
     value_exp_types,
     agg_func_col_types,
-    math_func_col_types,
     string_func_col_types,
     arithmatic_col_types,
     number_of_value_exps_in_select,
@@ -380,7 +366,6 @@ def generate_all_value_exp_types(
     Args:
         value_exp_types (list): The list of value expression types.
         agg_func_col_types (list): The list of aggregate function column types.
-        math_func_col_types (list): The list of math function column types.
         string_func_col_types (list): The list of string function column types.
         arithmatic_col_types (list): The list of arithmetic column types.
 
@@ -388,7 +373,9 @@ def generate_all_value_exp_types(
         list: The generated value expression types.
     """
     all_value_exp_types = []
-
+    if "single_exp" in value_exp_types:
+        value_exp_types.append("single_exp_number")
+        value_exp_types.append("single_exp_text")
     if agg_func_col_types:
         if "alias" in agg_func_col_types:
             value_exp_types.append("agg_exp_alias")
@@ -419,7 +406,6 @@ def generate_all_value_exp_types(
             continue
         all_combinations = select_combinations(value_exp_types, i)
         all_value_exp_types.extend(all_combinations)
-
     return all_value_exp_types
 
 

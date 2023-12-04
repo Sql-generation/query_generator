@@ -65,68 +65,61 @@ def query_generator(
             specs = {
                 "farm": {
                     # You can replace this dict to test with other specifications in config2.json
-                    #     "dc349a552bd306c584540abb235ee999ac74a8eb": {
-                    #         "set_op_type": "none",
-                    #         "first_query": {
-                    #             "meaningful_joins": "yes",
-                    #             "table_exp_type": "Join_Join_RIGHT JOIN",
-                    #             "where_type": {
-                    #                 "logical_operator": [
-                    #                     "OR",
-                    #                     "basic_comparison",
-                    #                     "comparison_with_subquery",
-                    #                 ]
-                    #             },
-                    #             "number_of_value_exp_in_group_by": 0,
-                    #             "having_type": "none",
-                    #             "orderby_type": "ASC",
-                    #             "limit_type": "without_offset",
-                    #             "value_exp_types": ["single_exp_text", "string_func_exp"],
-                    #             "distinct_type": "distinct",
-                    #             "min_max_depth_in_subquery": [3, 5],
-                    #         },
-                    #     },
-                    # }
-                    "cc20ddc2983eaa4408b28d9917b7191b4672501f": {
-                        "set_op_type": "EXCEPT",
+                    "dc349a552bd306c584540abb235ee999ac74a8eb": {
+                        "set_op_type": "none",
                         "first_query": {
-                            "meaningful_joins": "no",
-                            "table_exp_type": "INNER JOIN_Join",
-                            "where_type": {
-                                "logical_operator": [
-                                    "AND",
-                                    "NOT IN",
-                                    "pattern_matching",
-                                ]
-                            },
-                            "number_of_value_exp_in_group_by": 0,
-                            "having_type": "none",
-                            "orderby_type": "multiple",
-                            "limit_type": "with_offset",
-                            "value_exp_types": ["agg_exp_alias", "single_exp_number"],
-                            "distinct_type": "distinct",
-                            "min_max_depth_in_subquery": [0, 0],
-                        },
-                        "second_query": {
                             "meaningful_joins": "yes",
-                            "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
-                            "where_type": {
-                                "logical_operator": [
-                                    "OR",
-                                    "null_check",
-                                    "exists_subquery",
-                                ]
-                            },
-                            "number_of_value_exp_in_group_by": 0,
-                            "having_type": "none",
-                            "orderby_type": "number_ASC",
-                            "limit_type": "none",
-                            "value_exp_types": ["agg_exp_alias", "single_exp_number"],
+                            "table_exp_type": "single_table",
+                            "where_type": "none",
+                            "number_of_value_exp_in_group_by": 1,
+                            "having_type": "multiple",
+                            "orderby_type": "ASC",
+                            "limit_type": "without_offset",
+                            "value_exp_types": ["single_exp_text", "string_func_exp"],
                             "distinct_type": "distinct",
                             "min_max_depth_in_subquery": [0, 0],
                         },
                     },
                 }
+                # "cc20ddc2983eaa4408b28d9917b7191b4672501f": {
+                #     "set_op_type": "EXCEPT",
+                #     "first_query": {
+                #         "meaningful_joins": "no",
+                #         "table_exp_type": "INNER JOIN_Join",
+                #         "where_type": {
+                #             "logical_operator": [
+                #                 "AND",
+                #                 "NOT IN",
+                #                 "pattern_matching",
+                #             ]
+                #         },
+                #         "number_of_value_exp_in_group_by": 0,
+                #         "having_type": "none",
+                #         "orderby_type": "multiple",
+                #         "limit_type": "with_offset",
+                #         "value_exp_types": ["agg_exp_alias", "single_exp_number"],
+                #         "distinct_type": "distinct",
+                #         "min_max_depth_in_subquery": [0, 0],
+                #     },
+                #     "second_query": {
+                #         "meaningful_joins": "yes",
+                #         "table_exp_type": "LEFT JOIN_LEFT JOIN_LEFT JOIN",
+                #         "where_type": {
+                #             "logical_operator": [
+                #                 "OR",
+                #                 "null_check",
+                #                 "exists_subquery",
+                #             ]
+                #         },
+                #         "number_of_value_exp_in_group_by": 0,
+                #         "having_type": "none",
+                #         "orderby_type": "number_ASC",
+                #         "limit_type": "none",
+                #         "value_exp_types": ["agg_exp_alias", "single_exp_number"],
+                #         "distinct_type": "distinct",
+                #         "min_max_depth_in_subquery": [0, 0],
+                #     },
+                # },
             }
 
     print("Start generating queries")
@@ -281,6 +274,14 @@ def query_generator(
                                 attributes,
                                 must_be_in_select1,
                                 having_type,
+                                schema,
+                                schema_types,
+                                db_name,
+                                pk,
+                                fk,
+                                tables,
+                                min_max_depth_in_subquery=min_max_depth_in_subquery,
+                                query_generator_func=query_generator,
                                 random_choice=random_choice,
                             )
 
@@ -381,10 +382,10 @@ current_dir = os.path.dirname(__file__)
 file_name = os.path.join(current_dir, "../spider/tables.json")
 # Read schema information
 schema, pk, fk, schema_types = read_schema_pk_fk_types("farm", file_name)
-print(schema)
-print(pk)
-print(fk)
-print(schema_types)
+# print(schema)
+# print(pk)
+# print(fk)
+# print(schema_types)
 query_generator(
     "farm",
     schema,

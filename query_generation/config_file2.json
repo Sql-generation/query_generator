@@ -45,9 +45,10 @@
 "having_types" : [
     "none",
     "single",
-    "multiple"
+    "multiple",
+    "subquery"
 ],
-
+"subquery_in_having":["in_with_subquery", "comparison_with_subquery","not_exists_subquery","exists_subquery"],
 "number_of_value_exps_in_select":[1,2,"*"],
 "string_func_col":["alias", "no_alias"],
 "agg_col":["alias"],
@@ -112,8 +113,10 @@
 "having_types" : [
     "none",
     "single",
-    "multiple"
+    "multiple",
+    "subquery"
 ],
+"subquery_in_having":["in_with_subquery", "comparison_with_subquery","not_exists_subquery","exists_subquery"],
 
 "number_of_value_exps_in_select":[1,2,"*"],
 "string_func_col":["alias", "no_alias"],

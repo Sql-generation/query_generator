@@ -75,6 +75,7 @@ def read_random_specs(
     pk,
     fk,
     min_max_depth_in_subquery,
+    having=False,
     schema=None,
     exists=False,
 ):
@@ -113,12 +114,11 @@ def read_random_specs(
         >>> read_random_specs(file_name, db_name, tables, pk, fk, min_max_depth_in_subquery, schema, exists)
         ({...}, 'spec_hash', ['table1.pk1 = ', 'pk1'])
     """
+    where_or_having = "having_type" if having else "where_type"
     min_max_depth_in_subquery = [
         min_max_depth_in_subquery[0] - 1,
         min_max_depth_in_subquery[1] - 1,
     ]
-    print("min_max_depth_in_subquery:")
-    print(min_max_depth_in_subquery)
     must_be_in_where = None
     with open(file_name, "r") as json_file:
         specs = json.load(json_file)
@@ -136,6 +136,40 @@ def read_random_specs(
     temp_completed_spec = None
     temp_spec_hash = None
     temp_must_be_in_where = None
+    if where_or_having == "having_type":
+        if spec["where_type"] in [
+            "in_with_subquery",
+            "not_in_with_subquery",
+            "exists_subquery",
+            "not_exists_subquery",
+            "comparison_with_subquery",
+        ] or (
+            isinstance(spec["where_type"], dict)
+            and "logical_operator" in spec["where_type"]
+            and (
+                (
+                    spec["where_type"]["logical_operator"][1]
+                    in [
+                        "in_with_subquery",
+                        "not_in_with_subquery",
+                        "exists_subquery",
+                        "not_exists_subquery",
+                        "comparison_with_subquery",
+                    ]
+                )
+                or spec["where_type"]["logical_operator"][2]
+                in [
+                    "in_with_subquery",
+                    "not_in_with_subquery",
+                    "exists_subquery",
+                    "not_exists_subquery",
+                    "comparison_with_subquery",
+                ]
+            )
+        ):
+            spec["where_type"] = random.choice(["none", "null_check", "NOT IN"])
+            spec["min_max_depth_in_subquery"] = [0, 0]
+
     if exists:
         table, pk_of_table = get_random_table_and_pk(tables, pk)
         if table not in schema:
@@ -181,85 +215,127 @@ def read_random_specs(
                 "comparison_with_subquery",
             ]
         )
-        spec["where_type"] = subquery_type
+        spec[where_or_having] = subquery_type
     elif min_max_depth_in_subquery[1] > 1:
         print("min_max_depth_in_subquery[1] > 0")
-        if spec["where_type"] in [
-            "in_with_subquery",
-            "not_in_with_subquery",
-            "exists_subquery",
-            "not_exists_subquery",
-            "comparison_with_subquery",
-        ] or (
-            isinstance(spec["where_type"], dict)
-            and "logical_operator" in spec["where_type"]
-            and spec["where_type"]["logical_operator"]
-            in [
+        if where_or_having == "where_type":
+            if spec["where_type"] in [
                 "in_with_subquery",
                 "not_in_with_subquery",
                 "exists_subquery",
                 "not_exists_subquery",
                 "comparison_with_subquery",
-            ]
-        ):
-            spec["min_max_depth_in_subquery"] = [
-                min_max_depth_in_subquery[0],
-                min_max_depth_in_subquery[1] - 1,
-            ]
-            min_max_depth_in_subquery[1] -= 1
-    elif min_max_depth_in_subquery[1] == -1:
-        print("min_max_depth_in_subquery[1] == 0")
-        if isinstance(spec["where_type"], dict):
-            if "logical_operator" in spec["where_type"]:
-                for i in [
+            ] or (
+                isinstance(spec["where_type"], dict)
+                and "logical_operator" in spec["where_type"]
+                and (
+                    spec["where_type"]["logical_operator"][1]
+                    in [
+                        "in_with_subquery",
+                        "not_in_with_subquery",
+                        "exists_subquery",
+                        "not_exists_subquery",
+                        "comparison_with_subquery",
+                    ]
+                )
+                or spec["where_type"]["logical_operator"][2]
+                in [
                     "in_with_subquery",
                     "not_in_with_subquery",
                     "exists_subquery",
                     "not_exists_subquery",
                     "comparison_with_subquery",
-                ]:
-                    if i in spec["where_type"]["logical_operator"]:
-                        min_max_depth_in_subquery = [0, 0]
-
-                        (
-                            temp_completed_spec,
-                            temp_spec_hash,
-                            temp_must_be_in_where,
-                        ) = read_random_specs(
-                            file_name,
-                            db_name,
-                            tables,
-                            pk,
-                            fk,
-                            min_max_depth_in_subquery,
-                        )
-                        print(temp_completed_spec)
-                        print("hi1")
-                        spec["min_max_depth_in_subquery"] = [0, 0]
-        elif spec["where_type"] in [
+                ]
+            ):
+                spec["min_max_depth_in_subquery"] = [
+                    min_max_depth_in_subquery[0],
+                    min_max_depth_in_subquery[1] - 1,
+                ]
+                min_max_depth_in_subquery[1] -= 1
+        elif spec["having_type"] in [
             "in_with_subquery",
             "not_in_with_subquery",
             "exists_subquery",
             "not_exists_subquery",
             "comparison_with_subquery",
         ]:
-            min_max_depth_in_subquery = [0, 0]
-            (
-                temp_completed_spec,
-                temp_spec_hash,
-                temp_must_be_in_where,
-            ) = read_random_specs(
-                file_name, db_name, tables, pk, fk, min_max_depth_in_subquery
-            )
-            print(temp_completed_spec)
-            print("hi")
+            spec["min_max_depth_in_subquery"] = [
+                min_max_depth_in_subquery[0],
+                min_max_depth_in_subquery[1] - 1,
+            ]
+            min_max_depth_in_subquery[1] -= 1
+    elif min_max_depth_in_subquery[1] == -1:
+        print("min_max_depth_in_subquery[1] == -1")
+        if where_or_having == "where_type":
+            if isinstance(spec["where_type"], dict):
+                if "logical_operator" in spec["where_type"]:
+                    for i in [
+                        "in_with_subquery",
+                        "not_in_with_subquery",
+                        "exists_subquery",
+                        "not_exists_subquery",
+                        "comparison_with_subquery",
+                    ]:
+                        if i in spec["where_type"]["logical_operator"]:
+                            min_max_depth_in_subquery = [0, 0]
+
+                            (
+                                temp_completed_spec,
+                                temp_spec_hash,
+                                temp_must_be_in_where,
+                            ) = read_random_specs(
+                                file_name,
+                                db_name,
+                                tables,
+                                pk,
+                                fk,
+                                min_max_depth_in_subquery,
+                            )
+                            print(temp_completed_spec)
+                            print("hi1")
+                            spec["min_max_depth_in_subquery"] = [0, 0]
+            elif spec["where_type"] in [
+                "in_with_subquery",
+                "not_in_with_subquery",
+                "exists_subquery",
+                "not_exists_subquery",
+                "comparison_with_subquery",
+            ]:
+                min_max_depth_in_subquery = [0, 0]
+                (
+                    temp_completed_spec,
+                    temp_spec_hash,
+                    temp_must_be_in_where,
+                ) = read_random_specs(
+                    file_name, db_name, tables, pk, fk, min_max_depth_in_subquery
+                )
+
+                spec["min_max_depth_in_subquery"] = [0, 0]
+        else:
             spec["min_max_depth_in_subquery"] = [0, 0]
+
+            if spec["having_type"] in [
+                "in_with_subquery",
+                "not_in_with_subquery",
+                "exists_subquery",
+                "not_exists_subquery",
+                "comparison_with_subquery",
+            ]:
+                min_max_depth_in_subquery = [0, 0]
+                (
+                    temp_completed_spec,
+                    temp_spec_hash,
+                    temp_must_be_in_where,
+                ) = read_random_specs(
+                    file_name, db_name, tables, pk, fk, min_max_depth_in_subquery
+                )
+
+                spec["min_max_depth_in_subquery"] = [0, 0]
     print("After: ")
     if temp_completed_spec is not None:
         return temp_completed_spec, temp_spec_hash, temp_must_be_in_where
 
     completed_spec = {"first_query": spec, "set_op_type": "none"}
-    print("YESS")
     print(completed_spec)
     return completed_spec, spec_hash, must_be_in_where
 

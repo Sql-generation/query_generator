@@ -15,6 +15,8 @@ def handle_single_exp(select_statement, select_fields, number_or_text, attribute
     Returns:
         tuple: The updated select statement and select fields.
     """
+    if len(attributes[number_or_text]) == 0:
+        raise Exception("No number or text columns")
     random_column = random.choice(attributes[number_or_text])
     select_statement += f"{random_column}, "
     select_fields.append(random_column)

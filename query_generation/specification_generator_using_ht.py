@@ -56,6 +56,7 @@ def complete_specs(db_file, config_file, db_name=None):
 
 def generate_specifications_for_queries(schema, foreign_keys, specs, num=100):
     set_ops_types = specs["set_op_types"]
+
     first_spec = generate_specifications_for_queries_without_set_ops(
         schema, foreign_keys, specs["first_query"], num
     )
@@ -140,6 +141,7 @@ def generate_specifications_for_queries_without_set_ops(
     arithmatic_col_types = specs.get("arithmatic_col", [])
     agg_func_col_types = specs.get("agg_col", [])
     subquery_in_where = specs["subquery_in_where"]
+    subquery_in_having = specs["subquery_in_having"]
     min_max_depth_in_subquery = specs.get("min_max_depth_in_subquery", [0, 0])
     join_types = specs["join_types"]
     table_exp_types_with_types_of_joins = generate_table_expression_types(
@@ -169,7 +171,9 @@ def generate_specifications_for_queries_without_set_ops(
     completed_specifications[
         "having_types_with_having_group_by"
     ] = generate_having_types(
-        having_types_with_having_group_by, aggregate_functions_for_having
+        having_types_with_having_group_by,
+        aggregate_functions_for_having,
+        subquery_in_having,
     )
     having_types_with_having_group_by = completed_specifications[
         "having_types_with_having_group_by"
@@ -327,7 +331,9 @@ def add_logical_operator_combinations(where_clause_types):
 
 
 def generate_having_types(
-    having_types_with_having_group_by, aggregate_functions_for_having
+    having_types_with_having_group_by,
+    aggregate_functions_for_having,
+    subquery_in_having,
 ):
     """
     Generate the having types for the specifications.
@@ -350,6 +356,8 @@ def generate_having_types(
 
     if "none" in having_types_with_having_group_by:
         generated_having_types.append("none")
+    if "subquery" in having_types_with_having_group_by:
+        generated_having_types.extend(subquery_in_having)
     return generated_having_types
 
 
@@ -464,7 +472,6 @@ def generate_hash_table(
             orderby_type = random.choice(
                 ["ASC", "DESC", "number_ASC", "number_DESC", "none"]
             )  # It cannot be multiple
-
         detail = {
             "meaningful_joins": type_of_join,
             "table_exp_type": table_exp_type,
@@ -495,7 +502,7 @@ if __name__ == "__main__":
 
     current_dir = os.path.dirname(__file__)
     dataset_path = os.path.join(current_dir, "../spider/tables.json")
-    config_file = os.path.abspath(os.path.join(current_dir, "config_file2.json"))
+    config_file = os.path.abspath(os.path.join(current_dir, "config_file.json"))
     # config_file = file_path = os.path.abspath(
     #     "query_generator/query_generation/config_file.json"
     # )

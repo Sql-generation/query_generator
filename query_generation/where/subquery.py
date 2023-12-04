@@ -3,7 +3,7 @@ import json
 import os
 import random
 
-from helper_funcs import get_table_name_from_column, read_random_specs
+from helper_funcs import get_table_name_from_column, print_attributes, read_random_specs
 
 
 def generate_subquery(
@@ -17,7 +17,9 @@ def generate_subquery(
     tables,
     min_max_depth_in_subquery=None,
     query_generator_func=None,
+    having=False,
 ):
+    print("generate_subquery")
     if min_max_depth_in_subquery is None:
         min_max_depth_in_subquery = [0, 0]
     current_dir = os.path.dirname(__file__)
@@ -36,6 +38,7 @@ def generate_subquery(
             tables,
             min_max_depth_in_subquery,
             query_generator_func,
+            having=having,
         )
 
     elif subquery_type == "comparison_with_subquery":
@@ -50,6 +53,7 @@ def generate_subquery(
             tables,
             min_max_depth_in_subquery,
             query_generator_func,
+            having=having,
         )
 
     elif subquery_type in ["exists_subquery", "not_exists_subquery"]:
@@ -65,6 +69,7 @@ def generate_subquery(
             tables,
             min_max_depth_in_subquery,
             query_generator_func,
+            having=having,
         )
 
     elif subquery_type == "correlated_subquery":
@@ -86,6 +91,7 @@ def generate_in_or_not_in_subquery(
     tables,
     min_max_depth_in_subquery,
     query_generator_func,
+    having=False,
 ):
     in_or_not_in = "NOT IN" if "not" in subquery_type else "IN"
     if random.choice([True, False]):
@@ -98,7 +104,7 @@ def generate_in_or_not_in_subquery(
     tables = get_table_name_from_column(random_column, schema)
 
     spec, spec_hash, must_be_in_where = read_random_specs(
-        file_name, db_name, tables, pk, fk, min_max_depth_in_subquery
+        file_name, db_name, tables, pk, fk, min_max_depth_in_subquery, having=having
     )
 
     dict_spec = {db_name: {spec_hash: spec}}
@@ -135,6 +141,7 @@ def generate_comparison_subquery(
     tables,
     min_max_depth_in_subquery,
     query_generator_func,
+    having=False,
 ):
     comparison_operators = ["=", "<>", "!=", ">", "<", ">=", "<="]
     modified_by_any_or_all = random.choice([True, False])
@@ -148,9 +155,8 @@ def generate_comparison_subquery(
     tables = get_table_name_from_column(random_column, schema)
 
     spec, spec_hash, must_be_in_where = read_random_specs(
-        file_name, db_name, tables, pk, fk, min_max_depth_in_subquery
+        file_name, db_name, tables, pk, fk, min_max_depth_in_subquery, having=having
     )
-
     if not modified_by_any_or_all:
         agg_func = random.choice(["MAX", "MIN", "AVG", "SUM"])
         must_be_in_select = [f"{agg_func}({random_column})"]
@@ -176,6 +182,7 @@ def generate_comparison_subquery(
     sub_query = list(merged_queries.values())[0].split("\n")[0]
 
     where_clause = f"{random_column} {comp_clause} ({sub_query})"
+    print("where_clause", where_clause)
 
     return [where_clause]
 
@@ -192,6 +199,7 @@ def generate_exists_subquery(
     tables,
     min_max_depth_in_subquery,
     query_generator_func,
+    having=False,
 ):
     exist_or_not_exist = "EXISTS" if "exists" in subquery_type else "NOT EXISTS"
 
@@ -206,6 +214,7 @@ def generate_exists_subquery(
         min_max_depth_in_subquery,
         schema=schema,
         exists=True,
+        having=having,
     )
     dict_spec = {db_name: {spec_hash: spec}}
 

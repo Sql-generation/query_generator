@@ -37,6 +37,7 @@ def complete_query_with_select(
     Returns:
         list: The list of select clauses.
     """
+
     select_clauses = generate_select_clause(
         temp_query,
         attributes,
@@ -87,6 +88,7 @@ def generate_select_clause(
     Returns:
         list: The list of select clauses.
     """
+
     if select_statement_type == "*":
         return [
             [
@@ -158,7 +160,6 @@ def generate_select_clause_with_group_by(
         random_choice=random_choice,
     )
     queries = []
-
     for temp in select_statement_with_fields:
         select_statement = temp[0]
         select_fields_temp = temp[1]
@@ -216,6 +217,7 @@ def generate_value_expressions(
     Returns:
         list: The list of select statements.
     """
+
     select_statements = []  # List to store the generated SELECT statements
     repeat_num = (
         1 if random_choice else 3

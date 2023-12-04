@@ -1,5 +1,7 @@
 
-{"join_types":["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN","Join"],
+{"set_op_types":["none"],
+"first_query":{
+    "join_types":["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN","Join"],
 
     "table_exp_types" : [
     "single_table",
@@ -43,8 +45,11 @@
 "having_types" : [
     "none",
     "single",
-    "multiple"
+    "multiple",
+    "subquery"
 ],
+"subquery_in_having":["in_with_subquery", "comparison_with_subquery","not_exists_subquery","exists_subquery"],
+
 
 "number_of_value_exps_in_select":[1,2,"*"],
 "string_func_col":["alias", "no_alias"],
@@ -64,4 +69,4 @@
 "distinct_types": ["none", "distinct"],
 "orderby_types": ["ASC", "DESC","number_ASC","number_DESC" ,"none","multiple"],
 "limit_types" : ["none", "without_offset", "with_offset"]
-}
+}}

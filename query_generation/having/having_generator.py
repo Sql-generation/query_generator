@@ -1,11 +1,21 @@
 import random
 
+from where.subquery import generate_subquery
+
 
 def complete_with_having_clause(
     temp_query,
     attributes,
     must_have_attributes,
     having_clauses_types,
+    schema,
+    schema_types,
+    db_name,
+    pk,
+    fk,
+    tables,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
     random_choice=False,
 ):
     """
@@ -25,11 +35,29 @@ def complete_with_having_clause(
         >>> complete_with_having_clause("SELECT * FROM table GROUP BY col2", {"number": ["col1"], "text": ["col2"]}, ["col1"], "multiple")
         [['SELECT * FROM table GROUP BY col2 HAVING ((MAX(col1) > 50) AND (MIN(col1) < 30))', {'number': ['col1'], 'text': ['col2']}, ['col1']]]
     """
-    print("complete_with_having_clause")
+
     if having_clauses_types == "none":
         return [[temp_query, attributes, must_have_attributes]]
-    elif having_clauses_types == "subquery":
-        pass
+    elif "subquery" in having_clauses_types:
+        having_clauses = generate_subquery(
+            schema,
+            schema_types,
+            db_name,
+            attributes,
+            having_clauses_types,
+            pk,
+            fk,
+            tables,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
+            having=True,
+        )
+        queries = []
+        for having_clause in having_clauses:
+            query = f"{temp_query} HAVING {having_clause} "
+            queries.append([query, attributes, must_have_attributes])
+        return queries
+
     elif having_clauses_types == "multiple":
         return create_multiple_having_clause(
             attributes, temp_query, must_have_attributes
@@ -79,7 +107,7 @@ def create_multiple_having_clause(attributes, temp_query, must_have_attributes):
     )
     return [
         [
-            f"{temp_query} HAVING (({having_clause1}) {random_logical_op} ({having_clause2}))",
+            f"{temp_query} HAVING (({having_clause1[0]}) {random_logical_op} ({having_clause2[0]}))",
             attributes,
             must_have_attributes,
         ]

@@ -1,14 +1,15 @@
 
 {"set_op_types":["none"],
 "first_query":{
-    "join_types":["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN","Join"],
+    "join_types":["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN"],
 
     "table_exp_types" : [
     "single_table",
     "single_table_with_name_changing",
     "join_1",
     "join_2",
-    "join_3"
+    "join_3",
+    "subquery"
     
 ],
 "where_clause_types" : [

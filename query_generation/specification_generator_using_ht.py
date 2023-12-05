@@ -382,6 +382,7 @@ def generate_all_value_exp_types(
     """
     all_value_exp_types = []
     if "single_exp" in value_exp_types:
+        value_exp_types.remove("single_exp")
         value_exp_types.append("single_exp_number")
         value_exp_types.append("single_exp_text")
     if agg_func_col_types:

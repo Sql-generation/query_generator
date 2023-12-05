@@ -1,6 +1,6 @@
 import random
 
-from where.subquery import generate_subquery
+from subquery_generator.subquery import generate_subquery
 
 
 def complete_with_having_clause(

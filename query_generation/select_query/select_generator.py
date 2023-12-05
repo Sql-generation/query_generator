@@ -1,11 +1,8 @@
 import random
 
-from helper_funcs import generate_arithmetic_expression
-
 from .select_helper_funcs import (
     _generate_random_alias_name,
     handle_agg_exp,
-    handle_alias_exp,
     handle_arithmatic_exp,
     handle_count_distinct_exp,
     handle_single_exp,
@@ -55,8 +52,9 @@ def complete_query_with_select(
             must_have_attributes,
             select_fields,
             num_value_exps,
+            select_fields_types,
         ]
-        for select_statement, select_fields, num_value_exps in select_clauses
+        for select_statement, select_fields, num_value_exps, select_fields_types in select_clauses
     ]
 
 
@@ -88,13 +86,16 @@ def generate_select_clause(
     Returns:
         list: The list of select clauses.
     """
-
+    print("START SELECT")
+    print(select_statement_type)
+    print(is_subquery)
     if select_statement_type == "*":
         return [
             [
                 "SELECT * ",
                 attributes["number"] + attributes["text"],
                 len(attributes["number"] + attributes["text"]),
+                {},
             ]
         ]
 
@@ -117,6 +118,7 @@ def generate_select_clause(
         )
 
     else:
+        print("EEEE")
         return generate_value_expressions(
             must_have_attributes,
             select_statement_type,
@@ -168,9 +170,10 @@ def generate_select_clause_with_group_by(
         select_fields += select_fields_temp
         select_statement += ", "
         select_statement += ", ".join(must_have_attributes)
+        print(select_fields, "!!!!!!!!!!!!!")
 
         select_statement = select_statement.removesuffix(", ")
-        queries.append([select_statement, select_fields, num_value_exps])
+        queries.append([select_statement, select_fields, num_value_exps, temp[3]])
 
     return queries
 
@@ -194,7 +197,7 @@ def generate_select_clause_subquery(
     select_statement = "SELECT " + ", ".join(must_have_attributes)
     select_fields = must_have_attributes.copy()
     num_value_exps = len(select_fields)
-    return [[select_statement, select_fields, num_value_exps]]
+    return [[select_statement, select_fields, num_value_exps, {}]]
 
 
 def generate_value_expressions(
@@ -217,7 +220,8 @@ def generate_value_expressions(
     Returns:
         list: The list of select statements.
     """
-
+    print("SELECT STATEMENT TYPE")
+    select_fields_types = {}
     select_statements = []  # List to store the generated SELECT statements
     repeat_num = (
         1 if random_choice else 3
@@ -233,6 +237,7 @@ def generate_value_expressions(
         select_fields = []  # List to store the select fields
 
         for col_type in select_statement_type:
+            print(col_type)
             num_value_exp = 0  # Number of value expressions
             random_column = random.choice(
                 attributes["number"] + attributes["text"]
@@ -257,21 +262,41 @@ def generate_value_expressions(
                 select_fields.append(
                     alias_name
                 )  # Add the alias to the select_fields list
+                select_fields_types[alias_name] = (
+                    "text" if random_column in attributes["text"] else "number"
+                )
                 num_value_exp = 1  # Increment the number of value expressions
 
             elif col_type.startswith("arithmatic_exp"):
+                print("ARITH EXP")
                 select_statement, select_fields, num_value_exp = handle_arithmatic_exp(
-                    select_statement, select_fields, col_type, random_column, attributes
+                    select_statement,
+                    select_fields,
+                    col_type,
+                    random_column,
+                    attributes,
+                    select_fields_types,
                 )  # Handle arithmetic expression and update select_statement and select_fields
 
             elif col_type.startswith("string_func_exp"):
                 select_statement, select_fields, num_value_exp = handle_string_func_exp(
-                    select_statement, select_fields, col_type, random_column, attributes
+                    select_statement,
+                    select_fields,
+                    col_type,
+                    random_column,
+                    attributes,
+                    select_fields_types,
                 )  # Handle string function expression and update select_statement and select_fields
 
             elif col_type.startswith("agg_exp"):
+                print("AGG EXP")
                 select_statement, select_fields, num_value_exp = handle_agg_exp(
-                    select_statement, select_fields, col_type, random_column, attributes
+                    select_statement,
+                    select_fields,
+                    col_type,
+                    random_column,
+                    attributes,
+                    select_fields_types,
                 )  # Handle aggregate expression and update select_statement and select_fields
 
             elif col_type.startswith("count_distinct_exp"):
@@ -280,7 +305,12 @@ def generate_value_expressions(
                     select_fields,
                     num_value_exp,
                 ) = handle_count_distinct_exp(
-                    select_statement, select_fields, col_type, random_column, attributes
+                    select_statement,
+                    select_fields,
+                    col_type,
+                    random_column,
+                    attributes,
+                    select_fields_types,
                 )  # Handle count distinct expression and update select_statement and select_fields
             num_value_exps += num_value_exp  # Increment the number of value expressions
         if select_statement[-2:] == ", ":
@@ -288,6 +318,7 @@ def generate_value_expressions(
                 :-2
             ]  # Remove the trailing comma and space
         select_statements.append(
-            [select_statement, select_fields, num_value_exps]
+            [select_statement, select_fields, num_value_exps, select_fields_types]
         )  # Add the generated select_statement and select_fields to select_statements
+    print(select_statements)
     return select_statements

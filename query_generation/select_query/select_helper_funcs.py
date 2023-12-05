@@ -23,26 +23,13 @@ def handle_single_exp(select_statement, select_fields, number_or_text, attribute
     return select_statement, select_fields
 
 
-def handle_alias_exp(select_statement, select_fields, random_column):
-    """
-    Handles the 'alias_exp' column type.
-
-    Args:
-        select_statement (str): The select statement.
-        select_fields (list): The list of select fields.
-        random_column (str): The random column.
-
-    Returns:
-        tuple: The updated select statement and select fields.
-    """
-    alias_name = _generate_random_alias_name(select_fields)
-    select_statement += f"{random_column} AS {alias_name}, "
-    select_fields.append(alias_name)
-    return select_statement, select_fields
-
-
 def handle_arithmatic_exp(
-    select_statement, select_fields, col_type, random_column, attributes
+    select_statement,
+    select_fields,
+    col_type,
+    random_column,
+    attributes,
+    select_fields_types,
 ):
     """
     Handles the 'arithmatic_exp' column type.
@@ -64,11 +51,18 @@ def handle_arithmatic_exp(
         alias_name = _generate_random_alias_name(select_fields)
         select_statement += f"{arithmatic_exp} AS {alias_name}, "
         select_fields.append(alias_name)
+        select_fields_types[alias_name] = "number"
+    print("select_statement", select_statement)
     return select_statement, select_fields, 1
 
 
 def handle_string_func_exp(
-    select_statement, select_fields, col_type, random_column, attributes
+    select_statement,
+    select_fields,
+    col_type,
+    random_column,
+    attributes,
+    select_fields_types,
 ):
     """
     Handles the 'string_func_exp' column type.
@@ -101,16 +95,22 @@ def handle_string_func_exp(
     else:
         select_statement += f"{random_string_func}({random_column}), "
 
-    if col_type == "string_func_col_alias":
+    if col_type == "string_func_exp_alias":
         alias_name = _generate_random_alias_name(select_fields)
-        select_statement += f"{random_column} AS {alias_name}, "
+        select_statement += f"AS {alias_name}, "
         select_fields.append(alias_name)
+        select_fields_types[alias_name] = "text"
 
     return select_statement, select_fields, 1
 
 
 def handle_agg_exp(
-    select_statement, select_fields, col_type, random_column, attributes
+    select_statement,
+    select_fields,
+    col_type,
+    random_column,
+    attributes,
+    select_fields_types,
 ):
     """
     Handles the 'agg_exp' column type.
@@ -133,12 +133,20 @@ def handle_agg_exp(
         alias_name = _generate_random_alias_name(select_fields)
         select_statement += f"{random_agg_func}({random_column}) AS {alias_name}, "
         select_fields.append(alias_name)
+        select_fields_types[alias_name] = "number"
+    else:
+        select_statement += f"{random_agg_func}({random_column}), "
 
     return select_statement, select_fields, 1
 
 
 def handle_count_distinct_exp(
-    select_statement, select_fields, col_type, random_column, attributes
+    select_statement,
+    select_fields,
+    col_type,
+    random_column,
+    attributes,
+    select_fields_types,
 ):
     """
     Handles the 'count_distinct_exp' column type.
@@ -160,7 +168,9 @@ def handle_count_distinct_exp(
         alias_name = _generate_random_alias_name(select_fields)
         select_statement += f"COUNT(DISTINCT({random_column})) AS {alias_name}, "
         select_fields.append(alias_name)
-
+        select_fields_types[alias_name] = "number"
+    else:
+        select_statement += f"COUNT(DISTINCT({random_column})), "
     return select_statement, select_fields, 1
 
 

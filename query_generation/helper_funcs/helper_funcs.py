@@ -78,6 +78,7 @@ def read_random_specs(
     having=False,
     schema=None,
     exists=False,
+    from_clause=False,
 ):
     """
     Read a random specification from a file and generate a query based on the specification.
@@ -136,7 +137,8 @@ def read_random_specs(
     temp_completed_spec = None
     temp_spec_hash = None
     temp_must_be_in_where = None
-    if where_or_having == "having_type":
+    if from_clause:
+        print("from_clause")
         if spec["where_type"] in [
             "in_with_subquery",
             "not_in_with_subquery",
@@ -168,7 +170,65 @@ def read_random_specs(
             )
         ):
             spec["where_type"] = random.choice(["none", "null_check", "NOT IN"])
-            spec["min_max_depth_in_subquery"] = [0, 0]
+        if spec["table_exp_type"] == "single_table_with_name_changing":
+            spec["table_exp_type"] = "single_table"
+        spec["number_of_value_exp_in_group_by"] = min(
+            spec["number_of_value_exp_in_group_by"], 1
+        )
+        value_exp_types = []
+        for col_type in spec["value_exp_types"]:
+            if col_type == "arithmatic_exp":
+                value_exp_types.append("arithmatic_exp_alias")
+            elif col_type == "string_func_exp":
+                value_exp_types.append("string_func_exp_alias")
+            elif col_type == "agg_exp":
+                value_exp_types.append("agg_exp_alias")
+            elif col_type == "count_distinct_exp":
+                value_exp_types.append("count_distinct_exp_alias")
+            else:
+                value_exp_types.append(col_type)
+        if value_exp_types == ["*"]:
+            value_exp_types = "*"
+        spec["value_exp_types"] = value_exp_types
+
+        spec["min_max_depth_in_subquery"] = [0, 0]
+        return spec, spec_hash, None
+    if where_or_having == "having_type" and (
+        spec["where_type"]
+        in [
+            "in_with_subquery",
+            "not_in_with_subquery",
+            "exists_subquery",
+            "not_exists_subquery",
+            "comparison_with_subquery",
+        ]
+        or (
+            isinstance(spec["where_type"], dict)
+            and "logical_operator" in spec["where_type"]
+            and (
+                (
+                    spec["where_type"]["logical_operator"][1]
+                    in [
+                        "in_with_subquery",
+                        "not_in_with_subquery",
+                        "exists_subquery",
+                        "not_exists_subquery",
+                        "comparison_with_subquery",
+                    ]
+                )
+                or spec["where_type"]["logical_operator"][2]
+                in [
+                    "in_with_subquery",
+                    "not_in_with_subquery",
+                    "exists_subquery",
+                    "not_exists_subquery",
+                    "comparison_with_subquery",
+                ]
+            )
+        )
+    ):
+        spec["where_type"] = random.choice(["none", "null_check", "NOT IN"])
+        spec["min_max_depth_in_subquery"] = [0, 0]
 
     if exists:
         table, pk_of_table = get_random_table_and_pk(tables, pk)
@@ -787,6 +847,7 @@ def random_not_pk_cols(attributes, unique_tables, pk, number_of_col):
         [['col1', 'col2', 'col3'], ['col1', 'col2', 'col4']]
     """
     all_cols = attributes["number"] + attributes["text"]
+    print(all_cols)
 
     if isinstance(unique_tables, list):
         for table in unique_tables:
@@ -797,7 +858,9 @@ def random_not_pk_cols(attributes, unique_tables, pk, number_of_col):
     elif isinstance(unique_tables, str):
         if pk[unique_tables] in all_cols:
             all_cols.remove(pk[unique_tables])
-    else:
+    elif isinstance(unique_tables, dict) and not isinstance(
+        unique_tables[list(unique_tables.keys())[0]], list
+    ):
         for alias_table in unique_tables:
             if f"{alias_table}.{pk[unique_tables[alias_table]]}" in all_cols:
                 all_cols.remove(f"{alias_table}.{pk[unique_tables[alias_table]]}")

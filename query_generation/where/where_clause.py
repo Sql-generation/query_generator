@@ -8,8 +8,7 @@ from helper_funcs import (
     generate_random_words,
     get_attributes_ends_with,
 )
-
-from .subquery import generate_subquery
+from subquery_generator import generate_subquery
 
 
 def basic_comparison(colms, details, random_choice):

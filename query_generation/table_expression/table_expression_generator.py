@@ -10,6 +10,7 @@ import random
 
 from helper_funcs import all_colms
 from join import generate_join_query, generate_meaningless_join
+from subquery_generator import generate_subquery
 
 from .table_expression_helper_funcs import (
     handle_join_case,
@@ -26,7 +27,9 @@ def create_table_expression(
     schema_types,
     table_expression_type,
     meaningful_joins,
+    db_name,
     random_choice=False,
+    query_generator_func=None,
 ):
     """
     Generate SQL table expression based on the specified type.
@@ -69,8 +72,30 @@ def create_table_expression(
         )
     elif case == "CTE":
         pass
-    elif case == "sub_query":
-        pass
+    elif case == "subquery":
+        from_clauses = generate_subquery(
+            schema,
+            schema_types,
+            db_name,
+            None,
+            case,
+            pk,
+            fk,
+            # min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
+            having=True,
+        )
+        print("FROM CLAUSES")
+        print(from_clauses)
+        queries = []
+        for from_clause, tables, attributes in from_clauses:
+            print("GHG")
+            print(from_clause)
+            query = f" FROM {from_clause}"
+            # attributes = get_all_attributes_for_from_subquery()
+            # queries.append([query, attributes, must_have_attributes])
+            # TODO
+            queries_with_attributes.append([query, tables, attributes])
 
     return queries_with_attributes
 

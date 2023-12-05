@@ -14,7 +14,7 @@ def generate_subquery(
     subquery_type,
     pk,
     fk,
-    tables,
+    tables=None,
     min_max_depth_in_subquery=None,
     query_generator_func=None,
     having=False,
@@ -72,8 +72,19 @@ def generate_subquery(
             having=having,
         )
 
-    elif subquery_type == "correlated_subquery":
-        return generate_correlated_subquery()
+    elif subquery_type == "subquery":
+        return generate_subquery_for_from_clause(
+            file_name,
+            schema,
+            schema_types,
+            db_name,
+            subquery_type,
+            pk,
+            fk,
+            tables,
+            min_max_depth_in_subquery,
+            query_generator_func,
+        )
 
     elif subquery_type == "nested_subquery":
         return generate_nested_subquery()
@@ -240,8 +251,75 @@ def generate_exists_subquery(
     return [where_clause]
 
 
-def generate_correlated_subquery():
-    pass
+def generate_subquery_for_from_clause(
+    file_name,
+    schema,
+    schema_types,
+    db_name,
+    subquery_type,
+    pk,
+    fk,
+    tables=None,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
+):
+    spec, spec_hash, must_be_in_where = read_random_specs(
+        file_name, db_name, tables, pk, fk, min_max_depth_in_subquery, from_clause=True
+    )
+
+    dict_spec = {db_name: {spec_hash: spec}}
+
+    merged_queries, select_fields = query_generator_func(
+        schema=schema,
+        schema_types=schema_types,
+        pk=pk,
+        fk=fk,
+        specs=dict_spec,
+        db_name=db_name,
+        write_to_csv=False,
+        is_subquery=False,
+        testing_with_one_spec=True,
+        random_choice=True,
+        return_select_fields=True,
+        return_table_exp_attributes=True,
+        return_unique_tables=True,
+    )
+    print("HIIII")
+    print(select_fields)
+    hash = list(select_fields.keys())[0]
+    select_fields_list = select_fields[hash]["select_fields"]
+    print("PPPPP", select_fields_list)
+    query_attrs = select_fields[hash]["table_exp_attributes"]
+    unique_tables = select_fields[hash]["unique_tables"]
+    select_fields_types = select_fields[hash]["select_fields_types"]
+    print(select_fields_types)
+    print("))))))")
+    attributes = {"number": [], "text": []}
+    alias_name = random.choice("abcdefghijklmnopqrstuvwxyz")
+
+    for field in select_fields_list:
+        if field in query_attrs["number"]:
+            attributes["number"].append(f"{alias_name}.{field}")
+        elif field in query_attrs["text"]:
+            attributes["text"].append(f"{alias_name}.{field}")
+        elif field in select_fields_types:
+            attributes[select_fields_types[field]].append(f"{alias_name}.{field}")
+
+    print("attributes", attributes)
+    print("attr", query_attrs)
+    print("select_fields", select_fields)
+    sub_query = list(merged_queries.values())[0].split("\n")[0]
+
+    from_clause_subquery = f"({sub_query}) AS {alias_name}"
+    print("from_clause_subquery", from_clause_subquery)
+
+    return [
+        [
+            from_clause_subquery,
+            {alias_name: unique_tables},
+            attributes,
+        ]
+    ]
 
 
 def generate_nested_subquery():

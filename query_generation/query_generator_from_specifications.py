@@ -30,6 +30,10 @@ def query_generator(
     testing_with_one_spec=False,
     random_choice=False,
     types_of_value_exps_for_set_op=None,
+    return_select_fields=False,
+    return_table_exp_attributes=False,
+    return_unique_tables=False,
+    return_select_fields_dict=False,
 ):
     """
     Generate queries based on the specifications provided in the specs dictionary.
@@ -65,19 +69,41 @@ def query_generator(
             specs = {
                 "farm": {
                     # You can replace this dict to test with other specifications in config2.json
-                    "dc349a552bd306c584540abb235ee999ac74a8eb": {
+                    #     "dc349a552bd306c584540abb235ee999ac74a8eb": {
+                    #         "set_op_type": "none",
+                    #         "first_query": {
+                    #             "meaningful_joins": "yes",
+                    #             "table_exp_type": "single_table",
+                    #             "where_type": "none",
+                    #             "number_of_value_exp_in_group_by": 1,
+                    #             "having_type": "multiple",
+                    #             "orderby_type": "ASC",
+                    #             "limit_type": "without_offset",
+                    #             "value_exp_types": ["single_exp_text", "string_func_exp"],
+                    #             "distinct_type": "distinct",
+                    #             "min_max_depth_in_subquery": [0, 0],
+                    #         },
+                    #     },
+                    # }
+                    "100053cb65de263966b80d1dbc399603bfa6c60d": {
                         "set_op_type": "none",
                         "first_query": {
                             "meaningful_joins": "yes",
-                            "table_exp_type": "single_table",
-                            "where_type": "none",
-                            "number_of_value_exp_in_group_by": 1,
-                            "having_type": "multiple",
-                            "orderby_type": "ASC",
+                            "table_exp_type": "subquery",
+                            "where_type": {
+                                "logical_operator": [
+                                    "OR",
+                                    "IN",
+                                    "NOT IN",
+                                ]
+                            },
+                            "number_of_value_exp_in_group_by": 2,
+                            "having_type": {"single": "SUM"},
+                            "orderby_type": "number_DESC",
                             "limit_type": "without_offset",
-                            "value_exp_types": ["single_exp_text", "string_func_exp"],
+                            "value_exp_types": ["agg_exp_alias"],
                             "distinct_type": "distinct",
-                            "min_max_depth_in_subquery": [0, 0],
+                            "min_max_depth_in_subquery": [3, 5],
                         },
                     },
                 }
@@ -124,7 +150,8 @@ def query_generator(
 
     print("Start generating queries")
     merged_queries = {}
-
+    return_select_fields_dict = {}
+    print(return_select_fields, return_table_exp_attributes)
     for i, hash in enumerate(specs[db_name]):
         print(specs[db_name][hash])
         print("************ SET OP ************")
@@ -204,7 +231,9 @@ def query_generator(
             schema_types,
             table_exp_type,
             meaningful_joins,
+            db_name=db_name,
             random_choice=random_choice,
+            query_generator_func=query_generator,
         )
         random.shuffle(queries_with_attributes)
 
@@ -316,12 +345,14 @@ def query_generator(
                                         must_be_in_select1,
                                         select_clause,
                                         num_value_exps,
+                                        select_fields_types,
                                     ) in partial_query_with_attributes:
                                         print_attributes(
                                             partial_query=partial_query,
                                             attributes=attributes,
                                             must_be_in_select=must_be_in_select1,
                                             select_clause=select_clause,
+                                            select_fields_types=select_fields_types,
                                         )
 
                                         partial_query = complete_query_with_order_by(
@@ -340,15 +371,48 @@ def query_generator(
                                         print(
                                             "************ LIMIT & OFFSET ************"
                                         )
-                                        print_attributes(partial_query=partial_query)
-
+                                        # print_attributes(partial_query=partial_query)
+                                        # print("________-")
+                                        # print(select_clause)
+                                        # print("________-")
+                                        # print(return_select_fields)
+                                        # print(return_table_exp_attributes)
+                                        # print("________-")
+                                        # print(return_select_fields_dict)
+                                        # print("________-")
+                                        # print(attributes)
                                         if str(spec) in merged_queries:
                                             merged_queries[str(spec)] += (
                                                 "\n" + partial_query
                                             )
                                         else:
                                             merged_queries[str(spec)] = partial_query
+                                        if return_select_fields:
+                                            print("JJ")
+                                            return_select_fields_dict[hash] = {
+                                                "select_fields": select_clause
+                                            }
+                                            print(return_select_fields_dict.values())
+                                        if return_table_exp_attributes:
+                                            print("HH")
+                                            return_select_fields_dict[hash][
+                                                "table_exp_attributes"
+                                            ] = {}
+                                            return_select_fields_dict[hash][
+                                                "table_exp_attributes"
+                                            ] = attributes
+                                        if return_unique_tables:
+                                            print("GG")
+                                            return_select_fields_dict[hash][
+                                                "unique_tables"
+                                            ] = tables
+                                        if return_select_fields_dict:
+                                            return_select_fields_dict[hash][
+                                                "select_fields_types"
+                                            ] = select_fields_types
 
+                                        print("return_select_fields_dict")
+                                        print(return_select_fields_dict)
                                 except Exception as e:
                                     print(e)
                                     if random_choice:
@@ -374,6 +438,8 @@ def query_generator(
             write_queries_to_file(merged_queries=merged_queries)
 
     print("Done generating queries")
+    if return_select_fields:
+        return merged_queries, return_select_fields_dict
     return merged_queries
 
 

@@ -85,23 +85,43 @@ def query_generator(
                     #         },
                     #     },
                     # }
-                    "100053cb65de263966b80d1dbc399603bfa6c60d": {
+                    #     "100053cb65de263966b80d1dbc399603bfa6c60d": {
+                    #         "set_op_type": "none",
+                    #         "first_query": {
+                    #             "meaningful_joins": "yes",
+                    #             "table_exp_type": "subquery",
+                    #             "where_type": {
+                    #                 "logical_operator": [
+                    #                     "OR",
+                    #                     "IN",
+                    #                     "NOT IN",
+                    #                 ]
+                    #             },
+                    #             "number_of_value_exp_in_group_by": 2,
+                    #             "having_type": {"single": "SUM"},
+                    #             "orderby_type": "number_DESC",
+                    #             "limit_type": "without_offset",
+                    #             "value_exp_types": ["agg_exp_alias"],
+                    #             "distinct_type": "distinct",
+                    #             "min_max_depth_in_subquery": [3, 5],
+                    #         },
+                    #     },
+                    # }
+                    "b1cbd9cdc18a743b212671a736d2b1f71cf31534": {
                         "set_op_type": "none",
                         "first_query": {
                             "meaningful_joins": "yes",
-                            "table_exp_type": "subquery",
+                            "table_exp_type": "FULL OUTER JOIN_INNER JOIN_LEFT JOIN",
                             "where_type": {
-                                "logical_operator": [
-                                    "OR",
-                                    "IN",
-                                    "NOT IN",
-                                ]
+                                "pattern_matching": ["LIKE", "does_not_contain_xyz"]
                             },
-                            "number_of_value_exp_in_group_by": 2,
-                            "having_type": {"single": "SUM"},
-                            "orderby_type": "number_DESC",
-                            "limit_type": "without_offset",
-                            "value_exp_types": ["agg_exp_alias"],
+                            "number_of_value_exp_in_group_by": 3,
+                            "having_type": "none",
+                            "orderby_type": "ASC",
+                            "limit_type": "none",
+                            "value_exp_types": [
+                                "subquery_exp_alias",
+                            ],
                             "distinct_type": "distinct",
                             "min_max_depth_in_subquery": [3, 5],
                         },
@@ -327,16 +347,22 @@ def query_generator(
                                 )
 
                                 try:
-                                    partial_query_with_attributes = (
-                                        complete_query_with_select(
-                                            partial_query,
-                                            attributes,
-                                            must_be_in_select1,
-                                            value_exp_types,
-                                            distinct,
-                                            is_subquery,
-                                            random_choice=random_choice,
-                                        )
+                                    partial_query_with_attributes = complete_query_with_select(
+                                        schema,
+                                        schema_types,
+                                        db_name,
+                                        pk,
+                                        fk,
+                                        tables,
+                                        partial_query,
+                                        attributes,
+                                        must_be_in_select1,
+                                        value_exp_types,
+                                        distinct,
+                                        is_subquery=is_subquery,
+                                        random_choice=random_choice,
+                                        min_max_depth_in_subquery=min_max_depth_in_subquery,
+                                        query_generator_func=query_generator,
                                     )
                                     print("************ SELECT ************")
                                     for (
@@ -371,16 +397,7 @@ def query_generator(
                                         print(
                                             "************ LIMIT & OFFSET ************"
                                         )
-                                        # print_attributes(partial_query=partial_query)
-                                        # print("________-")
-                                        # print(select_clause)
-                                        # print("________-")
-                                        # print(return_select_fields)
-                                        # print(return_table_exp_attributes)
-                                        # print("________-")
-                                        # print(return_select_fields_dict)
-                                        # print("________-")
-                                        # print(attributes)
+
                                         if str(spec) in merged_queries:
                                             merged_queries[str(spec)] += (
                                                 "\n" + partial_query
@@ -388,13 +405,10 @@ def query_generator(
                                         else:
                                             merged_queries[str(spec)] = partial_query
                                         if return_select_fields:
-                                            print("JJ")
                                             return_select_fields_dict[hash] = {
                                                 "select_fields": select_clause
                                             }
-                                            print(return_select_fields_dict.values())
                                         if return_table_exp_attributes:
-                                            print("HH")
                                             return_select_fields_dict[hash][
                                                 "table_exp_attributes"
                                             ] = {}
@@ -402,7 +416,6 @@ def query_generator(
                                                 "table_exp_attributes"
                                             ] = attributes
                                         if return_unique_tables:
-                                            print("GG")
                                             return_select_fields_dict[hash][
                                                 "unique_tables"
                                             ] = tables
@@ -410,9 +423,6 @@ def query_generator(
                                             return_select_fields_dict[hash][
                                                 "select_fields_types"
                                             ] = select_fields_types
-
-                                        print("return_select_fields_dict")
-                                        print(return_select_fields_dict)
                                 except Exception as e:
                                     print(e)
                                     if random_choice:

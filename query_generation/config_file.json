@@ -64,7 +64,8 @@
     "arithmatic_exp", 
     "string_func_exp",
     "agg_exp",
-    "count_distinct_exp"
+    "count_distinct_exp",
+    "subquery_exp"
 
 ],
 "distinct_types": ["none", "distinct"],

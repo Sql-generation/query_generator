@@ -380,7 +380,11 @@ def generate_all_value_exp_types(
     Returns:
         list: The generated value expression types.
     """
+
     all_value_exp_types = []
+    if "subquery_exp" in value_exp_types:
+        value_exp_types.remove("subquery_exp")
+        value_exp_types.append("subquery_exp_alias")
     if "single_exp" in value_exp_types:
         value_exp_types.remove("single_exp")
         value_exp_types.append("single_exp_number")

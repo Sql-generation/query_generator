@@ -79,6 +79,7 @@ def read_random_specs(
     schema=None,
     exists=False,
     from_clause=False,
+    subquery_in_select_statement=False,
 ):
     """
     Read a random specification from a file and generate a query based on the specification.
@@ -127,7 +128,6 @@ def read_random_specs(
 
     spec_hash = random.choice(specs2)
     spec = specs[db_name][spec_hash]
-    print(spec)
     if spec["set_op_type"] != "none":
         # delete second_query from spec
         spec = spec["first_query"]
@@ -137,8 +137,51 @@ def read_random_specs(
     temp_completed_spec = None
     temp_spec_hash = None
     temp_must_be_in_where = None
+    if subquery_in_select_statement:
+        if spec["where_type"] in [
+            "in_with_subquery",
+            "not_in_with_subquery",
+            "exists_subquery",
+            "not_exists_subquery",
+            "comparison_with_subquery",
+        ] or (
+            isinstance(spec["where_type"], dict)
+            and "logical_operator" in spec["where_type"]
+            and (
+                (
+                    spec["where_type"]["logical_operator"][1]
+                    in [
+                        "in_with_subquery",
+                        "not_in_with_subquery",
+                        "exists_subquery",
+                        "not_exists_subquery",
+                        "comparison_with_subquery",
+                    ]
+                )
+                or spec["where_type"]["logical_operator"][2]
+                in [
+                    "in_with_subquery",
+                    "not_in_with_subquery",
+                    "exists_subquery",
+                    "not_exists_subquery",
+                    "comparison_with_subquery",
+                ]
+            )
+        ):
+            spec["where_type"] = random.choice(["none", "null_check", "NOT IN"])
+
+        if spec["table_exp_type"] == "single_table_with_name_changing":
+            spec["table_exp_type"] = "single_table"
+        spec["number_of_value_exp_in_group_by"] = min(
+            spec["number_of_value_exp_in_group_by"], 1
+        )
+        value_exp_types = []
+        if len(spec["value_exp_types"]) > 1:
+            spec["value_exp_types"] = [random.choice(spec["value_exp_types"])]
+        spec["min_max_depth_in_subquery"] = [0, 0]
+        return spec, spec_hash, None
+
     if from_clause:
-        print("from_clause")
         if spec["where_type"] in [
             "in_with_subquery",
             "not_in_with_subquery",
@@ -351,8 +394,7 @@ def read_random_specs(
                                 fk,
                                 min_max_depth_in_subquery,
                             )
-                            print(temp_completed_spec)
-                            print("hi1")
+
                             spec["min_max_depth_in_subquery"] = [0, 0]
             elif spec["where_type"] in [
                 "in_with_subquery",
@@ -847,7 +889,6 @@ def random_not_pk_cols(attributes, unique_tables, pk, number_of_col):
         [['col1', 'col2', 'col3'], ['col1', 'col2', 'col4']]
     """
     all_cols = attributes["number"] + attributes["text"]
-    print(all_cols)
 
     if isinstance(unique_tables, list):
         for table in unique_tables:
@@ -1007,6 +1048,6 @@ temp_queries = "FROM city JOIN competition_record JOIN farm JOIN farm_competitio
 # print(create_graph_from_schema(schema, fk))
 
 # # Example usage:
-attributes = {"number": ["col1", "col2", "col3"]}
-expression = generate_arithmetic_expression(attributes, 2)
-print(expression)
+# attributes = {"number": ["col1", "col2", "col3"]}
+# expression = generate_arithmetic_expression(attributes, 2)
+# print(expression)

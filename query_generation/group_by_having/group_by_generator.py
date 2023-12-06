@@ -34,12 +34,9 @@ def complete_with_group_by_clause(
         ]  # Return the original query with an empty list for must_be_in_select_statement
 
     try:
-        print("ioioio")
-        print(unique_tables)
         sample_stes = random_not_pk_cols(
             attributes, unique_tables, pk, number_of_col
         )  # Generate random column combinations
-        print("sample_stes", sample_stes)
         queries = []
         if random_choice:
             sample_stes = [

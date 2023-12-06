@@ -1,5 +1,7 @@
 import random
 
+from subquery_generator import generate_subquery
+
 from .select_helper_funcs import (
     _generate_random_alias_name,
     handle_agg_exp,
@@ -11,6 +13,12 @@ from .select_helper_funcs import (
 
 
 def complete_query_with_select(
+    schema,
+    schema_types,
+    db_name,
+    pk,
+    fk,
+    tables,
     temp_query,
     attributes,
     must_have_attributes,
@@ -18,6 +26,8 @@ def complete_query_with_select(
     distinct_type,
     is_subquery=False,
     random_choice=False,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
 ):
     """
     Completes the query with the SELECT clause based on the provided parameters.
@@ -36,6 +46,12 @@ def complete_query_with_select(
     """
 
     select_clauses = generate_select_clause(
+        schema,
+        schema_types,
+        db_name,
+        pk,
+        fk,
+        tables,
         temp_query,
         attributes,
         must_have_attributes,
@@ -43,8 +59,9 @@ def complete_query_with_select(
         distinct_type,
         is_subquery=is_subquery,
         random_choice=random_choice,
+        min_max_depth_in_subquery=min_max_depth_in_subquery,
+        query_generator_func=query_generator_func,
     )
-    print(select_clauses)
     return [
         [
             select_statement + temp_query,
@@ -59,6 +76,12 @@ def complete_query_with_select(
 
 
 def generate_select_clause(
+    schema,
+    schema_types,
+    db_name,
+    pk,
+    fk,
+    tables,
     temp_query,
     attributes,
     must_have_attributes,
@@ -68,6 +91,8 @@ def generate_select_clause(
     num_columns=None,
     is_subquery=False,
     random_choice=False,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
 ):
     """
     Generates the SELECT clause based on the provided parameters.
@@ -101,13 +126,20 @@ def generate_select_clause(
 
     if has_group_by := has_group_by is not False and "GROUP BY" in temp_query:
         return generate_select_clause_with_group_by(
+            schema,
+            schema_types,
+            db_name,
+            pk,
+            fk,
+            tables,
             temp_query,
             attributes,
             must_have_attributes,
             select_statement_type,
             distinct_type,
-            has_group_by=False,
             random_choice=random_choice,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
         )
 
     elif is_subquery:
@@ -120,22 +152,37 @@ def generate_select_clause(
     else:
         print("EEEE")
         return generate_value_expressions(
+            schema,
+            schema_types,
+            db_name,
+            pk,
+            fk,
+            tables,
             must_have_attributes,
             select_statement_type,
             attributes,
             distinct_type,
             random_choice,
+            min_max_depth_in_subquery=min_max_depth_in_subquery,
+            query_generator_func=query_generator_func,
         )
 
 
 def generate_select_clause_with_group_by(
+    schema,
+    schema_types,
+    db_name,
+    pk,
+    fk,
+    tables,
     temp_query,
     attributes,
     must_have_attributes,
     select_statement_type,
     distinct_type,
-    has_group_by=False,
     random_choice=False,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
 ):
     """
     Generates the SELECT clause with GROUP BY based on the provided parameters.
@@ -153,6 +200,12 @@ def generate_select_clause_with_group_by(
         list: The list of select clauses.
     """
     select_statement_with_fields = generate_select_clause(
+        schema,
+        schema_types,
+        db_name,
+        pk,
+        fk,
+        tables,
         temp_query,
         attributes,
         must_have_attributes,
@@ -160,6 +213,8 @@ def generate_select_clause_with_group_by(
         distinct_type,
         has_group_by=False,
         random_choice=random_choice,
+        min_max_depth_in_subquery=min_max_depth_in_subquery,
+        query_generator_func=query_generator_func,
     )
     queries = []
     for temp in select_statement_with_fields:
@@ -201,11 +256,19 @@ def generate_select_clause_subquery(
 
 
 def generate_value_expressions(
+    schema,
+    schema_types,
+    db_name,
+    pk,
+    fk,
+    tables,
     must_have_attributes,
     select_statement_type,
     attributes,
     distinct_type,
     random_choice,
+    min_max_depth_in_subquery=None,
+    query_generator_func=None,
 ):
     """
     Generates the SELECT statements based on the provided parameters.
@@ -312,6 +375,33 @@ def generate_value_expressions(
                     attributes,
                     select_fields_types,
                 )  # Handle count distinct expression and update select_statement and select_fields
+            elif col_type.startswith("subquery"):
+                print("SUBQUERY")
+                subquery_in_select_clauses = generate_subquery(
+                    schema,
+                    schema_types,
+                    db_name,
+                    attributes,
+                    col_type,
+                    pk,
+                    fk,
+                    min_max_depth_in_subquery=min_max_depth_in_subquery,
+                    query_generator_func=query_generator_func,
+                )
+                print("SUBQUERY IN SELECT CLAUSES")
+                print(subquery_in_select_clauses)
+                queries = []
+                for clause, tables, attributes in subquery_in_select_clauses:
+                    # attributes = get_all_attributes_for_from_subquery()
+                    # queries.append([query, attributes, must_have_attributes])
+                    # TODO
+                    alias_name =_generate_random_alias_name(select_fields)
+                    select_statement += (
+                        f"({clause}) AS {alias_name}, "
+                    )
+                    select_fields.append(alias_name)
+                    num_value_exp = 1
+                    select_fields_types[random_column] = "text"
             num_value_exps += num_value_exp  # Increment the number of value expressions
         if select_statement[-2:] == ", ":
             select_statement = select_statement[
